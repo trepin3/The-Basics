@@ -219,6 +219,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
 .notes-area{width:100%;min-height:110px;resize:vertical;padding:9px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--input-bg);color:var(--text);font-family:inherit;outline:none;line-height:1.5;}
 .notes-area:focus{border-color:var(--primary);}
 
+/* Select-option buttons in The Close */
+.select-option-row{display:flex;gap:10px;margin:12px 0;}
+.sel-opt-btn{
+  flex:1; background:var(--agent-bg); border-radius:var(--radius);
+  padding:14px 10px; text-align:center; cursor:pointer;
+  border:2px solid transparent; transition:all 0.2s; user-select:none;
+}
+.sel-opt-btn:active{transform:scale(0.96);}
+.sel-opt-btn.sel{border-color:var(--primary);background:rgba(0,113,227,0.15);}
+.sel-opt-label{
+  font-size:10px; font-weight:800; text-transform:uppercase;
+  letter-spacing:0.8px; color:var(--text-secondary); margin-bottom:6px;
+}
+.sel-opt-price{
+  font-size:26px; font-weight:800; color:var(--primary); margin-bottom:6px;
+  line-height:1;
+}
+.sel-opt-cov{
+  font-size:12px; font-weight:600; color:var(--text-secondary);
+  background:var(--card); border:1.5px dashed var(--border);
+  border-radius:6px; padding:4px 8px; display:inline-block;
+}
+.sel-opt-btn.sel .sel-opt-cov{border-color:var(--primary);border-style:solid;color:var(--primary);}
+@media(max-width:400px){.sel-opt-price{font-size:20px;}}
+
 .divider{height:1px;background:var(--border);margin:14px 0;}
 
 @media(max-width:480px){
@@ -787,7 +812,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
         <p class="script-line">Based on what you told me about <span class="d-b beneficiary-name">_____</span>, your budget, and not wanting to leave this behind for them, which one of these feels like it fits what you were hoping to accomplish?</p>
         <div class="silence"><span style="font-size:22px;">🤫</span><div class="silence-text">STAY SILENT. DO NOT SAY ANOTHER WORD.<br>FIRST TO SPEAK GIVES UP CONTROL.<br>[PAUSE: 8–12 SECONDS MINIMUM]</div></div>
         <div class="tip"><span class="tip-lbl">Tip</span>Do not explain again. Do not lower the price. Do not nervous-talk. If they hesitate: "Take your time." [PAUSE 3–5 SEC] Then: "Between the three, is it more of a coverage concern or a monthly payment concern?"</div>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Tap the Option the Client Chooses Above</div></div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Select the Option the Client Chooses</div></div>
+        <div class="select-option-row">
+          <div class="sel-opt-btn" id="selOpt1" onclick="selectOption(1)">
+            <div class="sel-opt-label">Option 1 (High)</div>
+            <div class="sel-opt-price" id="selOpt1Price">$—</div>
+            <div class="sel-opt-cov" id="selOpt1Cov">—</div>
+          </div>
+          <div class="sel-opt-btn" id="selOpt2" onclick="selectOption(2)">
+            <div class="sel-opt-label">Option 2 (Mid)</div>
+            <div class="sel-opt-price" id="selOpt2Price">$—</div>
+            <div class="sel-opt-cov" id="selOpt2Cov">—</div>
+          </div>
+          <div class="sel-opt-btn" id="selOpt3" onclick="selectOption(3)">
+            <div class="sel-opt-label">Option 3 (Low)</div>
+            <div class="sel-opt-price" id="selOpt3Price">$—</div>
+            <div class="sel-opt-cov" id="selOpt3Cov">—</div>
+          </div>
+        </div>
         <div class="cond-section" id="afterSelect">
           <div class="cond-block"><div class="cond-lbl">After Client Selects</div><div class="cond-text">
             <p class="script-line">Excellent choice.</p>
@@ -1205,20 +1247,36 @@ function calcQuotes(v){
   document.getElementById('opt1price').textContent='$'+state.quote1;
   document.getElementById('opt3price').textContent='$'+state.quote3;
   document.querySelectorAll('.budget-display').forEach(el=>el.textContent='$'+budget);
+  // sync selection buttons
+  const s1=document.getElementById('selOpt1Price');if(s1)s1.textContent='$'+state.quote1;
+  const s2=document.getElementById('selOpt2Price');if(s2)s2.textContent='$'+state.quote2;
+  const s3=document.getElementById('selOpt3Price');if(s3)s3.textContent='$'+state.quote3;
 }
 function syncCoverage(n,v){
-  // keep options presentation in sync
   const el=document.getElementById('opt'+n+'cov');
   if(el&&v)el.textContent=v;
+  const sb=document.getElementById('selOpt'+n+'Cov');
+  if(sb)sb.textContent=v||'—';
 }
 
 // ─── OPTION SELECTION ────────────────────────────────────────────────────────
 function selectOption(n){
   state.selectedOption=n;
-  [1,2,3].forEach(i=>document.getElementById('optCard'+i).classList.toggle('sel',i===n));
-  document.getElementById('opt1cov').textContent=document.getElementById('cov1').value||'______';
-  document.getElementById('opt2cov').textContent=document.getElementById('cov2').value||'______';
-  document.getElementById('opt3cov').textContent=document.getElementById('cov3').value||'______';
+  [1,2,3].forEach(i=>{
+    const card=document.getElementById('optCard'+i);
+    if(card)card.classList.toggle('sel',i===n);
+    const btn=document.getElementById('selOpt'+i);
+    if(btn)btn.classList.toggle('sel',i===n);
+  });
+  const c1=document.getElementById('cov1'),c2=document.getElementById('cov2'),c3=document.getElementById('cov3');
+  document.getElementById('opt1cov').textContent=c1&&c1.value||'______';
+  document.getElementById('opt2cov').textContent=c2&&c2.value||'______';
+  document.getElementById('opt3cov').textContent=c3&&c3.value||'______';
+  // update selection button coverage labels
+  const sb1=document.getElementById('selOpt1Cov'),sb2=document.getElementById('selOpt2Cov'),sb3=document.getElementById('selOpt3Cov');
+  if(sb1)sb1.textContent=c1&&c1.value||'—';
+  if(sb2)sb2.textContent=c2&&c2.value||'—';
+  if(sb3)sb3.textContent=c3&&c3.value||'—';
   toggleCond('afterSelect',true);
 }
 
