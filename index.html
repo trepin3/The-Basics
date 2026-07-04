@@ -256,47 +256,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
 </head>
 <body>
 <script>
-// Runs immediately — forces login to show before anything renders
 document.addEventListener('DOMContentLoaded',function(){
-  var lv=document.getElementById('loginView');
-  var wv=document.getElementById('welcomeView');
-  var sv=document.getElementById('scriptView');
-  if(lv)lv.style.display='block';
-  if(wv)wv.style.display='none';
-  if(sv)sv.style.display='none';
-  if(document.getElementById('loginUser'))document.getElementById('loginUser').focus();
+  showView('welcomeView');
 });
 </script>
-
-<!-- ══════════════════════════════════════════════════
-     LOGIN VIEW
-══════════════════════════════════════════════════ -->
-<div id="loginView" class="view active">
-  <button class="welcome-theme-btn" onclick="toggleTheme()" id="loginThemeBtn">🌙</button>
-  <div class="login-wrap">
-    <div class="welcome-logo">⚡</div>
-    <div class="welcome-title">The <span>Basics</span></div>
-    <div class="welcome-sub">Final Expense Script Tool</div>
-    <div class="login-card">
-      <div class="field-group">
-        <label class="field-label">Username</label>
-        <input class="text-input" id="loginUser" placeholder="Enter username" autocomplete="off"
-          onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
-      </div>
-      <div class="field-group" style="margin-top:10px;">
-        <label class="field-label">Password</label>
-        <input class="text-input" type="password" id="loginPass" placeholder="Enter password"
-          onkeydown="if(event.key==='Enter')doLogin()">
-      </div>
-      <div id="loginError" style="display:none;margin-top:10px;padding:10px 14px;background:rgba(255,69,58,0.1);border:1.5px solid var(--danger);border-radius:var(--radius-sm);font-size:14px;font-weight:600;color:var(--danger);text-align:center;">
-        Incorrect username or password.
-      </div>
-      <button onclick="doLogin()" style="width:100%;margin-top:16px;padding:15px;border-radius:var(--radius);border:none;background:var(--primary);color:#fff;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.2s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
-        Sign In →
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- ══════════════════════════════════════════════════
      WELCOME VIEW
@@ -1216,24 +1179,11 @@ const state = {
 
 // ─── LOGIN ────────────────────────────────────────────────────────────────────
 function showView(id){
-  ['loginView','welcomeView','scriptView'].forEach(function(v){
+  ['welcomeView','scriptView'].forEach(function(v){
     var el=document.getElementById(v);
     if(el)el.style.display=(v===id)?'block':'none';
   });
   window.scrollTo(0,0);
-}
-function doLogin(){
-  const user=document.getElementById('loginUser').value.trim();
-  const pass=document.getElementById('loginPass').value.trim();
-  const err=document.getElementById('loginError');
-  if(user==='Winning'&&pass==='Team'){
-    err.style.display='none';
-    showView('welcomeView');
-  } else {
-    err.style.display='block';
-    document.getElementById('loginPass').value='';
-    document.getElementById('loginPass').focus();
-  }
 }
 
 // ─── VIEW SWITCHING ───────────────────────────────────────────────────────────
@@ -1566,7 +1516,7 @@ function toggleTheme(){
   const dark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',dark?'light':'dark');
   const icon=dark?'🌙':'☀️';
-  ['loginThemeBtn','themeBtn','scriptThemeBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.textContent=icon;});
+  ['themeBtn','scriptThemeBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.textContent=icon;});
 }
 function resetAll(){if(!confirm('Reset all data and start over?'))return;location.reload();}
 
