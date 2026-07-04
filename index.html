@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="field-row">
           <div class="field-group">
             <label class="field-label">Beneficiary Name</label>
-            <input class="text-input" id="wBeneficiary" placeholder="Beneficiary name" oninput="updateBeneficiary(this.value)" autocomplete="off">
+            <input class="text-input" id="wBeneficiary" placeholder="Beneficiary name" oninput="updateBeneficiary(this.value,'wBeneficiary')" autocomplete="off">
           </div>
           <div class="field-group">
             <label class="field-label">Your License #</label>
@@ -548,9 +548,10 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="card-header">Beneficiary Discovery</div>
         <p class="script-line">Now tell me <span class="d-p prospect-name">_____</span>, who's going to be in charge of your final arrangements one day?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
-        <div class="agent-instr">
-          <div class="agent-instr-lbl">Agent Action</div>
-          <div class="agent-instr-text">Type beneficiary name into the Setup field (go back to Setup or use the field in the Call Setup card above) — it auto-populates throughout the script.</div>
+        <div style="margin:12px 0;">
+          <label style="display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:var(--primary);margin-bottom:6px;">Beneficiary Name</label>
+          <input id="discoveryBeneficiary" class="text-input" placeholder="Enter beneficiary's name" autocomplete="off"
+            oninput="updateBeneficiary(this.value,'discoveryBeneficiary')" style="width:100%;">
         </div>
         <p class="script-line">Andddd, do they live nearby?</p>
         <div class="tip"><span class="tip-lbl">Tip</span>These logistics questions make the impact more real.</div>
@@ -1347,7 +1348,7 @@ function sBankLookup(){
 // ─── DYNAMIC NAMES ────────────────────────────────────────────────────────────
 function updateProspect(v){state.prospect=v;const d=v||'_____';document.querySelectorAll('.prospect-name').forEach(el=>el.textContent=d);openCarrierPortal();}
 function updateAgent(v){state.agent=v;const d=v||'______';document.querySelectorAll('.agent-name').forEach(el=>el.textContent=d);}
-function updateBeneficiary(v){state.beneficiary=v;const d=v||'_____';document.querySelectorAll('.beneficiary-name').forEach(el=>el.textContent=d);openCarrierPortal();}
+function updateBeneficiary(v,srcId){state.beneficiary=v;const d=v||'_____';document.querySelectorAll('.beneficiary-name').forEach(el=>el.textContent=d);['wBeneficiary','discoveryBeneficiary'].forEach(function(id){if(id===srcId)return;var el=document.getElementById(id);if(el)el.value=v;});openCarrierPortal();}
 function updateLicense(v){state.agentLicense=v;const d=v||'______';document.querySelectorAll('.agent-license').forEach(el=>el.textContent=d);}
 
 // ─── BURIAL / CREMATION ───────────────────────────────────────────────────────
