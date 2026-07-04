@@ -197,8 +197,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
 .ss-val{color:var(--text);font-weight:700;text-align:right;max-width:60%;word-break:break-word;}
 
 /* Policy info panel */
-.policy-info-panel{display:none;background:var(--card);border:2px solid var(--primary);border-radius:var(--radius);padding:17px;margin:12px 0;}
-.policy-info-panel.show{display:block;}
+.policy-info-panel{display:block;background:var(--card);border:2px solid var(--primary);border-radius:var(--radius);padding:17px;margin:12px 0;}
 
 /* Lit sections */
 .lit-toggle{width:100%;display:flex;justify-content:space-between;align-items:center;padding:15px 19px;border-radius:var(--radius);border:none;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity 0.2s;}
@@ -808,7 +807,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
         <p class="script-line">Based on what you told me about <span class="d-b beneficiary-name">_____</span>, your budget, and not wanting to leave this behind for them, which one of these feels like it fits what you were hoping to accomplish?</p>
         <div class="silence"><span style="font-size:22px;">🤫</span><div class="silence-text">STAY SILENT. DO NOT SAY ANOTHER WORD.<br>FIRST TO SPEAK GIVES UP CONTROL.<br>[PAUSE: 8–12 SECONDS MINIMUM]</div></div>
         <div class="tip"><span class="tip-lbl">Tip</span>Do not explain again. Do not lower the price. Do not nervous-talk. If they hesitate: "Take your time." [PAUSE 3–5 SEC] Then: "Between the three, is it more of a coverage concern or a monthly payment concern?"</div>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Select the Option the Client Chooses</div></div>
+        <div style="background:var(--objection-bg);border:2px solid var(--objection-border);border-radius:var(--radius-sm);padding:14px 16px;margin:12px 0;display:flex;align-items:center;gap:12px;">
+          <span style="font-size:24px;flex-shrink:0;">👇</span>
+          <div>
+            <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--objection-border);margin-bottom:3px;">Agent Action Required</div>
+            <div style="font-size:15px;font-weight:700;color:var(--text);">Select the option the client chooses below — tap to confirm selection.</div>
+          </div>
+        </div>
         <div class="select-option-row">
           <div class="sel-opt-btn" id="selOpt1" onclick="selectOption(1)">
             <div class="sel-opt-label">Option 1 (High)</div>
@@ -929,8 +934,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
         <div class="script-field-group"><label class="field-label">Social Security Number</label><input class="text-input" id="ssnInput" type="password" placeholder="XXX-XX-XXXX" oninput="state.ssn=this.value" autocomplete="off"></div>
         <p class="script-line">Perfect.</p>
         <p class="script-line" style="margin-top:8px;">Next steps, I'm going to take this information and prepare the application to submit to the carrier for coverage, for them to review and give us the final approval to take care of those things for <span class="d-b beneficiary-name">_____</span>. Bear with me, it takes a few minutes.</p>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Open Carrier Portal</div><div class="agent-instr-text">Click below to open the carrier portal. Policy Info summary renders below once clicked. Small-talk the client through the wait.</div></div>
-        <button class="action-btn btn-primary" onclick="openCarrierPortal()">📋 Open Carrier Agent Portal</button>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Open your carrier portal and submit the application. Policy info summary is displayed below.</div></div>
         <div class="policy-info-panel" id="policyInfoPanel"><div class="card-header" style="margin-bottom:10px;">POLICY INFO</div><div id="policyInfoContent"></div></div>
       </div>
 
@@ -1333,9 +1337,9 @@ function sBankLookup(){
 }
 
 // ─── DYNAMIC NAMES ────────────────────────────────────────────────────────────
-function updateProspect(v){state.prospect=v;const d=v||'_____';document.querySelectorAll('.prospect-name').forEach(el=>el.textContent=d);}
+function updateProspect(v){state.prospect=v;const d=v||'_____';document.querySelectorAll('.prospect-name').forEach(el=>el.textContent=d);openCarrierPortal();}
 function updateAgent(v){state.agent=v;const d=v||'______';document.querySelectorAll('.agent-name').forEach(el=>el.textContent=d);}
-function updateBeneficiary(v){state.beneficiary=v;const d=v||'_____';document.querySelectorAll('.beneficiary-name').forEach(el=>el.textContent=d);}
+function updateBeneficiary(v){state.beneficiary=v;const d=v||'_____';document.querySelectorAll('.beneficiary-name').forEach(el=>el.textContent=d);openCarrierPortal();}
 function updateLicense(v){state.agentLicense=v;const d=v||'______';document.querySelectorAll('.agent-license').forEach(el=>el.textContent=d);}
 
 // ─── BURIAL / CREMATION ───────────────────────────────────────────────────────
@@ -1349,6 +1353,7 @@ function selectBC(type){
   inl('bcBurialAmt',ib);inl('bcCremAmt',!ib);
   const lbl=ib?'burial':'cremation';
   document.querySelectorAll('.d-bc').forEach(el=>el.textContent=lbl);
+  openCarrierPortal();
 }
 
 // ─── QUALIFYING ───────────────────────────────────────────────────────────────
@@ -1417,6 +1422,7 @@ function selectOption(n){
   if(sb2)sb2.textContent=c2&&c2.value||'—';
   if(sb3)sb3.textContent=c3&&c3.value||'—';
   toggleCond('afterSelect',true);
+  openCarrierPortal();
 }
 
 // ─── APPROVAL ────────────────────────────────────────────────────────────────
@@ -1428,10 +1434,8 @@ function setApproval(type){
   toggleCond('closingPending',type==='pending');
 }
 
-// ─── CARRIER PORTAL ──────────────────────────────────────────────────────────
+// ─── POLICY INFO (always visible, refreshes on any data change) ───────────────
 function openCarrierPortal(){
-  const panel=document.getElementById('policyInfoPanel');
-  panel.classList.add('show');
   const cov=state.selectedOption===1?state.coverage1||'—':state.selectedOption===2?state.coverage2||'—':state.selectedOption===3?state.coverage3||'—':'—';
   const prem=state.selectedOption?'$'+(state['quote'+state.selectedOption]||'—'):'—';
   document.getElementById('policyInfoContent').innerHTML=`
@@ -1533,6 +1537,7 @@ document.addEventListener('click',function(e){
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 document.getElementById('bcBurialAmt').style.display='none';
 document.getElementById('bcCremAmt').style.display='none';
+openCarrierPortal(); // render policy info on load
 </script>
 </body>
 </html>
