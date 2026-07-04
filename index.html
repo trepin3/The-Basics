@@ -995,12 +995,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
         <p class="script-line">Okay, perfect. So we'll need to set up a follow-up call to do that. What does tomorrow look like?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
         <div class="tip"><span class="tip-lbl">Tip</span>Do not overtalk the follow-up. Let them answer.</div>
-        <div class="script-field-group" style="margin:10px 0;">
-          <label class="field-label">Follow-Up Date &amp; Time</label>
-          <input class="text-input" id="followupInput" placeholder="e.g. Tomorrow at 2pm" oninput="state.followup=this.value;document.getElementById('followupSpan').textContent=this.value||'_____'" autocomplete="off">
-        </div>
         <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Book Follow-Up</div><div class="agent-instr-text">Open your calendar and book the appointment now.</div></div>
-        <button class="action-btn btn-success" onclick="alert('Open your calendar and book: '+(state.followup||'follow-up appointment'))">📅 Open Calendar</button>
         <div class="divider"></div>
         <p class="script-line">Perfect <span class="d-p prospect-name">_____</span>, I will be in touch with you <span class="d-b" id="followupSpan">_____</span> to go over the policy status and setup your Emergency Response System.</p>
         <p class="script-line">I hope you have a wonderful rest of your day!</p>
