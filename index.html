@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- The Basics FE Script Tool v1.0 -->
+<!-- The Basics FE Script Tool v2.0 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -9,1681 +9,1187 @@
 <title>The Basics — FE Script Tool</title>
 <style>
 :root {
-  --bg: #f5f5f7;
-  --card: #ffffff;
-  --text: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --primary: #0071e3;
-  --primary-dark: #0059b3;
-  --success: #30d158;
-  --warning: #ff9f0a;
-  --danger: #ff453a;
-  --border: #d2d2d7;
-  --shadow: 0 2px 12px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
-  --radius: 14px;
-  --radius-sm: 10px;
-  --coaching-bg: #e8f5e9;
-  --coaching-border: #30d158;
-  --objection-bg: #fff3e0;
-  --objection-border: #ff9f0a;
-  --agent-bg: #e8f0fe;
-  --agent-border: #0071e3;
-  --pause-bg: #f0f0f5;
-  --input-bg: #f0f0f5;
-  --silence-bg: #1c1c1e;
+  --bg:#f5f5f7; --card:#fff; --text:#1d1d1f; --text-secondary:#6e6e73;
+  --primary:#0071e3; --primary-dark:#0059b3; --success:#30d158;
+  --warning:#ff9f0a; --danger:#ff453a; --border:#d2d2d7;
+  --shadow:0 2px 12px rgba(0,0,0,0.08); --shadow-lg:0 8px 30px rgba(0,0,0,0.12);
+  --radius:14px; --radius-sm:10px;
+  --coaching-bg:#e8f5e9; --coaching-border:#30d158;
+  --objection-bg:#fff3e0; --objection-border:#ff9f0a;
+  --agent-bg:#e8f0fe; --agent-border:#0071e3;
+  --pause-bg:#f0f0f5; --input-bg:#f0f0f5; --silence-bg:#1c1c1e;
 }
 [data-theme="dark"] {
-  --bg: #000000;
-  --card: #1c1c1e;
-  --text: #f5f5f7;
-  --text-secondary: #98989d;
-  --primary: #0a84ff;
-  --primary-dark: #409cff;
-  --border: #38383a;
-  --shadow: 0 2px 12px rgba(0,0,0,0.3);
-  --shadow-lg: 0 8px 30px rgba(0,0,0,0.5);
-  --coaching-bg: #002a00;
-  --coaching-border: #30d158;
-  --objection-bg: #2c2000;
-  --objection-border: #ff9f0a;
-  --agent-bg: #001a3d;
-  --agent-border: #0a84ff;
-  --pause-bg: #2c2c2e;
-  --input-bg: #2c2c2e;
-  --silence-bg: #000000;
+  --bg:#000; --card:#1c1c1e; --text:#f5f5f7; --text-secondary:#98989d;
+  --primary:#0a84ff; --primary-dark:#409cff; --border:#38383a;
+  --shadow:0 2px 12px rgba(0,0,0,0.3); --shadow-lg:0 8px 30px rgba(0,0,0,0.5);
+  --coaching-bg:#002a00; --coaching-border:#30d158;
+  --objection-bg:#2c2000; --objection-border:#ff9f0a;
+  --agent-bg:#001a3d; --agent-border:#0a84ff;
+  --pause-bg:#2c2c2e; --input-bg:#2c2c2e; --silence-bg:#000;
 }
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height:100vh;
-  min-height:100dvh;
-  padding-bottom:100px;
-  transition: background 0.3s, color 0.3s;
-}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;transition:background 0.3s,color 0.3s;}
 
-/* TOP BAR */
-.top-bar {
-  position:sticky; top:0; z-index:100;
-  background: var(--card);
-  border-bottom:1px solid var(--border);
-  padding:12px 16px 8px;
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-}
-.top-bar-row {
-  display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;
-}
-.top-bar h1 {
-  font-size:18px; font-weight:800; letter-spacing:-0.3px;
-}
-.top-bar h1 span { color:var(--primary); }
-.top-bar-actions { display:flex; gap:8px; align-items:center; }
-.icon-btn {
-  width:36px; height:36px; border-radius:50%; border:none;
-  background:var(--input-bg); color:var(--text);
-  font-size:18px; display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:transform 0.15s;
-}
-.icon-btn:active { transform:scale(0.9); }
+/* ── VIEWS ── */
+.view{display:none;}
+.view.active{display:block;}
 
-/* PROGRESS */
-.progress-container { display:flex; gap:4px; align-items:center; }
-.progress-segment {
-  flex:1; height:4px; border-radius:2px; background:var(--border);
-  transition:background 0.4s ease; cursor:pointer;
-}
-.progress-segment.active { background:var(--primary); }
-.progress-segment.completed { background:var(--success); }
-.stage-labels {
-  display:flex; justify-content:space-between; margin-top:4px; padding:0 2px;
-}
-.stage-label {
-  font-size:8px; color:var(--text-secondary); text-align:center; flex:1;
-  text-transform:uppercase; letter-spacing:0.3px; font-weight:600;
-  opacity:0.7; transition:opacity 0.3s, color 0.3s; cursor:pointer;
-  padding:4px 0;
-}
-.stage-label:active { opacity:1; }
-.stage-label.active { opacity:1; color:var(--primary); }
-.stage-label.completed { opacity:0.9; color:var(--success); }
+/* ── WELCOME ── */
+.welcome-wrap{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 60px;}
+.welcome-logo{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,var(--primary),#00c7ff);display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff;margin-bottom:18px;box-shadow:0 8px 24px rgba(0,113,227,0.3);}
+.welcome-title{font-size:30px;font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:4px;}
+.welcome-title span{color:var(--primary);}
+.welcome-sub{font-size:15px;color:var(--text-secondary);font-weight:500;margin-bottom:28px;}
+.welcome-section{width:100%;max-width:460px;margin-bottom:20px;}
+.ws-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--primary);margin-bottom:12px;}
+.welcome-card{background:var(--card);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.field-row{display:flex;gap:12px;flex-wrap:wrap;}
+.field-group{flex:1;min-width:160px;margin-bottom:10px;}
+.field-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-secondary);margin-bottom:5px;}
+.text-input{width:100%;padding:11px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:15px;background:var(--input-bg);color:var(--text);outline:none;transition:border-color 0.2s;font-family:inherit;}
+.text-input:focus{border-color:var(--primary);}
 
-/* MAIN */
-.main-content { padding:16px; max-width:600px; margin:0 auto; }
-.script-section { display:none; animation:fadeIn 0.35s ease; }
-.script-section.active { display:block; }
-@keyframes fadeIn {
-  from { opacity:0; transform:translateY(12px); }
-  to { opacity:1; transform:translateY(0); }
-}
+/* Bank lookup */
+.bank-lookup-card{background:var(--card);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.bank-input-wrap{position:relative;margin-bottom:10px;}
+.bank-input-wrap input{width:100%;padding:13px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:16px;background:var(--input-bg);color:var(--text);outline:none;font-family:inherit;}
+.bank-input-wrap input:focus{border-color:var(--primary);}
+.bank-dropdown{display:none;position:absolute;left:0;right:0;top:100%;background:var(--card);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);max-height:200px;overflow-y:auto;z-index:20;box-shadow:var(--shadow-lg);}
+.bank-dropdown-item{padding:11px 14px;font-size:15px;cursor:pointer;border-bottom:1px solid var(--border);color:var(--text);}
+.bank-dropdown-item:last-child{border-bottom:none;}
+.bank-dropdown-item:hover,.bank-dropdown-item:active{background:var(--input-bg);}
+.routing-result-box{display:none;margin-top:12px;padding:16px;background:rgba(48,209,88,0.1);border:1.5px solid var(--success);border-radius:var(--radius-sm);text-align:center;}
+.routing-result-label{font-size:12px;font-weight:700;color:var(--success);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.routing-result-num{font-size:28px;font-weight:800;letter-spacing:2px;color:var(--text);}
+.routing-result-bank{font-size:13px;color:var(--text-secondary);margin-top:4px;}
+.routing-not-found{display:none;margin-top:12px;padding:14px;background:rgba(255,69,58,0.1);border:1.5px solid var(--danger);border-radius:var(--radius-sm);text-align:center;font-size:14px;color:var(--text);}
 
-/* CARD */
-.card {
-  background:var(--card); border-radius:var(--radius); padding:20px;
-  margin-bottom:14px; box-shadow:var(--shadow); border:1px solid var(--border);
-}
-.card-header {
-  font-size:13px; font-weight:700; text-transform:uppercase;
-  letter-spacing:0.8px; color:var(--primary); margin-bottom:12px;
-}
+.start-btn{width:100%;max-width:460px;padding:16px;border-radius:var(--radius);border:none;background:var(--primary);color:#fff;font-size:18px;font-weight:700;cursor:pointer;transition:all 0.15s;letter-spacing:-0.3px;margin-top:8px;font-family:inherit;}
+.start-btn:active{transform:scale(0.97);background:var(--primary-dark);}
 
-/* SCRIPT TEXT */
-.script-text { font-size:17px; line-height:1.6; color:var(--text); letter-spacing:-0.2px; }
-.script-line { font-size:17px; line-height:1.6; color:var(--text); margin-bottom:6px; }
+.welcome-theme-btn{position:fixed;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:none;background:var(--input-bg);color:var(--text);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);}
 
-/* DYNAMIC SPANS */
-.d-p {
-  display:inline-block; min-width:40px; padding:1px 8px;
-  background:rgba(0,113,227,0.1); border-radius:5px;
-  color:var(--primary); font-weight:700; font-style:italic;
-}
-.d-a {
-  display:inline-block; min-width:40px; padding:1px 8px;
-  background:rgba(255,159,10,0.12); border-radius:5px;
-  color:var(--warning); font-weight:700; font-style:italic;
-}
-.d-b {
-  display:inline-block; min-width:40px; padding:1px 8px;
-  background:rgba(48,209,88,0.12); border-radius:5px;
-  color:var(--success); font-weight:700; font-style:italic;
-}
-.d-bc {
-  display:inline-block; min-width:30px; padding:1px 8px;
-  background:rgba(175,82,222,0.12); border-radius:5px;
-  color:#af52de; font-weight:700; font-style:italic;
-}
-.d-budget {
-  display:inline-block; min-width:30px; padding:1px 8px;
-  background:rgba(255,69,58,0.1); border-radius:5px;
-  color:var(--danger); font-weight:700;
-}
+/* ── SCRIPT VIEW ── */
+#scriptView{padding-bottom:60px;}
 
-/* PAUSE */
-.pause {
-  display:inline-flex; align-items:center; gap:6px;
-  background:var(--pause-bg); border-radius:8px;
-  padding:5px 12px; margin:8px 0;
-}
-.pause-label { font-size:12px; font-weight:700; color:var(--text-secondary); font-style:italic; }
+/* Header */
+.top-bar{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:1px solid var(--border);padding:10px 16px 8px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.top-bar-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.top-bar-left{display:flex;align-items:center;gap:10px;}
+.top-bar h1{font-size:17px;font-weight:800;letter-spacing:-0.3px;}
+.top-bar h1 span{color:var(--primary);}
+.top-bar-actions{display:flex;gap:6px;align-items:center;}
+.icon-btn{width:34px;height:34px;border-radius:50%;border:none;background:var(--input-bg);color:var(--text);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.15s;flex-shrink:0;}
+.icon-btn:active{transform:scale(0.9);}
+.back-btn{padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--card);color:var(--text-secondary);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.back-btn:active{transform:scale(0.97);}
 
-/* TIP */
-.tip {
-  background:var(--coaching-bg); border-left:4px solid var(--coaching-border);
-  border-radius:var(--radius-sm); padding:10px 14px; margin:10px 0;
-  font-size:14px; line-height:1.55; color:var(--text);
-}
-.tip-lbl {
-  font-weight:800; color:var(--coaching-border); font-size:11px;
-  text-transform:uppercase; letter-spacing:0.8px; display:block; margin-bottom:3px;
-}
+/* Section jump nav */
+.jump-nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0;}
+.jump-nav::-webkit-scrollbar{display:none;}
+.jump-pill{flex-shrink:0;padding:5px 11px;border-radius:20px;border:none;background:var(--input-bg);color:var(--text-secondary);font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:inherit;text-transform:uppercase;letter-spacing:0.4px;}
+.jump-pill:active{transform:scale(0.96);}
+.jump-pill.active{background:var(--primary);color:#fff;}
 
-/* AGENT INSTRUCTION */
-.agent-instr {
-  background:var(--agent-bg); border-left:4px solid var(--agent-border);
-  border-radius:var(--radius-sm); padding:12px 14px; margin:12px 0;
-}
-.agent-instr-lbl {
-  font-size:10px; font-weight:800; text-transform:uppercase;
-  letter-spacing:1px; color:var(--agent-border); margin-bottom:5px;
-}
-.agent-instr-text {
-  font-size:14px; font-weight:600; color:var(--agent-border); line-height:1.5;
-}
+/* Script content */
+.main-content{padding:0 16px;max-width:600px;margin:0 auto;}
+.script-section-block{padding-top:8px;}
+.section-divider{display:flex;align-items:center;gap:10px;margin:24px 0 16px;}
+.section-divider-line{flex:1;height:1px;background:var(--border);}
+.section-divider-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-secondary);white-space:nowrap;}
 
-/* CONDITIONAL BLOCK */
-.cond-block {
-  background:var(--objection-bg); border-left:4px solid var(--objection-border);
-  border-radius:var(--radius-sm); padding:14px; margin:10px 0;
-}
-.cond-lbl {
-  font-size:11px; font-weight:800; text-transform:uppercase;
-  letter-spacing:0.8px; color:var(--objection-border); margin-bottom:8px;
-}
-.cond-text { font-size:16px; line-height:1.6; color:var(--text); }
-.cond-section { display:none; animation:fadeIn 0.25s ease; }
-.cond-section.show { display:block; }
+/* Cards */
+.card{background:var(--card);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.card-header{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--primary);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.script-line{font-size:17px;line-height:1.6;color:var(--text);margin-bottom:6px;}
 
-/* SILENCE */
-.silence {
-  background:var(--silence-bg); border-radius:var(--radius-sm);
-  padding:14px 18px; margin:12px 0;
-  display:flex; align-items:center; gap:12px;
-}
-.silence-icon { font-size:22px; }
-.silence-text { font-size:15px; font-weight:700; color:#f5f5f7; line-height:1.4; }
+/* Dynamic spans */
+.d-p{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(0,113,227,0.1);border-radius:5px;color:var(--primary);font-weight:700;font-style:italic;}
+.d-a{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(255,159,10,0.12);border-radius:5px;color:var(--warning);font-weight:700;font-style:italic;}
+.d-b{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(48,209,88,0.12);border-radius:5px;color:var(--success);font-weight:700;font-style:italic;}
+.d-bc{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(175,82,222,0.12);border-radius:5px;color:#af52de;font-weight:700;font-style:italic;}
+.d-budget{display:inline-block;padding:1px 7px;background:rgba(255,69,58,0.1);border-radius:5px;color:var(--danger);font-weight:700;}
 
-/* TOGGLE GROUP */
-.toggle-group { display:flex; gap:10px; margin:12px 0; }
-.toggle-btn {
-  flex:1; padding:13px 10px; border-radius:var(--radius-sm);
-  border:2px solid var(--border); background:var(--card);
-  color:var(--text); font-size:15px; font-weight:700;
-  cursor:pointer; transition:all 0.2s; font-family:inherit;
-}
-.toggle-btn:active { transform:scale(0.97); }
-.toggle-btn.active-primary { border-color:var(--primary); background:var(--primary); color:#fff; }
-.toggle-btn.active-success { border-color:var(--success); background:var(--success); color:#fff; }
-.toggle-btn.active-warning { border-color:var(--warning); background:var(--warning); color:#fff; }
-.toggle-btn.active-danger { border-color:var(--danger); background:var(--danger); color:#fff; }
+/* Pause */
+.pause{display:inline-flex;align-items:center;gap:6px;background:var(--pause-bg);border-radius:8px;padding:5px 11px;margin:7px 0;}
+.pause-label{font-size:12px;font-weight:700;color:var(--text-secondary);font-style:italic;}
 
-/* RATING BUTTONS */
-.rating-group { display:flex; gap:8px; margin:12px 0; justify-content:center; }
-.rating-btn {
-  width:54px; height:54px; border-radius:var(--radius-sm);
-  border:2px solid var(--border); background:var(--card);
-  color:var(--text); font-size:22px; font-weight:800;
-  cursor:pointer; transition:all 0.2s; display:flex;
-  align-items:center; justify-content:center; font-family:inherit;
-}
-.rating-btn:active { transform:scale(0.94); }
-.rating-btn.sel { border-color:var(--primary); background:var(--primary); color:#fff; }
+/* Tip */
+.tip{background:var(--coaching-bg);border-left:4px solid var(--coaching-border);border-radius:var(--radius-sm);padding:10px 14px;margin:10px 0;font-size:14px;line-height:1.55;color:var(--text);}
+.tip-lbl{font-weight:800;color:var(--coaching-border);font-size:11px;text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:3px;}
 
-/* ACTION BUTTON */
-.action-btn {
-  display:inline-flex; align-items:center; gap:8px; border:none;
-  border-radius:var(--radius-sm); padding:13px 20px;
-  font-size:15px; font-weight:700; cursor:pointer;
-  transition:opacity 0.2s, transform 0.15s; font-family:inherit;
-  text-decoration:none; margin:6px 4px 6px 0;
-}
-.action-btn:active { transform:scale(0.97); opacity:0.88; }
-.btn-primary { background:var(--primary); color:#fff; }
-.btn-success { background:var(--success); color:#fff; }
-.btn-warning { background:var(--warning); color:#fff; }
-.btn-danger { background:var(--danger); color:#fff; }
-.btn-outline { background:transparent; color:var(--primary); border:2px solid var(--primary); }
+/* Agent instruction */
+.agent-instr{background:var(--agent-bg);border-left:4px solid var(--agent-border);border-radius:var(--radius-sm);padding:11px 14px;margin:11px 0;}
+.agent-instr-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--agent-border);margin-bottom:4px;}
+.agent-instr-text{font-size:14px;font-weight:600;color:var(--agent-border);line-height:1.5;}
 
-/* FORM FIELDS */
-.field-group { margin-bottom:12px; }
-.field-label {
-  display:block; font-size:11px; font-weight:700; text-transform:uppercase;
-  letter-spacing:0.5px; color:var(--text-secondary); margin-bottom:5px;
-}
-.text-input {
-  width:100%; padding:11px 14px; border:2px solid var(--border);
-  border-radius:var(--radius-sm); font-size:15px;
-  background:var(--input-bg); color:var(--text); outline:none;
-  transition:border-color 0.2s; font-family:inherit;
-}
-.text-input:focus { border-color:var(--primary); }
-.field-row { display:flex; gap:12px; flex-wrap:wrap; }
-.field-row .field-group { flex:1; min-width:140px; }
+/* Conditional */
+.cond-block{background:var(--objection-bg);border-left:4px solid var(--objection-border);border-radius:var(--radius-sm);padding:13px;margin:10px 0;}
+.cond-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--objection-border);margin-bottom:7px;}
+.cond-text .script-line{font-size:16px;}
+.cond-section{display:none;animation:fadeIn 0.25s ease;}
+.cond-section.show{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
 
-/* SETUP CARD */
-.setup-card {
-  background:var(--card); border-radius:var(--radius);
-  padding:20px; margin-bottom:14px;
-  box-shadow:var(--shadow); border:2px solid var(--primary);
-}
-.setup-title {
-  font-size:13px; font-weight:800; text-transform:uppercase;
-  letter-spacing:0.8px; color:var(--primary); margin-bottom:14px;
-}
+/* Silence */
+.silence{background:var(--silence-bg);border-radius:var(--radius-sm);padding:14px 18px;margin:12px 0;display:flex;align-items:center;gap:12px;}
+.silence-text{font-size:15px;font-weight:700;color:#f5f5f7;line-height:1.4;}
 
-/* QUOTE DISPLAY */
-.quote-row { display:flex; gap:10px; margin:12px 0; }
-.quote-box {
-  flex:1; background:var(--agent-bg); border-radius:var(--radius-sm);
-  padding:12px; text-align:center;
-  border:2px solid transparent; cursor:pointer; transition:all 0.2s;
-}
-.quote-box:hover { border-color:var(--primary); }
-.quote-box.sel { border-color:var(--primary); }
-.quote-lbl {
-  font-size:10px; font-weight:800; text-transform:uppercase;
-  letter-spacing:0.8px; color:var(--text-secondary); margin-bottom:4px;
-}
-.quote-price {
-  font-size:24px; font-weight:800; color:var(--primary);
-}
-.quote-coverage {
-  width:100%; padding:6px 10px; border:1.5px dashed var(--border);
-  border-radius:6px; font-size:13px; font-weight:600;
-  background:transparent; color:var(--text); outline:none;
-  text-align:center; margin-top:6px; font-family:inherit;
-}
-.quote-coverage:focus { border-color:var(--primary); border-style:solid; }
-.quote-coverage::placeholder { color:var(--text-secondary); }
+/* Toggle buttons */
+.toggle-group{display:flex;gap:10px;margin:11px 0;}
+.toggle-btn{flex:1;padding:12px 10px;border-radius:var(--radius-sm);border:2px solid var(--border);background:var(--card);color:var(--text);font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:inherit;}
+.toggle-btn:active{transform:scale(0.97);}
+.toggle-btn.active-primary{border-color:var(--primary);background:var(--primary);color:#fff;}
+.toggle-btn.active-success{border-color:var(--success);background:var(--success);color:#fff;}
+.toggle-btn.active-warning{border-color:var(--warning);background:var(--warning);color:#fff;}
 
-/* OPTION CARDS */
-.option-card {
-  border:2px solid var(--border); border-radius:var(--radius);
-  padding:16px 18px; margin:10px 0; cursor:pointer; transition:all 0.2s;
-}
-.option-card:hover { border-color:var(--primary); }
-.option-card.sel { border-color:var(--primary); background:var(--agent-bg); }
-.option-num {
-  font-size:11px; font-weight:800; text-transform:uppercase;
-  letter-spacing:1px; color:var(--primary); margin-bottom:4px;
-}
+/* Rating */
+.rating-group{display:flex;gap:8px;margin:11px 0;justify-content:center;}
+.rating-btn{width:52px;height:52px;border-radius:var(--radius-sm);border:2px solid var(--border);background:var(--card);color:var(--text);font-size:21px;font-weight:800;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;font-family:inherit;}
+.rating-btn:active{transform:scale(0.94);}
+.rating-btn.sel{border-color:var(--primary);background:var(--primary);color:#fff;}
 
-/* OBJECTION ACCORDION */
-.accordion {
-  border:1px solid var(--border); border-radius:var(--radius);
-  overflow:hidden; margin-bottom:10px;
-}
-.accordion-head {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:15px 18px; background:var(--card); cursor:pointer;
-  font-size:15px; font-weight:700; color:var(--text); transition:background 0.2s;
-}
-.accordion-head:hover { background:var(--pause-bg); }
-.accordion-arrow { font-size:18px; transition:transform 0.3s; }
-.accordion-head.open .accordion-arrow { transform:rotate(180deg); }
-.accordion-body {
-  display:none; padding:16px 18px;
-  border-top:1px solid var(--border); background:var(--card);
-}
-.accordion-body.open { display:block; }
+/* Action btn */
+.action-btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:var(--radius-sm);padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity 0.2s,transform 0.15s;font-family:inherit;text-decoration:none;margin:5px 4px 5px 0;}
+.action-btn:active{transform:scale(0.97);opacity:0.88;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-success{background:var(--success);color:#fff;}
+.btn-warning{background:var(--warning);color:#fff;}
+.btn-danger{background:var(--danger);color:#fff;}
 
-/* BANK LOOKUP */
-.bank-search-row { display:flex; gap:8px; align-items:flex-end; margin-bottom:10px; }
-.bank-search-row .field-group { flex:1; margin-bottom:0; }
-.routing-result {
-  margin-top:8px; padding:10px 14px;
-  background:var(--coaching-bg); border:1px solid var(--coaching-border);
-  border-radius:var(--radius-sm); font-size:14px; font-weight:600;
-  display:none; color:var(--text);
-}
-.routing-result.show { display:block; }
+/* Quote boxes */
+.quote-row{display:flex;gap:10px;margin:12px 0;}
+.quote-box{flex:1;background:var(--agent-bg);border-radius:var(--radius-sm);padding:11px;text-align:center;border:2px solid transparent;cursor:pointer;transition:all 0.2s;}
+.quote-box:hover{border-color:var(--primary);}
+.quote-box.sel{border-color:var(--primary);}
+.quote-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-secondary);margin-bottom:3px;}
+.quote-price{font-size:22px;font-weight:800;color:var(--primary);}
+.quote-coverage{width:100%;padding:5px 8px;border:1.5px dashed var(--border);border-radius:6px;font-size:13px;font-weight:600;background:transparent;color:var(--text);outline:none;text-align:center;margin-top:5px;font-family:inherit;}
+.quote-coverage:focus{border-color:var(--primary);border-style:solid;}
 
-/* SALE SUMMARY */
-.sale-summary {
-  display:none; background:var(--card);
-  border:2px solid var(--success); border-radius:var(--radius);
-  padding:22px; margin:16px 0; box-shadow:var(--shadow-lg);
-}
-.sale-summary.show { display:block; animation:fadeIn 0.4s ease; }
-.ss-title {
-  font-size:16px; font-weight:800; color:var(--success);
-  text-align:center; margin-bottom:18px;
-  text-transform:uppercase; letter-spacing:0.8px;
-}
-.ss-section {
-  font-size:11px; font-weight:800; text-transform:uppercase;
-  letter-spacing:0.8px; color:var(--primary);
-  margin:14px 0 8px; padding-bottom:5px;
-  border-bottom:1px solid var(--border);
-}
-.ss-row {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:7px 0; border-bottom:1px solid var(--border); font-size:14px;
-}
-.ss-key { color:var(--text-secondary); font-weight:600; }
-.ss-val { color:var(--text); font-weight:700; text-align:right; max-width:60%; word-break:break-word; }
+/* Option cards */
+.option-card{border:2px solid var(--border);border-radius:var(--radius);padding:15px 17px;margin:9px 0;cursor:pointer;transition:all 0.2s;}
+.option-card:hover{border-color:var(--primary);}
+.option-card.sel{border-color:var(--primary);background:var(--agent-bg);}
+.option-num{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--primary);margin-bottom:4px;}
 
-/* POLICY INFO PANEL */
-.policy-info-panel {
-  display:none; background:var(--card);
-  border:2px solid var(--primary); border-radius:var(--radius);
-  padding:18px; margin:12px 0;
-}
-.policy-info-panel.show { display:block; }
+/* Accordion */
+.accordion{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;}
+.accordion-head{display:flex;justify-content:space-between;align-items:center;padding:14px 17px;background:var(--card);cursor:pointer;font-size:15px;font-weight:700;color:var(--text);transition:background 0.2s;}
+.accordion-head:hover{background:var(--pause-bg);}
+.accordion-arrow{font-size:17px;transition:transform 0.3s;}
+.accordion-head.open .accordion-arrow{transform:rotate(180deg);}
+.accordion-body{display:none;padding:15px 17px;border-top:1px solid var(--border);background:var(--card);}
+.accordion-body.open{display:block;}
 
-/* MINDSET / LITERATURE ACCORDION */
-.lit-toggle {
-  width:100%; display:flex; justify-content:space-between; align-items:center;
-  padding:16px 20px; border-radius:var(--radius); border:none;
-  font-size:16px; font-weight:800; cursor:pointer; font-family:inherit;
-  margin-bottom:0; transition:opacity 0.2s;
-}
-.lit-toggle:active { opacity:0.88; }
-.mindset-toggle { background:var(--agent-bg); color:var(--primary); border:1px solid var(--agent-border); }
-.lit-toggle-body {
-  display:none; background:var(--card);
-  border:1px solid var(--border); border-top:none;
-  border-radius:0 0 var(--radius) var(--radius);
-  padding:20px; margin-bottom:14px;
-}
-.lit-toggle-body.open { display:block; }
-.lit-section-title {
-  font-size:13px; font-weight:800; text-transform:uppercase;
-  letter-spacing:0.8px; color:var(--primary); margin:18px 0 8px;
-}
-.lit-text { font-size:15px; line-height:1.75; color:var(--text); }
+/* Form fields in script */
+.script-field-group{margin-bottom:11px;}
+.script-field-group .field-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-secondary);margin-bottom:4px;}
 
-/* DAILY LIT */
-.daily-lit-toggle {
-  background:linear-gradient(135deg, var(--primary), var(--success));
-  color:#fff; margin-top:8px;
-}
+/* Sale summary */
+.sale-summary{display:none;background:var(--card);border:2px solid var(--success);border-radius:var(--radius);padding:20px;margin:16px 0;box-shadow:var(--shadow-lg);}
+.sale-summary.show{display:block;animation:fadeIn 0.4s ease;}
+.ss-title{font-size:15px;font-weight:800;color:var(--success);text-align:center;margin-bottom:16px;text-transform:uppercase;letter-spacing:0.8px;}
+.ss-section{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--primary);margin:13px 0 7px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.ss-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:14px;}
+.ss-key{color:var(--text-secondary);font-weight:600;}
+.ss-val{color:var(--text);font-weight:700;text-align:right;max-width:60%;word-break:break-word;}
 
-/* BOTTOM NAV */
-.bottom-nav {
-  position:fixed; bottom:0; left:0; right:0; z-index:90;
-  background:var(--card); border-top:1px solid var(--border);
-  padding:12px 16px; display:flex; gap:10px; align-items:center;
-  padding-bottom:max(12px, env(safe-area-inset-bottom, 12px));
-}
-.nav-btn {
-  padding:12px 20px; border-radius:var(--radius-sm);
-  border:2px solid var(--border); background:var(--card);
-  color:var(--text); font-size:15px; font-weight:700;
-  cursor:pointer; font-family:inherit; transition:all 0.2s; white-space:nowrap;
-}
-.nav-btn:active { transform:scale(0.97); }
-.nav-btn.primary { background:var(--primary); border-color:var(--primary); color:#fff; flex:1; }
-.nav-btn.disabled { opacity:0.35; pointer-events:none; }
-.stage-counter {
-  font-size:13px; font-weight:700; color:var(--text-secondary);
-  white-space:nowrap; text-align:center; min-width:44px;
-}
+/* Policy info panel */
+.policy-info-panel{display:none;background:var(--card);border:2px solid var(--primary);border-radius:var(--radius);padding:17px;margin:12px 0;}
+.policy-info-panel.show{display:block;}
 
-/* NOTES PANEL */
-.notes-fab {
-  position:fixed; bottom:80px; right:16px; z-index:91;
-  width:48px; height:48px; border-radius:50%;
-  background:var(--primary); color:#fff; border:none;
-  font-size:22px; cursor:pointer; box-shadow:var(--shadow-lg);
-  display:flex; align-items:center; justify-content:center;
-  transition:transform 0.2s;
-}
-.notes-fab:active { transform:scale(0.92); }
-.notes-panel {
-  display:none; position:fixed; bottom:140px; right:16px; z-index:92;
-  width:calc(100% - 32px); max-width:340px;
-  background:var(--card); border-radius:var(--radius);
-  border:1px solid var(--border); box-shadow:var(--shadow-lg);
-  padding:14px;
-}
-.notes-panel.show { display:block; }
-.notes-title { font-size:13px; font-weight:700; color:var(--primary); margin-bottom:8px; }
-.notes-area {
-  width:100%; min-height:120px; resize:vertical;
-  padding:10px; border:1.5px solid var(--border);
-  border-radius:var(--radius-sm); font-size:14px;
-  background:var(--input-bg); color:var(--text);
-  font-family:inherit; outline:none; line-height:1.5;
-}
-.notes-area:focus { border-color:var(--primary); }
+/* Lit sections */
+.lit-toggle{width:100%;display:flex;justify-content:space-between;align-items:center;padding:15px 19px;border-radius:var(--radius);border:none;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity 0.2s;}
+.lit-toggle:active{opacity:0.88;}
+.mindset-toggle-btn{background:var(--agent-bg);color:var(--primary);border:1px solid var(--agent-border);}
+.lit-toggle-body{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:18px;margin-bottom:12px;}
+.lit-toggle-body.open{display:block;}
+.lit-section-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--primary);margin:16px 0 7px;}
+.lit-text{font-size:15px;line-height:1.75;color:var(--text);}
+.daily-lit-toggle{background:linear-gradient(135deg,var(--primary),var(--success));color:#fff;border:none;margin-top:8px;}
 
-/* DIVIDER */
-.divider { height:1px; background:var(--border); margin:14px 0; }
+/* Notes */
+.notes-fab{position:fixed;bottom:20px;right:16px;z-index:91;width:46px;height:46px;border-radius:50%;background:var(--primary);color:#fff;border:none;font-size:20px;cursor:pointer;box-shadow:var(--shadow-lg);display:flex;align-items:center;justify-content:center;transition:transform 0.2s;}
+.notes-fab:active{transform:scale(0.92);}
+.notes-panel{display:none;position:fixed;bottom:76px;right:16px;z-index:92;width:calc(100% - 32px);max-width:340px;background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-lg);padding:13px;}
+.notes-panel.show{display:block;}
+.notes-title{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:7px;}
+.notes-area{width:100%;min-height:110px;resize:vertical;padding:9px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--input-bg);color:var(--text);font-family:inherit;outline:none;line-height:1.5;}
+.notes-area:focus{border-color:var(--primary);}
 
-@media (max-width:480px) {
-  .rating-btn { width:46px; height:46px; font-size:19px; }
-  .script-line, .script-text { font-size:16px; }
-  .quote-price { font-size:20px; }
-  .option-card { padding:14px; }
+.divider{height:1px;background:var(--border);margin:14px 0;}
+
+@media(max-width:480px){
+  .rating-btn{width:46px;height:46px;font-size:18px;}
+  .script-line{font-size:16px;}
+  .quote-price{font-size:19px;}
 }
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div class="top-bar">
-  <div class="top-bar-row">
-    <h1>The <span>Basics</span></h1>
-    <div class="top-bar-actions">
-      <button class="icon-btn" onclick="toggleNotes()" title="Notes">📝</button>
-      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Dark/Light">🌙</button>
-      <button class="icon-btn" onclick="resetAll()" title="Reset">↺</button>
+<!-- ══════════════════════════════════════════════════
+     WELCOME VIEW
+══════════════════════════════════════════════════ -->
+<div id="welcomeView" class="view active">
+  <button class="welcome-theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+
+  <div class="welcome-wrap">
+    <div class="welcome-logo">⚡</div>
+    <div class="welcome-title">The <span>Basics</span></div>
+    <div class="welcome-sub">Final Expense Script Tool</div>
+
+    <!-- Setup fields -->
+    <div class="welcome-section">
+      <div class="ws-label">Call Setup</div>
+      <div class="welcome-card">
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Prospect Name</label>
+            <input class="text-input" id="wProspect" placeholder="Client first name" oninput="updateProspect(this.value)" autocomplete="off">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Your Name</label>
+            <input class="text-input" id="wAgent" placeholder="Your first name" oninput="updateAgent(this.value)" autocomplete="off">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Beneficiary Name</label>
+            <input class="text-input" id="wBeneficiary" placeholder="Beneficiary name" oninput="updateBeneficiary(this.value)" autocomplete="off">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Your License #</label>
+            <input class="text-input" id="wLicense" placeholder="e.g. 210-44153" oninput="updateLicense(this.value)" autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank routing lookup -->
+    <div class="welcome-section">
+      <div class="ws-label">🏦 Bank Routing Lookup</div>
+      <div class="bank-lookup-card">
+        <div class="bank-input-wrap">
+          <input type="text" id="wStateInput" placeholder="Type state (e.g. Texas or TX)…"
+            autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"
+            oninput="searchState(this.value)" onfocus="searchState(this.value)">
+          <input type="hidden" id="wStateVal">
+          <div class="bank-dropdown" id="wStateDropdown"></div>
+        </div>
+        <div class="bank-input-wrap">
+          <input type="text" id="wBankInput" placeholder="Type bank name…"
+            autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"
+            oninput="searchBank(this.value)" onfocus="searchBank(this.value)"
+            onblur="setTimeout(lookupRouting,200)"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('wBankDropdown').style.display='none';lookupRouting();}">
+          <div class="bank-dropdown" id="wBankDropdown"></div>
+        </div>
+        <div class="routing-result-box" id="wRoutingResult">
+          <div class="routing-result-label">Routing Number</div>
+          <div class="routing-result-num" id="wRoutingNum"></div>
+          <div class="routing-result-bank" id="wRoutingBank"></div>
+        </div>
+        <div class="routing-not-found" id="wRoutingNotFound"></div>
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="startScript()">Start Script →</button>
+  </div>
+</div><!-- end welcomeView -->
+
+
+<!-- ══════════════════════════════════════════════════
+     SCRIPT VIEW
+══════════════════════════════════════════════════ -->
+<div id="scriptView" class="view">
+
+  <!-- Sticky header -->
+  <div class="top-bar">
+    <div class="top-bar-row">
+      <div class="top-bar-left">
+        <button class="back-btn" onclick="backToSetup()">← Setup</button>
+        <h1>The <span>Basics</span></h1>
+      </div>
+      <div class="top-bar-actions">
+        <button class="icon-btn" onclick="toggleNotes()">📝</button>
+        <button class="icon-btn" onclick="toggleTheme()" id="scriptThemeBtn">🌙</button>
+        <button class="icon-btn" onclick="resetAll()" title="Reset">↺</button>
+      </div>
+    </div>
+    <div class="jump-nav" id="jumpNav">
+      <button class="jump-pill" onclick="jumpTo('s-opener')">Opener</button>
+      <button class="jump-pill" onclick="jumpTo('s-discovery')">Discovery</button>
+      <button class="jump-pill" onclick="jumpTo('s-bc')">Burial/Crem</button>
+      <button class="jump-pill" onclick="jumpTo('s-qualifying')">Qualifying</button>
+      <button class="jump-pill" onclick="jumpTo('s-affordability')">Affordability</button>
+      <button class="jump-pill" onclick="jumpTo('s-health')">Health</button>
+      <button class="jump-pill" onclick="jumpTo('s-options')">Options</button>
+      <button class="jump-pill" onclick="jumpTo('s-banking')">Banking</button>
+      <button class="jump-pill" onclick="jumpTo('s-application')">Application</button>
+      <button class="jump-pill" onclick="jumpTo('s-closing')">Closing</button>
     </div>
   </div>
-  <div class="progress-container" id="progressBar"></div>
-  <div class="stage-labels" id="stageLabels"></div>
-</div>
 
-<!-- NOTES FAB -->
-<button class="notes-fab" onclick="toggleNotes()">📝</button>
-<div class="notes-panel" id="notesPanel">
-  <div class="notes-title">Call Notes</div>
-  <textarea class="notes-area" id="notesArea" placeholder="Type notes here..."></textarea>
-</div>
+  <!-- Notes FAB -->
+  <button class="notes-fab" onclick="toggleNotes()">📝</button>
+  <div class="notes-panel" id="notesPanel">
+    <div class="notes-title">Call Notes</div>
+    <textarea class="notes-area" id="notesArea" placeholder="Type notes here…"></textarea>
+  </div>
 
-<!-- MAIN CONTENT -->
-<div class="main-content">
+  <div class="main-content">
 
-  <!-- STAGE 0: MINDSET -->
-  <div class="script-section" data-stage="0">
-    <button class="lit-toggle mindset-toggle" onclick="toggleLit('mindset')" style="width:100%;margin-bottom:0;border-radius:var(--radius) var(--radius) 0 0;">
-      <span>🧠 Agent Mindset — Read Before Every Call</span>
-      <span id="mindset-arrow">▼</span>
-    </button>
-    <div class="lit-toggle-body open" id="mindset-body">
-      <div class="lit-text">Before you make the call, you need to understand this:</div>
-      <br>
-      <div class="lit-text"><strong>You are not calling to sell a policy.</strong></div>
-      <br>
-      <div class="lit-text">You are calling to help the client face a responsibility they already showed interest in handling.</div>
-      <br>
-      <div class="lit-text">The lead already raised their hand. They already filled something out. They already had a beneficiary in mind. That means the emotional reason is already there. Your job is not to force pain. Your job is to calmly help them uncover it, explain it, and take ownership of it.</div>
-      <br>
-      <div class="lit-text">The client should feel like:</div>
-      <div class="tip"><span class="tip-lbl">Client should think</span>"This agent is not pushing me. He is helping me think clearly about something I have been avoiding."</div>
-      <br>
-      <div class="lit-text">The strongest agents do not overtalk. They do not rush. They do not panic when the client gets quiet.</div>
-      <br>
-      <div class="lit-section-title">Silence Is Not Rejection</div>
-      <div class="lit-text">Silence usually means the client is thinking, feeling, remembering, or calculating.</div>
-      <br>
-      <div class="lit-text">When you ask a powerful question, stop talking. Do not rescue them from the silence. Do not soften the question too fast. Do not answer for them.</div>
-      <br>
-      <div class="lit-text">The client needs to hear themselves say: <strong>"I do not want my family stuck with this."</strong></div>
-      <div class="lit-text">That is more powerful than you saying it for them.</div>
-      <br>
-      <div class="lit-section-title">The Core Mindset</div>
-      <div class="lit-text">The goal is not to "close" the client. The goal is to help the client make a responsible decision while the emotion is connected to the facts.</div>
-      <br>
-      <div class="lit-text">You are helping them connect four things:</div>
-      <div class="tip">
-        <span class="tip-lbl">Connect These Four Things</span>
-        1. Who they love.<br>
-        2. What happens if there is no plan.<br>
-        3. What that would cost emotionally and financially.<br>
-        4. What affordable action they can take today.
-      </div>
-      <br>
-      <div class="lit-text">When the client talks, listen for love. When they mention their daughter, son, spouse, sibling, friend, or beneficiary, slow down. That person is the reason for the policy.</div>
-      <br>
-      <div class="lit-text"><strong>The policy is not the product. Peace of mind is the product. Protecting the family is the product. Not leaving a mess behind is the product.</strong></div>
-      <br>
-      <div class="lit-section-title">How You Should Sound</div>
-      <div class="lit-text">Calm. Grounded. Warm. Certain. Not hype. Not desperate. Not overly excited. Not robotic.</div>
-      <br>
-      <div class="tip"><span class="tip-lbl">Voice Tone</span>Slow. Warm. Confident. Lower voice. Soft but firm. No rushing. No nervous laughter. No talking over the client. The client should feel like you have done this before and know how to guide them.</div>
-
-      <div class="divider"></div>
-      <div class="lit-section-title">Pause Timing Rules</div>
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Use These Pause Timings Throughout the Script</div>
-        <div class="agent-instr-text">
-          ⏸ <strong>[PAUSE: 1–2 SEC]</strong> — After normal questions. Keeps you from sounding rushed.<br><br>
-          ⏸ <strong>[PAUSE: 3–5 SEC]</strong> — After emotional or problem-awareness questions. Lets client think and feel.<br><br>
-          ⏸ <strong>[PAUSE: 5–7 SEC]</strong> — After heavy questions about burden, death, family, money, grief. Where the client gives the real answer.<br><br>
-          ⏸ <strong>[PAUSE: 8–12 SEC]</strong> — After presenting the three options. The buying silence. Do not talk first. First person to speak gives up control.<br><br>
-          ⏸ <strong>[PAUSE: UP TO 20 SEC]</strong> — When client is clearly thinking or processing. If still silent after 20 seconds, softly say: "Take your time. I know this is something you want to think through correctly." Then stay quiet again.
+    <!-- ── MINDSET (collapsible) ── -->
+    <div style="margin:14px 0 0;">
+      <button class="lit-toggle mindset-toggle-btn" onclick="toggleLit('mindset')" style="border-radius:var(--radius) var(--radius) 0 0;width:100%;margin-bottom:0;">
+        <span>🧠 Agent Mindset — Read Before Every Call</span>
+        <span id="mindset-arrow">▼</span>
+      </button>
+      <div class="lit-toggle-body open" id="mindset-body">
+        <div class="lit-text">You are not calling to sell a policy. You are calling to help the client face a responsibility they already showed interest in handling. The lead already raised their hand. Your job is to calmly help them uncover it, explain it, and take ownership of it.</div>
+        <div class="tip" style="margin-top:10px;"><span class="tip-lbl">Client Should Think</span>"This agent is not pushing me. He is helping me think clearly about something I have been avoiding."</div>
+        <div class="lit-section-title">Silence Is Not Rejection</div>
+        <div class="lit-text">When you ask a powerful question, stop talking. Do not rescue them from the silence. Do not soften the question. Do not answer for them. Let the client sit with their own answer.</div>
+        <div class="lit-section-title">The Four Connections</div>
+        <div class="tip"><span class="tip-lbl">Connect These</span>1. Who they love. &nbsp;2. What happens with no plan. &nbsp;3. The emotional &amp; financial cost. &nbsp;4. What affordable action they can take today.</div>
+        <div class="lit-section-title">How You Should Sound</div>
+        <div class="lit-text">Calm. Grounded. Warm. Certain. Not hype. Slow. Soft but firm. No rushing. No nervous laughter. No talking over the client.</div>
+        <div class="divider"></div>
+        <div class="lit-section-title">Pause Timing Rules</div>
+        <div class="agent-instr">
+          <div class="agent-instr-lbl">Use Throughout the Script</div>
+          <div class="agent-instr-text">
+            ⏸ <strong>[1–2 SEC]</strong> — After normal questions. Keeps you from sounding rushed.<br><br>
+            ⏸ <strong>[3–5 SEC]</strong> — After emotional or problem-awareness questions.<br><br>
+            ⏸ <strong>[5–7 SEC]</strong> — After heavy questions about burden, death, family, money, grief.<br><br>
+            ⏸ <strong>[8–12 SEC]</strong> — After presenting options. The buying silence. First to speak gives up control.<br><br>
+            ⏸ <strong>[UP TO 20 SEC]</strong> — When client is clearly processing. If still silent after 20 sec, softly say: "Take your time. I know this is something you want to think through correctly." Then stay quiet again.
+          </div>
         </div>
-      </div>
-      <div class="divider"></div>
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Before Each Call, Say This</div>
-        <div class="agent-instr-text">"I am calm. I am here to serve. I am not chasing. I am guiding. I will ask good questions. I will let the client think. I will not rescue them from silence. I will protect their family by helping them make a clear decision."</div>
-      </div>
-    </div>
-
-    <div class="divider" style="margin:20px 0 16px;"></div>
-
-    <!-- SETUP FIELDS -->
-    <div class="setup-card">
-      <div class="setup-title">⚙️ Call Setup — Fill In Before Starting</div>
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label">Prospect Name</label>
-          <input class="text-input" id="prospectInput" placeholder="Client first name" oninput="updateProspect(this.value)" autocomplete="off">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Your Name</label>
-          <input class="text-input" id="agentInput" placeholder="Your first name" oninput="updateAgent(this.value)" autocomplete="off">
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label">Beneficiary Name</label>
-          <input class="text-input" id="beneficiaryInput" placeholder="Beneficiary name" oninput="updateBeneficiary(this.value)" autocomplete="off">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Your License #</label>
-          <input class="text-input" id="licenseInput" placeholder="e.g. 210-44153" oninput="updateLicense(this.value)" autocomplete="off">
-        </div>
-      </div>
-    </div>
-  </div><!-- end stage 0 -->
-
-  <!-- STAGE 1: OPENER -->
-  <div class="script-section" data-stage="1">
-    <div class="card">
-      <div class="card-header">Opener</div>
-      <p class="script-line">Hey <span class="d-p prospect-name">_____</span>, it's <span class="d-a agent-name">______</span>!</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">Yeah, did nobody tell you I'd be calling?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">Okayyy, I see what's going on here <span class="d-p prospect-name">_____</span>.</p>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Introduction</div>
-      <p class="script-line">My name is <span class="d-a agent-name">____</span> and I'm calling you because I received a request from you where you'd put your beneficiary's name as <span class="d-b beneficiary-name">______</span> and your favorite hobby as ______. Was that just for you, or you and a loved one?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Initial Qualifying</div>
-      <p class="script-line">Okay, and <span class="d-p prospect-name">_____</span>. I have to ask. What got you thinking about these kinds of things — was there a recent loss in the family, a health scare, or just trying to finally get something handled?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS</span></div>
-      <div class="tip"><span class="tip-lbl">Tip</span>If they answer emotionally, do not rush. Say "Mhm, I see." then pause again.</div>
-      <p class="script-line">Mhm, I see.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-      <p class="script-line">When you filled this out, what were you hoping this would actually solve for you?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS</span></div>
-    </div>
-  </div><!-- end stage 1 -->
-
-  <!-- STAGE 2: DISCOVERY -->
-  <div class="script-section" data-stage="2">
-    <div class="card">
-      <div class="card-header">Beneficiary Discovery</div>
-      <p class="script-line">Now tell me <span class="d-p prospect-name">_____</span>, who's going to be in charge of your final arrangements one day?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action</div>
-        <div class="agent-instr-text">Type in beneficiary name into the setup field (above) — it will populate throughout the rest of the script where beneficiary name is needed.</div>
-      </div>
-
-      <p class="script-line">Andddd, do they live nearby?</p>
-      <div class="tip"><span class="tip-lbl">Tip</span>Asking this and the follow-up questions causes the client to think about the logistics broadly, making it more impactful.</div>
-      <p class="script-line">What do they do for work, and do they have any kids that depend on their income?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-      <p class="script-line">Ok, I see…</p>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Reality Check</div>
-      <p class="script-line">Do you have any written plans for <span class="d-b beneficiary-name">_____</span> to follow one day in terms of all this?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-      <div class="tip"><span class="tip-lbl">Important Silence</span>Do not explain. Do not soften. Let them realize whether there is actually a plan.</div>
-
-      <p class="script-line">And if they had to handle it tomorrow, do you feel like they would know exactly what to do, or would they be trying to figure it out while grieving?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-    </div>
-  </div><!-- end stage 2 -->
-
-  <!-- STAGE 3: BURIAL / CREMATION -->
-  <div class="script-section" data-stage="3">
-    <div class="card">
-      <div class="card-header">Burial or Cremation</div>
-      <p class="script-line">And are you planning on a burial or cremation one day?</p>
-
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action — Select One</div>
-        <div class="agent-instr-text">Select the option below. Script and cost information will update dynamically.</div>
-      </div>
-
-      <div class="toggle-group">
-        <button class="toggle-btn" id="bcBurialBtn" onclick="selectBC('burial')">⚰️ Burial</button>
-        <button class="toggle-btn" id="bcCremBtn" onclick="selectBC('cremation')">🕊️ Cremation</button>
-      </div>
-
-      <p class="script-line">And does <span class="d-b beneficiary-name">_____</span> have a lot of experience planning these kinds of things?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-
-      <p class="script-line">I see… And... do you know how much <span class="d-bc bc-type">cremation/burial</span> goes for as of today?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-
-      <div class="cond-section" id="bcBurialInfo">
-        <div class="cond-block">
-          <div class="cond-lbl">If Burial Selected</div>
-          <div class="cond-text">Burial is typically <strong>$12,000 to $20,000</strong>, just depending on services rendered — casket, flowers, etc.</div>
-        </div>
-      </div>
-      <div class="cond-section" id="bcCremInfo">
-        <div class="cond-block">
-          <div class="cond-lbl">If Cremation Selected</div>
-          <div class="cond-text">Cremation is typically <strong>$3,000 to $9,000</strong>, just depending on services rendered.</div>
+        <div class="agent-instr" style="margin-top:10px;">
+          <div class="agent-instr-lbl">Before Each Call, Say</div>
+          <div class="agent-instr-text">"I am calm. I am here to serve. I am not chasing. I am guiding. I will ask good questions. I will let the client think. I will not rescue them from silence."</div>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header">Financial Reality</div>
-      <p class="script-line">Now <span class="d-p prospect-name">____</span>, as of right now, <span class="d-b beneficiary-name">_____</span> is going to be paying for all of these things one day, right?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
+    <!-- ═══════════ OPENER ═══════════ -->
+    <div id="s-opener" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Opener</div><div class="section-divider-line"></div></div>
 
-      <p class="script-line">Does <span class="d-b beneficiary-name">_____</span> currently have the
-        <span class="cond-section" id="bcBurialAmt" style="display:inline;"><strong>$12,000 to $20,000</strong></span><span class="cond-section" id="bcCremAmt" style="display:inline;"><strong>$10,000 to $15,000</strong></span>
-        sitting in the bank ready to handle that comfortably whenever it happens?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-      <div class="tip"><span class="tip-lbl">Tip</span>This pause creates reality. Let them answer.</div>
-
-      <p class="script-line">What do you think it would do to them emotionally or financially if they had to come up with that money unexpectedly?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-      <div class="tip"><span class="tip-lbl">Tip</span>If they give a serious answer, respond slowly: "That makes sense." Then pause 2–3 seconds and continue.</div>
-
-      <p class="script-line">Mhmmm………..</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Respect Statement</div>
-      <p class="script-line">I see… Okay <span class="d-p prospect-name">____</span>. I'm starting to see why this is important to you.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">I just want to say, I really respect the heck out of you for taking the time to have this conversation. I know this is a really tough conversation for people to have, and 90% of people run from it until it's too late. So I really respect the heck out of you for the love and loyalty to your family you are demonstrating, and just how responsible and reasonable I can tell you are.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">You know, this is a step that more people need to take.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">Now, just to make sure I don't waste your time or mine, being mindful here.</p>
-      <p class="script-line">I just have a couple more questions for you so we can really figure out if what I do is even beneficial to you first. Make sense?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-    </div>
-  </div><!-- end stage 3 -->
-
-  <!-- STAGE 4: QUALIFYING -->
-  <div class="script-section" data-stage="4">
-    <div class="card">
-      <div class="card-header">Qualifying — Scale 1: Difficulty</div>
-      <p class="script-line">Okay, so on a scale of 1 to 5 — one being so easy <span class="d-b beneficiary-name">_____</span> could do it while sleeping, and five being pretty darn difficult — how difficult would this be for <span class="d-b beneficiary-name">_____</span> if we don't put anything in place? Given that right now there is no plan in place and they will have to come up with these funds to take care of this — just 1 to 5, how difficult?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS</span></div>
-
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action — Select the Number the Client Says</div>
-      </div>
-      <div class="rating-group">
-        <button class="rating-btn" onclick="selectDifficulty(1)">1</button>
-        <button class="rating-btn" onclick="selectDifficulty(2)">2</button>
-        <button class="rating-btn" onclick="selectDifficulty(3)">3</button>
-        <button class="rating-btn" onclick="selectDifficulty(4)">4</button>
-        <button class="rating-btn" onclick="selectDifficulty(5)">5</button>
+      <div class="card">
+        <div class="card-header">Opening</div>
+        <p class="script-line">Hey <span class="d-p prospect-name">_____</span>, it's <span class="d-a agent-name">______</span>!</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">Yeah, did nobody tell you I'd be calling?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">Okayyy, I see what's going on here <span class="d-p prospect-name">_____</span>.</p>
       </div>
 
-      <div class="cond-section" id="diff-high">
-        <div class="cond-block">
-          <div class="cond-lbl">If 4 or 5 Selected</div>
-          <div class="cond-text">
+      <div class="card">
+        <div class="card-header">Introduction</div>
+        <p class="script-line">My name is <span class="d-a agent-name">____</span> and I'm calling you because I received a request from you where you'd put your beneficiary's name as <span class="d-b beneficiary-name">______</span> and your favorite hobby as ______. Was that just for you, or you and a loved one?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+      </div>
+
+      <div class="card">
+        <p class="script-line">Okay, and <span class="d-p prospect-name">_____</span>. I have to ask. What got you thinking about these kinds of things — was there a recent loss in the family, a health scare, or just trying to finally get something handled?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
+        <div class="tip"><span class="tip-lbl">Tip</span>If they answer emotionally, do not rush. Say "Mhm, I see." then pause again.</div>
+        <p class="script-line">Mhm, I see.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+        <p class="script-line">When you filled this out, what were you hoping this would actually solve for you?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
+      </div>
+    </div>
+
+    <!-- ═══════════ DISCOVERY ═══════════ -->
+    <div id="s-discovery" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Discovery</div><div class="section-divider-line"></div></div>
+
+      <div class="card">
+        <div class="card-header">Beneficiary Discovery</div>
+        <p class="script-line">Now tell me <span class="d-p prospect-name">_____</span>, who's going to be in charge of your final arrangements one day?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+        <div class="agent-instr">
+          <div class="agent-instr-lbl">Agent Action</div>
+          <div class="agent-instr-text">Type beneficiary name into the Setup field (go back to Setup or use the field in the Call Setup card above) — it auto-populates throughout the script.</div>
+        </div>
+        <p class="script-line">Andddd, do they live nearby?</p>
+        <div class="tip"><span class="tip-lbl">Tip</span>These logistics questions make the impact more real.</div>
+        <p class="script-line">What do they do for work, and do they have any kids that depend on their income?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+        <p class="script-line">Ok, I see…</p>
+      </div>
+
+      <div class="card">
+        <p class="script-line">Do you have any written plans for <span class="d-b beneficiary-name">_____</span> to follow one day in terms of all this?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+        <div class="tip"><span class="tip-lbl">Important Silence</span>Do not explain. Do not soften. Let them realize whether there is actually a plan.</div>
+        <p class="script-line">And if they had to handle it tomorrow, do you feel like they would know exactly what to do, or would they be trying to figure it out while grieving?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+      </div>
+    </div>
+
+    <!-- ═══════════ BURIAL / CREMATION ═══════════ -->
+    <div id="s-bc" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Burial / Cremation</div><div class="section-divider-line"></div></div>
+
+      <div class="card">
+        <div class="card-header">Burial or Cremation</div>
+        <p class="script-line">And are you planning on a burial or cremation one day?</p>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Select One</div><div class="agent-instr-text">Script and cost figures update dynamically.</div></div>
+        <div class="toggle-group">
+          <button class="toggle-btn" id="bcBurialBtn" onclick="selectBC('burial')">⚰️ Burial</button>
+          <button class="toggle-btn" id="bcCremBtn" onclick="selectBC('cremation')">🕊️ Cremation</button>
+        </div>
+        <p class="script-line">And does <span class="d-b beneficiary-name">_____</span> have a lot of experience planning these kinds of things?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+        <p class="script-line">I see… And... do you know how much <span class="d-bc bc-type">cremation/burial</span> goes for as of today?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+        <div class="cond-section" id="bcBurialInfo">
+          <div class="cond-block"><div class="cond-lbl">If Burial</div><div class="cond-text">Burial is typically <strong>$12,000 to $20,000</strong>, depending on services — casket, flowers, etc.</div></div>
+        </div>
+        <div class="cond-section" id="bcCremInfo">
+          <div class="cond-block"><div class="cond-lbl">If Cremation</div><div class="cond-text">Cremation is typically <strong>$3,000 to $9,000</strong>, depending on services rendered.</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <p class="script-line">Now <span class="d-p prospect-name">____</span>, as of right now, <span class="d-b beneficiary-name">_____</span> is going to be paying for all of these things one day, right?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+        <p class="script-line">Does <span class="d-b beneficiary-name">_____</span> currently have the <span class="cond-section" id="bcBurialAmt" style="display:inline;"><strong>$12,000 to $20,000</strong></span><span class="cond-section" id="bcCremAmt" style="display:inline;"><strong>$10,000 to $15,000</strong></span> sitting in the bank ready to handle that comfortably whenever it happens?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+        <div class="tip"><span class="tip-lbl">Tip</span>This pause creates reality. Let them answer.</div>
+        <p class="script-line">What do you think it would do to them emotionally or financially if they had to come up with that money unexpectedly?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+        <p class="script-line">Mhmmm………..</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+      </div>
+
+      <div class="card">
+        <p class="script-line">I see… Okay <span class="d-p prospect-name">____</span>. I'm starting to see why this is important to you.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">I just want to say, I really respect the heck out of you for taking the time to have this conversation. I know this is a really tough conversation for people to have, and 90% of people run from it until it's too late. So I really respect the heck out of you for the love and loyalty to your family you are demonstrating, and just how responsible and reasonable I can tell you are.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">You know, this is a step that more people need to take.</p>
+        <p class="script-line">Now, just to make sure I don't waste your time or mine, being mindful here.</p>
+        <p class="script-line">I just have a couple more questions for you so we can really figure out if what I do is even beneficial to you first. Make sense?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+      </div>
+    </div>
+
+    <!-- ═══════════ QUALIFYING ═══════════ -->
+    <div id="s-qualifying" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Qualifying</div><div class="section-divider-line"></div></div>
+
+      <div class="card">
+        <div class="card-header">Scale 1 — Difficulty</div>
+        <p class="script-line">Okay, so on a scale of 1 to 5 — one being so easy <span class="d-b beneficiary-name">_____</span> could do it while sleeping, and five being pretty darn difficult — how difficult would this be for <span class="d-b beneficiary-name">_____</span> if we don't put anything in place? Just 1 to 5, how difficult?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Select What Client Says</div></div>
+        <div class="rating-group">
+          <button class="rating-btn" onclick="selectDifficulty(1)">1</button>
+          <button class="rating-btn" onclick="selectDifficulty(2)">2</button>
+          <button class="rating-btn" onclick="selectDifficulty(3)">3</button>
+          <button class="rating-btn" onclick="selectDifficulty(4)">4</button>
+          <button class="rating-btn" onclick="selectDifficulty(5)">5</button>
+        </div>
+        <div class="cond-section" id="diff-high">
+          <div class="cond-block"><div class="cond-lbl">If 4 or 5</div><div class="cond-text">
             <p class="script-line">Okay, and why do you say it would be that difficult?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-            <p class="script-line">What part do you think would be hardest on them — the money, the decisions, or the emotional side?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-          </div>
+            <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+            <p class="script-line">What part do you think would be hardest — the money, the decisions, or the emotional side?</p>
+            <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+          </div></div>
         </div>
-      </div>
-
-      <div class="cond-section" id="diff-low">
-        <div class="cond-block">
-          <div class="cond-lbl">If 1–3 Selected</div>
-          <div class="cond-text">
+        <div class="cond-section" id="diff-low">
+          <div class="cond-block"><div class="cond-lbl">If 1–3</div><div class="cond-text">
             <p class="script-line">If there aren't dedicated funds set aside and there isn't a written plan for <span class="d-b beneficiary-name">_____</span> to follow, what makes it only a <span id="diffValLow">__</span>?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
+            <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
             <p class="script-line">Is it because you feel they would figure it out, or is it just uncomfortable to think about?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS</span></div>
+            <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
             <p class="script-line">And why not just leave it behind for <span class="d-b beneficiary-name">_____</span> to handle?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-            <div class="tip"><span class="tip-lbl">Tip</span>This is a powerful question. Do not rush it, let them think on these things.</div>
-          </div>
+            <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+            <div class="tip"><span class="tip-lbl">Tip</span>Powerful question. Do not rush it.</div>
+          </div></div>
         </div>
+        <p class="script-line">Okay… I see. So I'm gonna put a five down.</p>
       </div>
 
-      <p class="script-line">Okay… I see. So I'm gonna put a five down.</p>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Qualifying — Scale 2: Importance</div>
-      <p class="script-line">Now... my second question here is on a scale of one to five again.</p>
-      <p class="script-line">If we can find something affordable that helps take care of these things for you on behalf of <span class="d-b beneficiary-name">_____</span>, how important is it for you to make sure that burden is not left behind for them?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS</span></div>
-      <div class="tip"><span class="tip-lbl">Tip</span>If pause is getting longer than 5 seconds say: "Just a number 1–5, 1 being not important."</div>
-
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action — Select the Number the Client Says</div>
-      </div>
-      <div class="rating-group">
-        <button class="rating-btn" onclick="selectImportance(1)" id="imp1">1</button>
-        <button class="rating-btn" onclick="selectImportance(2)" id="imp2">2</button>
-        <button class="rating-btn" onclick="selectImportance(3)" id="imp3">3</button>
-        <button class="rating-btn" onclick="selectImportance(4)" id="imp4">4</button>
-        <button class="rating-btn" onclick="selectImportance(5)" id="imp5">5</button>
-      </div>
-
-      <div class="cond-section" id="imp-high">
-        <div class="cond-block">
-          <div class="cond-lbl">If 4 or 5 Selected</div>
-          <div class="cond-text">
-            <p class="script-line">Okay, good — so you love them! That's great. That's great. You know, I speak to a lot of people, and not everybody loves their families, and it's just unfortunate. So I'm glad that you guys have a wonderful relationship. I really respect the heck out of that. And family is just so important.</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
+      <div class="card">
+        <div class="card-header">Scale 2 — Importance</div>
+        <p class="script-line">Now... my second question here is on a scale of one to five again.</p>
+        <p class="script-line">If we can find something affordable that helps take care of these things for you on behalf of <span class="d-b beneficiary-name">_____</span>, how important is it for you to make sure that burden is not left behind for them?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
+        <div class="tip"><span class="tip-lbl">Tip</span>If pause goes past 5 seconds say: "Just a number 1–5, 1 being not important."</div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Select What Client Says</div></div>
+        <div class="rating-group">
+          <button class="rating-btn" onclick="selectImportance(1)" id="imp1">1</button>
+          <button class="rating-btn" onclick="selectImportance(2)" id="imp2">2</button>
+          <button class="rating-btn" onclick="selectImportance(3)" id="imp3">3</button>
+          <button class="rating-btn" onclick="selectImportance(4)" id="imp4">4</button>
+          <button class="rating-btn" onclick="selectImportance(5)" id="imp5">5</button>
+        </div>
+        <div class="cond-section" id="imp-high">
+          <div class="cond-block"><div class="cond-lbl">If 4 or 5</div><div class="cond-text">
+            <p class="script-line">Okay, good — so you love them! That's great. You know, I speak to a lot of people, and not everybody loves their families, and it's just unfortunate. So I'm glad that you guys have a wonderful relationship. I really respect the heck out of that. And family is just so important.</p>
+            <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
             <p class="script-line">What would it mean to you emotionally to know <span class="d-b beneficiary-name">_____</span> would not have to scramble or stress over this one day?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-          </div>
+            <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+          </div></div>
         </div>
-      </div>
-
-      <div class="cond-section" id="imp-low">
-        <div class="cond-block">
-          <div class="cond-lbl">If 1–3 Selected</div>
-          <div class="cond-text">
+        <div class="cond-section" id="imp-low">
+          <div class="cond-block"><div class="cond-lbl">If 1–3</div><div class="cond-text">
             <p class="script-line">Ok, and how come, if we find something affordable, it's only a <span id="impValLow">__</span> important?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-            <div class="tip"><span class="tip-lbl">Tip</span>Dig in with follow-up questions until you feel like they would say 4–5 if you asked them again.</div>
-            <div class="tip"><span class="tip-lbl">Tip</span>With people at this level of importance, they aren't sold yet. Ask them to explain why they initially sent in the request before moving forward. They might waste your time, sometimes they buy and surprise you.</div>
-          </div>
+            <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+            <div class="tip"><span class="tip-lbl">Tip</span>Dig in until you feel like they'd say 4–5 if asked again. Ask why they filled out the request.</div>
+          </div></div>
         </div>
       </div>
     </div>
-  </div><!-- end stage 4 -->
 
-  <!-- STAGE 5: AFFORDABILITY -->
-  <div class="script-section" data-stage="5">
-    <div class="card">
-      <div class="card-header">Affordability</div>
-      <p class="script-line">So <span class="d-p prospect-name">____</span>, the most important thing in all of this is affordability.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">I don't want to be taking food off your table or putting you in a hard spot here. What monthly amount would feel comfortable and sustainable for you, where you could keep it in place long term without it becoming a burden?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-      <div class="tip"><span class="tip-lbl">Tip</span>Do not rush the budget. Let them think. If they are quiet, say: "Take your time. I just want to make sure we build this around something that actually works for you." Then pause again.</div>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-    </div>
+    <!-- ═══════════ AFFORDABILITY ═══════════ -->
+    <div id="s-affordability" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Affordability</div><div class="section-divider-line"></div></div>
 
-    <div class="card">
-      <div class="card-header">Budget Input</div>
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action — Record Monthly Budget</div>
-        <div class="agent-instr-text">Enter the monthly budget amount the client states below. Three quote options will auto-calculate. Then build quotes on a carrier for those three amounts.</div>
+      <div class="card">
+        <p class="script-line">So <span class="d-p prospect-name">____</span>, the most important thing in all of this is affordability.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">I don't want to be taking food off your table or putting you in a hard spot here. What monthly amount would feel comfortable and sustainable for you, where you could keep it in place long term without it becoming a burden?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+        <div class="tip"><span class="tip-lbl">Tip</span>Do not rush the budget. If quiet, say: "Take your time. I just want to make sure we build this around something that actually works for you." Then pause again.</div>
       </div>
 
-      <div class="field-group">
-        <label class="field-label">Monthly Budget ($)</label>
-        <input class="text-input" id="budgetInput" type="number" placeholder="e.g. 100" oninput="calcQuotes(this.value)" min="1">
-      </div>
-
-      <div id="quotesDisplay" style="display:none;">
-        <div class="agent-instr" style="margin-bottom:10px;">
-          <div class="agent-instr-lbl">Quote Targets — Build These on Carrier</div>
+      <div class="card">
+        <div class="card-header">Budget Input</div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Enter monthly budget. Three quote targets auto-calculate. Build quotes on carrier for those amounts.</div></div>
+        <div class="script-field-group">
+          <label class="field-label">Monthly Budget ($)</label>
+          <input class="text-input" id="budgetInput" type="number" placeholder="e.g. 100" oninput="calcQuotes(this.value)" min="1">
         </div>
-        <div class="quote-row">
-          <div class="quote-box" id="q1box">
-            <div class="quote-lbl">Option 1 (High)</div>
-            <div class="quote-price" id="q1price">—</div>
-            <input class="quote-coverage" id="cov1" placeholder="Coverage $" oninput="state.coverage1=this.value">
+        <div id="quotesDisplay" style="display:none;">
+          <div class="agent-instr" style="margin-bottom:8px;"><div class="agent-instr-lbl">Quote Targets — Build on Carrier</div></div>
+          <div class="quote-row">
+            <div class="quote-box" id="q1box"><div class="quote-lbl">Option 1 (High)</div><div class="quote-price" id="q1price">—</div><input class="quote-coverage" id="cov1" placeholder="Coverage $" oninput="state.coverage1=this.value"></div>
+            <div class="quote-box" id="q2box"><div class="quote-lbl">Option 2 (Mid)</div><div class="quote-price" id="q2price">—</div><input class="quote-coverage" id="cov2" placeholder="Coverage $" oninput="state.coverage2=this.value"></div>
+            <div class="quote-box" id="q3box"><div class="quote-lbl">Option 3 (Low)</div><div class="quote-price" id="q3price">—</div><input class="quote-coverage" id="cov3" placeholder="Coverage $" oninput="state.coverage3=this.value"></div>
           </div>
-          <div class="quote-box" id="q2box">
-            <div class="quote-lbl">Option 2 (Mid)</div>
-            <div class="quote-price" id="q2price">—</div>
-            <input class="quote-coverage" id="cov2" placeholder="Coverage $" oninput="state.coverage2=this.value">
-          </div>
-          <div class="quote-box" id="q3box">
-            <div class="quote-lbl">Option 3 (Low)</div>
-            <div class="quote-price" id="q3price">—</div>
-            <input class="quote-coverage" id="cov3" placeholder="Coverage $" oninput="state.coverage3=this.value">
-          </div>
+          <div class="tip"><span class="tip-lbl">Quote Logic</span>Under $150/mo: $25 increments &nbsp;|&nbsp; $150+/mo: $50 increments</div>
         </div>
-        <div class="tip"><span class="tip-lbl">Quote Logic</span>Under $150/mo: $25 increments | $150+/mo: $50 increments</div>
+        <p class="script-line" style="margin-top:12px;">What matters more to you, keeping the payment as low as possible or making sure the coverage amount is enough so <span class="d-b beneficiary-name">_____</span> has breathing room?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
       </div>
 
-      <p class="script-line" style="margin-top:14px;">What matters more to you, keeping the payment as low as possible or making sure the coverage amount is enough so <span class="d-b beneficiary-name">_____</span> has breathing room?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS</span></div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">If No Budget Stated</div>
-      <div class="cond-block">
-        <div class="cond-lbl">If Client Does Not Say What's Affordable</div>
-        <div class="cond-text">
-          <p class="script-line">Okay. So… you just want to see some options.</p>
-          <p class="script-line">I completely understand.</p>
-          <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-          <p class="script-line">Now <span class="d-p prospect-name">________</span>, I don't want to give you options that don't work for you, because as of right now there isn't a plan, there are no funds set aside for <span class="d-b beneficiary-name">_____</span>, and if I give you something that's unaffordable, you'll likely end up canceling that policy.</p>
-          <p class="script-line">And if you don't have anything in place, just like right now, I'm not helping you or doing you any service by that.</p>
-          <p class="script-line">Something is better than nothing, right?</p>
-          <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS BEFORE NEXT LINE</span></div>
+      <div class="card">
+        <div class="cond-block"><div class="cond-lbl">If No Budget Stated</div><div class="cond-text">
+          <p class="script-line">Okay. So… you just want to see some options. I completely understand.</p>
+          <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+          <p class="script-line">Now <span class="d-p prospect-name">________</span>, I don't want to give you options that don't work for you, because as of right now there isn't a plan, there are no funds set aside for <span class="d-b beneficiary-name">_____</span>, and if I give you something that's unaffordable, you'll likely end up canceling that policy. Something is better than nothing, right?</p>
+          <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS BEFORE NEXT LINE</span></div>
           <p class="script-line">So when you first filled out the request, what were you thinking or hoping it would cost monthly?</p>
-          <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
+          <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+        </div></div>
+        <p class="script-line">Okay. Amazing.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════ HEALTH QUESTIONS ═══════════ -->
+    <div id="s-health" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Pen &amp; Paper / Health</div><div class="section-divider-line"></div></div>
+
+      <div class="card">
+        <p class="script-line">Next steps <span class="d-p prospect-name">____</span>, can you do me a favor and grab a pen and paper for me?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL READY</span></div>
+        <p class="script-line">I'm required by the State Department of Insurance to give you my name and state license number before going any further in the conversation.</p>
+        <p class="script-line">Alrighty, my name's <span class="d-a agent-name">____</span> and my state license number is <span class="d-a agent-license">______</span>.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Health Questions</div>
+        <p class="script-line">Perfect. So next steps forward, I'm just going to ask you a few quick health questions, so I can figure out what policies you have the best approval odds for.</p>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Open FEX Quoting Tool</div><div class="agent-instr-text">Click below to open in a new window. Enter prescriptions as client provides them.</div></div>
+        <a class="action-btn btn-primary" href="https://app.insurancetoolkits.com/fex/quoter" target="_blank" rel="noopener noreferrer">🔗 Open FEX Quoting Tool</a>
+        <div class="divider"></div>
+        <p class="script-line">And <span class="d-p prospect-name">_____</span>, what's your birthday?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <div class="field-row">
+          <div class="field-group"><label class="field-label">Date of Birth</label><input class="text-input" id="dobInput" placeholder="MM/DD/YYYY" oninput="state.dob=this.value" autocomplete="off"></div>
+          <div class="field-group"><label class="field-label">Age</label><input class="text-input" id="ageInput" placeholder="e.g. 64" oninput="state.age=this.value" autocomplete="off"></div>
         </div>
-      </div>
-      <p class="script-line">Okay. Amazing.</p>
-    </div>
-  </div><!-- end stage 5 -->
-
-  <!-- STAGE 6: HEALTH QUESTIONS -->
-  <div class="script-section" data-stage="6">
-    <div class="card">
-      <div class="card-header">Pen &amp; Paper / License</div>
-      <p class="script-line">Next steps <span class="d-p prospect-name">____</span>, can you do me a favor and grab a pen and paper for me?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL THEY HAVE IT</span></div>
-      <p class="script-line">I'm required by the State Department of Insurance to give you my name and state license number before going any further in the conversation.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL READY</span></div>
-      <p class="script-line">Alrighty, my name's <span class="d-a agent-name">____</span> and my state license number is <span class="d-a agent-license">______</span>.</div>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Health Questions</div>
-      <p class="script-line">Perfect. So next steps forward, I'm just going to ask you a few quick health questions, so I can figure out what policies you have the best approval odds for.</p>
-
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action — Open FEX Quoting Tool</div>
-        <div class="agent-instr-text">Click below to open the FEX quoting tool in a new window. Enter prescriptions as client provides them.</div>
-      </div>
-      <a class="action-btn btn-primary" href="https://app.insurancetoolkits.com/fex/quoter" target="_blank" rel="noopener noreferrer">🔗 Open FEX Quoting Tool</a>
-
-      <div class="divider"></div>
-      <p class="script-line">And <span class="d-p prospect-name">_____</span>, what's your birthday?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label">Date of Birth</label>
-          <input class="text-input" id="dobInput" placeholder="MM/DD/YYYY" oninput="state.dob=this.value" autocomplete="off">
+        <p class="script-line">What is a good height and weight for you?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <div class="field-row">
+          <div class="field-group"><label class="field-label">Height</label><input class="text-input" id="heightInput" placeholder='e.g. 5&apos;6"' oninput="state.height=this.value" autocomplete="off"></div>
+          <div class="field-group"><label class="field-label">Weight</label><input class="text-input" id="weightInput" placeholder="e.g. 165 lbs" oninput="state.weight=this.value" autocomplete="off"></div>
         </div>
-        <div class="field-group">
-          <label class="field-label">Age</label>
-          <input class="text-input" id="ageInput" placeholder="e.g. 64" oninput="state.age=this.value" autocomplete="off">
+        <p class="script-line">Now, so I can find you coverage that accepts your prescription medications, can you get those ready for me?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL READY</span></div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent — Wait</div><div class="agent-instr-text">Do not fill this silence. Let them gather medications.</div></div>
+        <p class="script-line">Perfect. And if you could spell that out for me.</p>
+        <div class="script-field-group" style="margin-top:10px;">
+          <label class="field-label">Medications (one per line)</label>
+          <textarea class="text-input" id="medsInput" placeholder="e.g.&#10;Lisinopril&#10;Metformin" rows="4" oninput="state.meds=this.value" style="resize:vertical;"></textarea>
         </div>
-      </div>
-
-      <p class="script-line">What is a good height and weight for you?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label">Height</label>
-          <input class="text-input" id="heightInput" placeholder='e.g. 5&apos;6"' oninput="state.height=this.value" autocomplete="off">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Weight</label>
-          <input class="text-input" id="weightInput" placeholder="e.g. 165 lbs" oninput="state.weight=this.value" autocomplete="off">
-        </div>
-      </div>
-
-      <p class="script-line">Now, so I can find you coverage that accepts your prescription medications, can you get those ready for me in case I need help spelling them?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL THEY ARE READY</span></div>
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent — Wait</div>
-        <div class="agent-instr-text">Do not fill this silence. Let them gather the medications. Do not say anything until they are ready.</div>
-      </div>
-      <p class="script-line">Perfect. And if you could spell that out for me.</p>
-
-      <div class="field-group" style="margin-top:10px;">
-        <label class="field-label">Medications (one per line)</label>
-        <textarea class="text-input" id="medsInput" placeholder="e.g.&#10;Lisinopril&#10;Metformin" rows="4" oninput="state.meds=this.value" style="resize:vertical;"></textarea>
-      </div>
-
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action</div>
-        <div class="agent-instr-text">Go through all medications and ask follow-up questions to get the info the FEX quoter asks for.</div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Go through all medications and ask follow-up questions to get the info the FEX quoter requires.</div></div>
       </div>
     </div>
-  </div><!-- end stage 6 -->
 
-  <!-- STAGE 7: PRESENTING OPTIONS -->
-  <div class="script-section" data-stage="7">
-    <div class="card">
-      <div class="card-header">Presenting Options</div>
-      <p class="script-line">Alrighty <span class="d-p prospect-name">____</span>, so tell me. Do you still have that pen and paper ready still?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">Perfect, so I have a few plans for you here. I'm going to start by showing you the highest option and walking you through what each of these subsequently does for you.</p>
-    </div>
+    <!-- ═══════════ OPTIONS ═══════════ -->
+    <div id="s-options" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Presenting Options</div><div class="section-divider-line"></div></div>
 
-    <!-- OPTION 1 -->
-    <div class="card option-card" id="optCard1" onclick="selectOption(1)">
-      <div class="option-num">Option 1 — Legacy (Highest)</div>
-      <p class="script-line">Now <span class="d-p prospect-name">____</span>, being that you said <span class="d-budget budget-display">$____</span> per month was affordable to you, I'm going to be working around that to set your expectations as to what that will be able to handle for <span class="d-b beneficiary-name">_____</span>.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">This first option is <strong><span id="opt1price" class="d-budget">$____</span></strong> for <strong><span id="opt1cov" class="d-b">______</span></strong> of coverage.</p>
-      <p class="script-line">I'm showing you this as more of a legacy option. You know, it leaves extra money behind after the <span class="d-bc bc-type">burial/cremation</span> whenever it happens.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS — Let the value land.</span></div>
-    </div>
-
-    <!-- OPTION 2 -->
-    <div class="card option-card" id="optCard2" onclick="selectOption(2)">
-      <div class="option-num">Option 2 — Budget Aligned (Mid)</div>
-      <p class="script-line">Now, option number two is aligned with your budget at <span class="d-budget budget-display">$____</span> per month for <strong><span id="opt2cov" class="d-b">______</span></strong> in coverage.</p>
-      <p class="script-line">This option does just about everything option one did, except if you live a lengthy life, it's just not going to leave as much legacy behind.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS — Let them compare.</span></div>
-    </div>
-
-    <!-- OPTION 3 -->
-    <div class="card option-card" id="optCard3" onclick="selectOption(3)">
-      <div class="option-num">Option 3 — Bare Minimum (Low)</div>
-      <p class="script-line">Now, option number three, this is the bare minimum I would really recommend.</p>
-      <p class="script-line">It should cover the <span class="d-bc bc-type">burial/cremation</span> whenever it happens; however, I recommend this only for those aiming to just cover the <span class="d-bc bc-type">burial/cremation</span>.</p>
-      <p class="script-line">And that's for <strong><span id="opt3price" class="d-budget">$____</span></strong> a month. For <strong><span id="opt3cov" class="d-b">______</span></strong> of coverage.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS — Let them process the difference.</span></div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">The Close</div>
-      <p class="script-line">Based on what you told me about <span class="d-b beneficiary-name">_____</span>, your budget, and not wanting to leave this behind for them, which one of these feels like it fits what you were hoping to accomplish?</p>
-
-      <div class="silence">
-        <span class="silence-icon">🤫</span>
-        <div class="silence-text">STAY SILENT.<br>DO NOT SAY ANOTHER WORD.<br>FIRST PERSON TO SPEAK GIVES UP CONTROL.<br>[PAUSE: 8–12 SECONDS MINIMUM]</div>
+      <div class="card">
+        <p class="script-line">Alrighty <span class="d-p prospect-name">____</span>, so tell me. Do you still have that pen and paper ready still?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">Perfect, so I have a few plans for you here. I'm going to start by showing you the highest option and walking you through what each of these subsequently does for you.</p>
       </div>
 
-      <div class="tip"><span class="tip-lbl">Tip</span>This is the most important pause in the script. Do not explain again. Do not lower the price. Do not nervous-talk. Let them choose.<br><br>If they hesitate: "Take your time." [PAUSE: 3–5 SEC] Then ask: "Between the three, is it more of a coverage concern or a monthly payment concern?"</div>
-
-      <div class="agent-instr" style="margin-top:12px;">
-        <div class="agent-instr-lbl">Agent Action — Tap The Option the Client Chooses</div>
-        <div class="agent-instr-text">Tap the option card above that the client selects. It will highlight.</div>
+      <div class="card option-card" id="optCard1" onclick="selectOption(1)">
+        <div class="option-num">Option 1 — Legacy (Highest)</div>
+        <p class="script-line">Now <span class="d-p prospect-name">____</span>, being that you said <span class="d-budget budget-display">$____</span> per month was affordable to you, I'm going to be working around that to set your expectations.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">This first option is <strong><span id="opt1price" class="d-budget">$____</span></strong> for <strong><span id="opt1cov" class="d-b">______</span></strong> of coverage. I'm showing you this as more of a legacy option — leaves extra money behind after the <span class="d-bc bc-type">burial/cremation</span> whenever it happens.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS — Let the value land.</span></div>
       </div>
 
-      <div class="cond-section" id="afterSelect">
-        <div class="cond-block">
-          <div class="cond-lbl">After Client Selects an Option</div>
-          <div class="cond-text">
+      <div class="card option-card" id="optCard2" onclick="selectOption(2)">
+        <div class="option-num">Option 2 — Budget Aligned (Mid)</div>
+        <p class="script-line">Now, option number two is aligned with your budget at <span class="d-budget budget-display">$____</span> per month for <strong><span id="opt2cov" class="d-b">______</span></strong> in coverage. This option does just about everything option one did, except if you live a lengthy life, it's just not going to leave as much legacy behind.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS — Let them compare.</span></div>
+      </div>
+
+      <div class="card option-card" id="optCard3" onclick="selectOption(3)">
+        <div class="option-num">Option 3 — Bare Minimum (Low)</div>
+        <p class="script-line">Now, option number three, this is the bare minimum I would really recommend. It should cover the <span class="d-bc bc-type">burial/cremation</span> whenever it happens; however, I recommend this only for those aiming to just cover the <span class="d-bc bc-type">burial/cremation</span>.</p>
+        <p class="script-line">And that's for <strong><span id="opt3price" class="d-budget">$____</span></strong> a month. For <strong><span id="opt3cov" class="d-b">______</span></strong> of coverage.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS — Let them process.</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">The Close</div>
+        <p class="script-line">Based on what you told me about <span class="d-b beneficiary-name">_____</span>, your budget, and not wanting to leave this behind for them, which one of these feels like it fits what you were hoping to accomplish?</p>
+        <div class="silence"><span style="font-size:22px;">🤫</span><div class="silence-text">STAY SILENT. DO NOT SAY ANOTHER WORD.<br>FIRST TO SPEAK GIVES UP CONTROL.<br>[PAUSE: 8–12 SECONDS MINIMUM]</div></div>
+        <div class="tip"><span class="tip-lbl">Tip</span>Do not explain again. Do not lower the price. Do not nervous-talk. If they hesitate: "Take your time." [PAUSE 3–5 SEC] Then: "Between the three, is it more of a coverage concern or a monthly payment concern?"</div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Tap the Option the Client Chooses Above</div></div>
+        <div class="cond-section" id="afterSelect">
+          <div class="cond-block"><div class="cond-lbl">After Client Selects</div><div class="cond-text">
             <p class="script-line">Excellent choice.</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
+            <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
             <p class="script-line">What made that one feel like the right fit for you?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS</span></div>
+            <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
             <div class="tip"><span class="tip-lbl">Tip</span>This reinforces their own reason for buying.</div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="accordion">
+        <div class="accordion-head" onclick="toggleAccordion('objection')"><span>🚧 If They Need to Think About It</span><span class="accordion-arrow" id="objectionArrow">▼</span></div>
+        <div class="accordion-body" id="objectionBody">
+          <p class="script-line">I completely understand.</p>
+          <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+          <p class="script-line">Usually when someone says they need to think about it, it is one of three things — the coverage amount doesn't feel right, the monthly payment doesn't feel right, or they're not sure they even need it.</p>
+          <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+          <p class="script-line">Which one is it for you?</p>
+          <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+          <div class="cond-block" style="margin-top:12px;"><div class="cond-lbl">If Payment Issue</div><div class="cond-text"><p class="script-line">That makes sense. Would it make more sense to protect <span class="d-b beneficiary-name">_____</span> with something smaller that is comfortable, rather than waiting and risking having nothing in place?</p><div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div></div></div>
+          <div class="cond-block"><div class="cond-lbl">If Coverage Issue</div><div class="cond-text"><p class="script-line">Okay, so it sounds like the idea makes sense, but we may need to adjust the amount. Would you rather lower the payment or increase the protection?</p><div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div></div></div>
+          <div class="cond-block"><div class="cond-lbl">If Need Issue</div><div class="cond-text"><p class="script-line">That's fair. Based on what you told me earlier, if nothing is in place, <span class="d-b beneficiary-name">_____</span> would still be responsible for this one day. What would have to change for this to feel important enough to handle now instead of later?</p><div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ BANKING ═══════════ -->
+    <div id="s-banking" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Banking &amp; Beneficiary Info</div><div class="section-divider-line"></div></div>
+
+      <div class="card">
+        <div class="card-header">Banking Information</div>
+        <p class="script-line">So, next steps. Who do you bank with?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <div style="display:flex;gap:8px;align-items:flex-end;margin:10px 0;">
+          <div style="flex:1;"><label class="field-label">Bank Name</label><input class="text-input" id="bankInput" placeholder="e.g. Chase" oninput="scriptBankLookup(this.value)" autocomplete="off"></div>
+          <button class="action-btn btn-primary" onclick="scriptBankLookup(document.getElementById('bankInput').value)" style="margin:0;padding:11px 14px;">🔍</button>
+        </div>
+        <div class="routing-result-box" id="scriptRoutingResult"><div class="routing-result-label">Routing Number</div><div class="routing-result-num" id="scriptRoutingNum"></div><div class="routing-result-bank" id="scriptRoutingBank"></div></div>
+        <p class="script-line" style="margin-top:12px;">Before I take any banking information, I want to be clear. This is only used for the insurance application and the monthly premium if the policy is approved and accepted. Does that make sense?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+        <p class="script-line">Can you confirm the routing number is <span class="d-b" id="routingConfirmSpan">______</span>.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL CONFIRMED</span></div>
+        <div class="tip"><span class="tip-lbl">Tip</span>If they hesitate: "It's ok, take your time."</div>
+        <div class="script-field-group" style="margin-top:12px;">
+          <label class="field-label">Routing Number (confirmed)</label>
+          <input class="text-input" id="routingInput" placeholder="9-digit routing number" oninput="state.routing=this.value" autocomplete="off">
+        </div>
+        <p class="script-line">And what is the account number?</p>
+        <div class="script-field-group">
+          <label class="field-label">Account Number</label>
+          <input class="text-input" id="accountInput" placeholder="Account number" oninput="state.account=this.value" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Beneficiary Contact Info</div>
+        <p class="script-line">And how do I spell <span class="d-b beneficiary-name">_____</span>'s name?</p>
+        <p class="script-line">And do they have a middle initial?</p>
+        <div class="script-field-group"><label class="field-label">Middle Initial</label><input class="text-input" id="benInitial" placeholder="e.g. M" maxlength="2" oninput="state.benInitial=this.value" autocomplete="off"></div>
+        <p class="script-line">And what's a good phone number for them so that the carrier knows who's calling when <span class="d-b beneficiary-name">_____</span> needs to file a claim?</p>
+        <div class="script-field-group"><label class="field-label">Beneficiary Phone</label><input class="text-input" id="benPhone" placeholder="(555) 555-5555" oninput="state.benPhone=this.value" autocomplete="off"></div>
+        <p class="script-line">Okay, and do you happen to have a mailing address for them to make it easier to send them the money one day?</p>
+        <div class="script-field-group"><label class="field-label">Beneficiary Address</label><input class="text-input" id="benAddress" placeholder="Address or N/A" oninput="state.benAddress=this.value" autocomplete="off"></div>
+        <div class="tip"><span class="tip-lbl">Tip</span>If not, use N/A — or policy owner's address can suffice.</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ APPLICATION ═══════════ -->
+    <div id="s-application" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">SSN &amp; Application</div><div class="section-divider-line"></div></div>
+
+      <div class="card">
+        <p class="script-line">Alrighty, next up I'm going to use this information to verify your identity for The MIB Report.</p>
+        <p class="script-line">Can you verify your social for the Medical Information Bureau check?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <div class="script-field-group"><label class="field-label">Social Security Number</label><input class="text-input" id="ssnInput" type="password" placeholder="XXX-XX-XXXX" oninput="state.ssn=this.value" autocomplete="off"></div>
+        <p class="script-line">Perfect.</p>
+        <p class="script-line" style="margin-top:8px;">Next steps, I'm going to take this information and prepare the application to submit to the carrier for coverage, for them to review and give us the final approval to take care of those things for <span class="d-b beneficiary-name">_____</span>. Bear with me, it takes a few minutes.</p>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Open Carrier Portal</div><div class="agent-instr-text">Click below to open the carrier portal. Policy Info summary renders below once clicked. Small-talk the client through the wait.</div></div>
+        <button class="action-btn btn-primary" onclick="openCarrierPortal()">📋 Open Carrier Agent Portal</button>
+        <div class="policy-info-panel" id="policyInfoPanel"><div class="card-header" style="margin-bottom:10px;">POLICY INFO</div><div id="policyInfoContent"></div></div>
+      </div>
+
+      <div class="card">
+        <p class="script-line">Alrighty, so the carrier just requires I ask you some specific health questions. Bear with me, I just have to ask these in order for the carrier check here.</p>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Go through each health question in the application. If instant approval is available, check approval status before proceeding to closing.</div></div>
+        <div class="agent-instr" style="margin-top:8px;"><div class="agent-instr-lbl">Agent Action — Select Approval Status</div></div>
+        <div class="toggle-group">
+          <button class="toggle-btn" id="approvedBtn" onclick="setApproval('approved')">✅ Approved</button>
+          <button class="toggle-btn" id="pendingBtn" onclick="setApproval('pending')">⏳ Pending</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ CLOSING ═══════════ -->
+    <div id="s-closing" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Closing</div><div class="section-divider-line"></div></div>
+
+      <div class="card">
+        <div class="cond-section" id="closingApproved">
+          <div class="cond-block" style="border-color:var(--success);background:var(--coaching-bg);">
+            <div class="cond-lbl" style="color:var(--success);">If Approved</div>
+            <div class="cond-text">
+              <p class="script-line">So <span class="d-p prospect-name">_____</span>, do you want the good news or do you want the bad news?</p>
+              <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+              <p class="script-line" style="color:var(--text-secondary);font-style:italic;">[Client: Well, I don't know. Um, the good news.]</p>
+              <p class="script-line">Alright, so the good news is your policy is approved.</p>
+              <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS — Let them feel the relief.</span></div>
+              <p class="script-line">How does it feel knowing this is finally handled for <span class="d-b beneficiary-name">_____</span>?</p>
+              <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+              <div class="tip"><span class="tip-lbl">Tip</span>Powerful emotional reinforcement. Let them answer.</div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- OBJECTION HANDLING -->
-    <div class="accordion">
-      <div class="accordion-head" onclick="toggleAccordion('objection')">
-        <span>🚧 If They Need to Think About It</span>
-        <span class="accordion-arrow" id="objectionArrow">▼</span>
-      </div>
-      <div class="accordion-body" id="objectionBody">
-        <p class="script-line">I completely understand.</p>
-        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-        <p class="script-line">Usually when someone says they need to think about it, it is one of three things. Either the coverage amount does not feel right, the monthly payment does not feel right, or they are not sure they even need it.</p>
-        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-        <p class="script-line">Which one is it for you?</p>
-        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-
-        <div class="cond-block" style="margin-top:12px;">
-          <div class="cond-lbl">If Payment is the Issue</div>
-          <div class="cond-text">
-            <p class="script-line">That makes sense.</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-            <p class="script-line">Would it make more sense to protect <span class="d-b beneficiary-name">_____</span> with something smaller that is comfortable, rather than waiting and risking having nothing in place?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-          </div>
-        </div>
-        <div class="cond-block">
-          <div class="cond-lbl">If Coverage is the Issue</div>
-          <div class="cond-text">
-            <p class="script-line">Okay, so it sounds like the idea makes sense, but we may need to adjust the amount.</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-            <p class="script-line">Would you rather lower the payment or increase the protection?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-          </div>
-        </div>
-        <div class="cond-block">
-          <div class="cond-lbl">If Need is the Issue</div>
-          <div class="cond-text">
-            <p class="script-line">That's fair.</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-            <p class="script-line">Based on what you told me earlier, if nothing is in place, <span class="d-b beneficiary-name">_____</span> would still be responsible for this one day.</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS</span></div>
-            <p class="script-line">What would have to change for this to feel important enough to handle now instead of later?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div><!-- end stage 7 -->
-
-  <!-- STAGE 8: BANKING -->
-  <div class="script-section" data-stage="8">
-    <div class="card">
-      <div class="card-header">Banking Information</div>
-      <p class="script-line">So, next steps.</p>
-      <p class="script-line">Who do you bank with?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-
-      <div class="bank-search-row">
-        <div class="field-group">
-          <label class="field-label">Bank Name</label>
-          <input class="text-input" id="bankInput" placeholder="e.g. Chase" oninput="bankLookup(this.value)" autocomplete="off">
-        </div>
-        <button class="action-btn btn-primary" onclick="bankLookup(document.getElementById('bankInput').value)" style="margin:0;padding:12px 16px;">🔍</button>
-      </div>
-      <div class="routing-result" id="routingResult"></div>
-
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action</div>
-        <div class="agent-instr-text">Enter the bank name above to look up routing number. Confirm with client before proceeding.</div>
-      </div>
-
-      <p class="script-line">Before I take any banking information, I want to be clear. This is only used for the insurance application and the monthly premium if the policy is approved and accepted. Does that make sense?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-
-      <p class="script-line">Can you confirm the routing number is <span class="d-b" id="routingConfirmSpan">______</span>.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL THEY CONFIRM</span></div>
-      <div class="tip"><span class="tip-lbl">Tip</span>If they start trying to talk their way out of getting it, say: "It's ok, take your time."</div>
-
-      <div class="field-group" style="margin-top:12px;">
-        <label class="field-label">Routing Number (confirmed)</label>
-        <input class="text-input" id="routingInput" placeholder="9-digit routing number" oninput="state.routing=this.value" autocomplete="off">
-      </div>
-
-      <p class="script-line">And what is the account number?</p>
-      <div class="field-group">
-        <label class="field-label">Account Number</label>
-        <input class="text-input" id="accountInput" placeholder="Account number" oninput="state.account=this.value" autocomplete="off">
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Beneficiary Contact Info</div>
-      <p class="script-line">And how do I spell <span class="d-b beneficiary-name">_____</span>'s name?</p>
-      <p class="script-line">And do they have a middle initial?</p>
-      <div class="field-group">
-        <label class="field-label">Beneficiary Middle Initial</label>
-        <input class="text-input" id="benInitial" placeholder="e.g. M" maxlength="2" oninput="state.benInitial=this.value" autocomplete="off">
-      </div>
-
-      <p class="script-line">And what's a good phone number for them so that the carrier knows who's calling when <span class="d-b beneficiary-name">_____</span> needs to file a claim?</p>
-      <div class="field-group">
-        <label class="field-label">Beneficiary Phone</label>
-        <input class="text-input" id="benPhone" placeholder="(555) 555-5555" oninput="state.benPhone=this.value" autocomplete="off">
-      </div>
-
-      <p class="script-line">Okay, and do you happen to have a mailing address for them to make it easier to send them the money one day?</p>
-      <div class="field-group">
-        <label class="field-label">Beneficiary Address</label>
-        <input class="text-input" id="benAddress" placeholder="Address or N/A" oninput="state.benAddress=this.value" autocomplete="off">
-      </div>
-      <div class="tip"><span class="tip-lbl">Tip</span>If not, that's okay — use N/A, or in some cases the beneficiary's address is the same as the policy owner's address and will suffice.</div>
-    </div>
-  </div><!-- end stage 8 -->
-
-  <!-- STAGE 9: APPLICATION -->
-  <div class="script-section" data-stage="9">
-    <div class="card">
-      <div class="card-header">SSN &amp; Identity Verification</div>
-      <p class="script-line">Alrighty, next up I'm going to use this information to verify your identity for The MIB Report.</p>
-      <p class="script-line">Can you verify your social for the Medical Information Bureau check?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-
-      <div class="field-group">
-        <label class="field-label">Social Security Number</label>
-        <input class="text-input" id="ssnInput" type="password" placeholder="XXX-XX-XXXX" oninput="state.ssn=this.value" autocomplete="off">
-      </div>
-
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action</div>
-        <div class="agent-instr-text">SSN is entered above. It will appear masked in the sale summary card.</div>
-      </div>
-      <p class="script-line">Perfect.</p>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Carrier Application</div>
-      <p class="script-line">Next steps, I'm going to take this information and prepare the application to submit to the carrier for coverage, for them to review and give us the final approval to take care of those things for <span class="d-b beneficiary-name">_____</span>. Bear with me, it takes a few minutes.</p>
-
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action — Open Carrier Portal</div>
-        <div class="agent-instr-text">Click the button below to open the carrier portal. The Policy Info summary will appear below once you click it. Small-talk the client through the wait.</div>
-      </div>
-      <button class="action-btn btn-primary" onclick="openCarrierPortal()" id="portalBtn">📋 Open Carrier Agent Portal</button>
-
-      <!-- POLICY INFO PANEL (shown after portal button clicked) -->
-      <div class="policy-info-panel" id="policyInfoPanel">
-        <div class="card-header" style="margin-bottom:10px;">POLICY INFO</div>
-        <div id="policyInfoContent"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Health Questions — Carrier Check</div>
-      <p class="script-line">Alrighty, so the carrier just requires I ask you some specific health questions. Bear with me, I just have to ask these in order for the carrier check here.</p>
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action</div>
-        <div class="agent-instr-text">Go through each health question in the application and fill it in. If instant approval is available, check for approval status before proceeding to the closing.</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Approval Status</div>
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action — Select Approval Status</div>
-        <div class="agent-instr-text">After submitting the application, select the approval result below.</div>
-      </div>
-      <div class="toggle-group">
-        <button class="toggle-btn" id="approvedBtn" onclick="setApproval('approved')">✅ Approved</button>
-        <button class="toggle-btn" id="pendingBtn" onclick="setApproval('pending')">⏳ Pending Approval</button>
-      </div>
-    </div>
-  </div><!-- end stage 9 -->
-
-  <!-- STAGE 10: CLOSING -->
-  <div class="script-section" data-stage="10">
-    <div class="card">
-      <div class="card-header">Good News / Bad News Close</div>
-
-      <div class="cond-section" id="closingApproved">
-        <div class="cond-block" style="border-color:var(--success); background:var(--coaching-bg);">
-          <div class="cond-lbl" style="color:var(--success);">If Approved</div>
-          <div class="cond-text">
-            <p class="script-line">So <span class="d-p prospect-name">_____</span>, do you want the good news or do you want the bad news?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-            <p class="script-line" style="color:var(--text-secondary);font-style:italic;">[Client: Well, I don't know. Um, the good news.]</p>
-            <p class="script-line">Alright, so the good news is your policy is approved.</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS — Let them feel the relief.</span></div>
-            <p class="script-line">How does it feel knowing this is finally handled for <span class="d-b beneficiary-name">_____</span>?</p>
-            <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 5–7 SECONDS</span></div>
-            <div class="tip"><span class="tip-lbl">Tip</span>This is a powerful emotional reinforcement. Let them answer.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="cond-section" id="closingPending">
-        <div class="cond-block">
-          <div class="cond-lbl">If Pending Approval</div>
-          <div class="cond-text">
+        <div class="cond-section" id="closingPending">
+          <div class="cond-block"><div class="cond-lbl">If Pending</div><div class="cond-text">
             <p class="script-line">The good news is I will be following up with you on your policy over the next few days to check on the status of approval. I personally believe you have fantastic odds.</p>
-          </div>
+          </div></div>
+        </div>
+        <p class="script-line">So the bad news is you're stuck with me for life now!</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Emergency Response System</div>
+        <p class="script-line">Okay! I'm gonna be calling you a few days after this, just to go over the approval of your policy with you and any other questions or details that come up. I'm also following up because we're going to set up a meeting to do your emergency response system.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">Do you know what that is?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+        <p class="script-line">Okay, Now, the emergency response system is for one very specific thing. Did you know that in America, $2.5 billion of life insurance goes unclaimed every year?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">Yeah, I know, it's crazy right?</p>
+        <p class="script-line">So the reason for that is that when people are grieving, they don't want to spend the time making 45-minute to hour-long phone calls trying to collect money and the broker is nowhere to be found. Or a lot of times the beneficiary was never told the policy existed, and they never found the paperwork, or it's just sitting somewhere waiting to be found you know?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <p class="script-line">So what we do is we set up your emergency response system. This system is here to make sure that <span class="d-b beneficiary-name">_____</span> gets the money from the insurance company when they need it, so it doesn't get forgotten. This ensures there are enough people there to assist in getting the insurance company to give <span class="d-b beneficiary-name">_____</span> the payout during their time of need.</p>
+        <p class="script-line">That makes sense, right?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Wrap Up</div>
+        <p class="script-line">Okay, perfect. So we'll need to set up a follow-up call to do that. What does tomorrow look like?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
+        <div class="tip"><span class="tip-lbl">Tip</span>Do not overtalk the follow-up. Let them answer.</div>
+        <div class="script-field-group" style="margin:10px 0;">
+          <label class="field-label">Follow-Up Date &amp; Time</label>
+          <input class="text-input" id="followupInput" placeholder="e.g. Tomorrow at 2pm" oninput="state.followup=this.value;document.getElementById('followupSpan').textContent=this.value||'_____'" autocomplete="off">
+        </div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Book Follow-Up</div><div class="agent-instr-text">Open your calendar and book the appointment now.</div></div>
+        <button class="action-btn btn-success" onclick="alert('Open your calendar and book: '+(state.followup||'follow-up appointment'))">📅 Open Calendar</button>
+        <div class="divider"></div>
+        <p class="script-line">Perfect <span class="d-p prospect-name">_____</span>, I will be in touch with you <span class="d-b" id="followupSpan">_____</span> to go over the policy status and setup your Emergency Response System.</p>
+        <p class="script-line">I hope you have a wonderful rest of your day!</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">END CALL</span></div>
+        <div style="margin-top:18px;">
+          <button class="action-btn btn-danger" onclick="endCall()" style="width:100%;justify-content:center;">🏁 End Call &amp; View Sale Summary</button>
         </div>
       </div>
 
-      <p class="script-line">So the bad news is you're stuck with me for life now!</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Emergency Response System</div>
-      <p class="script-line">Okay! I'm gonna be calling you a few days after this, just to go over the approval of your policy with you and any other questions or details that come up. I'm also following up because we're going to set up a meeting to do your emergency response system.</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">Do you know what that is?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-      <p class="script-line">Okay, Now, the emergency response system is for one very specific thing. Did you know that in America, $2.5 billion of life insurance goes unclaimed every year?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">Yeah, I know, it's crazy right?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">So the reason for that is that when people are grieving, they don't want to spend the time making 45-minute to hour-long phone calls trying to collect money and the broker is nowhere to be found.</p>
-      <p class="script-line">Or a lot of times the beneficiary was never told the policy existed, and they never found the paperwork, or it's just sitting somewhere waiting to be found you know?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 1–2 SECONDS</span></div>
-      <p class="script-line">So what we do is we set up your emergency response system.</p>
-      <p class="script-line">This system is here to make sure that <span class="d-b beneficiary-name">_____</span> gets the money from the insurance company when they need it, so it doesn't get forgotten.</p>
-      <p class="script-line">This ensures there are enough people there to assist in getting the insurance company to give <span class="d-b beneficiary-name">_____</span> the payout during their time of need.</p>
-      <p class="script-line">That makes sense, right?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 2–3 SECONDS</span></div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">Wrap Up &amp; Follow-Up Appointment</div>
-      <p class="script-line">Okay, perfect. So we'll need to set up a follow-up call to do that.</p>
-      <p class="script-line">What does tomorrow look like?</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">PAUSE: 3–5 SECONDS</span></div>
-      <div class="tip"><span class="tip-lbl">Tip</span>Do not overtalk the follow-up appointment. Let them answer.</div>
-
-      <div class="field-group" style="margin:10px 0;">
-        <label class="field-label">Follow-Up Date &amp; Time</label>
-        <input class="text-input" id="followupInput" placeholder="e.g. Tomorrow at 2pm" oninput="state.followup=this.value" autocomplete="off">
+      <!-- Sale Summary -->
+      <div class="sale-summary" id="saleSummary">
+        <div class="ss-title">📋 Sale Summary</div>
+        <div id="saleSummaryContent"></div>
       </div>
 
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Agent Action — Book Follow-Up Appointment</div>
-        <div class="agent-instr-text">Open your calendar and book the follow-up appointment now.</div>
-      </div>
-      <button class="action-btn btn-success" onclick="openCalendar()">📅 Open Calendar</button>
-
-      <div class="divider"></div>
-      <p class="script-line">Perfect <span class="d-p prospect-name">_____</span>, I will be in touch with you <span class="d-b" id="followupSpan">_____</span> to go over the policy status and setup your Emergency Response System.</p>
-      <p class="script-line">I hope you have a wonderful rest of your day!</p>
-      <div class="pause"><span>⏸</span><span class="pause-label">END CALL</span></div>
-
-      <div style="margin-top:20px;">
-        <button class="action-btn btn-danger" onclick="endCall()" style="width:100%;justify-content:center;">🏁 End Call &amp; View Sale Summary</button>
-      </div>
-    </div>
-
-    <!-- SALE SUMMARY CARD -->
-    <div class="sale-summary" id="saleSummary">
-      <div class="ss-title">📋 Sale Summary</div>
-      <div id="saleSummaryContent"></div>
-    </div>
-
-    <!-- DAILY LITERATURE -->
-    <button class="lit-toggle daily-lit-toggle" onclick="toggleLit('daily')" style="width:100%;margin-top:20px;border-radius:var(--radius) var(--radius) 0 0;">
-      <span>📖 Daily Agent Development Literature</span>
-      <span id="daily-arrow">▼</span>
-    </button>
-    <div class="lit-toggle-body" id="daily-body">
-      <div class="lit-text">You need to develop the mind of a trusted advisor, not just a salesperson.</div>
-      <br>
-      <div class="tip">
-        <span class="tip-lbl">The Difference</span>
-        A salesperson thinks: "How do I get them to buy?"<br>
-        A trusted advisor thinks: "How do I help this person make the decision they already know they need to make?"
-      </div>
-      <div class="lit-section-title">Weak vs. Strong</div>
-      <div class="lit-text">
-        A weak agent chases the sale. A strong agent controls the frame.<br>
-        A weak agent over-explains. A strong agent asks better questions.<br>
-        A weak agent fears silence. A strong agent uses silence.<br>
-        A weak agent gets uncomfortable when the client feels emotion. A strong agent understands that emotion is where the truth comes out.
-      </div>
-      <br>
-      <div class="lit-text">This business is not about talking people into things. It is about helping families avoid chaos, confusion, and unnecessary financial pain.</div>
-      <br>
-      <div class="lit-section-title">Remember</div>
-      <div class="lit-text">Every client has a story. Every beneficiary is a real person. Every policy is connected to a future moment where someone is grieving and needs money quickly.</div>
-      <br>
-      <div class="tip">
-        <span class="tip-lbl">The Truth</span>
-        One day, the person on the phone will not be here.<br>
-        One day, the beneficiary may be standing in a funeral home, trying to figure out how to pay.<br>
-        One day, the paperwork you helped create may be the difference between panic and peace.
-      </div>
-      <br>
-      <div class="lit-text">That is why the call matters. That is why the tone matters. That is why rushing ruins the conversation. That is why the pause matters.</div>
-      <br>
-      <div class="lit-section-title">The Final Rule</div>
-      <div class="agent-instr">
-        <div class="agent-instr-lbl">Commit This to Memory</div>
-        <div class="agent-instr-text">
-          Never rush the emotional parts.<br>
-          Never rush the budget.<br>
-          Never rush the close.<br><br>
-          Ask the question.<br>
-          Pause.<br>
-          Let them answer.<br>
-          Then guide them.
+      <!-- Daily Literature -->
+      <div style="margin-top:16px;">
+        <button class="lit-toggle daily-lit-toggle" onclick="toggleLit('daily')" style="border-radius:var(--radius) var(--radius) 0 0;width:100%;margin-bottom:0;">
+          <span>📖 Daily Agent Development Literature</span>
+          <span id="daily-arrow">▼</span>
+        </button>
+        <div class="lit-toggle-body" id="daily-body">
+          <div class="lit-text">You need to develop the mind of a trusted advisor, not just a salesperson.</div>
+          <div class="tip" style="margin-top:10px;"><span class="tip-lbl">The Difference</span>A salesperson thinks: "How do I get them to buy?" A trusted advisor thinks: "How do I help this person make the decision they already know they need to make?"</div>
+          <div class="lit-section-title">Weak vs. Strong</div>
+          <div class="lit-text">A weak agent chases the sale. A strong agent controls the frame.<br>A weak agent over-explains. A strong agent asks better questions.<br>A weak agent fears silence. A strong agent uses silence.<br>A weak agent gets uncomfortable when the client feels emotion. A strong agent understands that emotion is where the truth comes out.</div>
+          <div class="lit-section-title">Remember</div>
+          <div class="tip"><span class="tip-lbl">The Truth</span>One day, the person on the phone will not be here. One day, the beneficiary may be standing in a funeral home, trying to figure out how to pay. One day, the paperwork you helped create may be the difference between panic and peace.</div>
+          <div class="lit-section-title">The Final Rule</div>
+          <div class="agent-instr"><div class="agent-instr-lbl">Commit This to Memory</div><div class="agent-instr-text">Never rush the emotional parts.<br>Never rush the budget.<br>Never rush the close.<br><br>Ask the question. Pause. Let them answer. Then guide them.</div></div>
         </div>
       </div>
     </div>
-  </div><!-- end stage 10 -->
 
-</div><!-- end main-content -->
-
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <button class="nav-btn" id="prevBtn" onclick="goStage(-1)">← Prev</button>
-  <div class="stage-counter" id="stageCounter">1 / 10</div>
-  <button class="nav-btn primary" id="nextBtn" onclick="goStage(1)">Next →</button>
-</div>
+  </div><!-- end main-content -->
+</div><!-- end scriptView -->
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────────────────────
-const state = {
-  stage: 0,
-  prospect: '', agent: '', agentLicense: '', beneficiary: '',
-  bc: null, difficulty: null, importance: null,
-  budget: null, quote1: null, quote2: null, quote3: null,
-  coverage1: '', coverage2: '', coverage3: '',
-  selectedOption: null,
-  dob: '', age: '', height: '', weight: '', meds: '',
-  bankName: '', routing: '', account: '',
-  benInitial: '', benPhone: '', benAddress: '',
-  ssn: '', approvalStatus: null,
-  followup: ''
-};
-
-const STAGES = ['Mindset','Opener','Discovery','Burial/Crem','Qualifying','Affordability','Health','Options','Banking','Application','Closing'];
-const TOTAL_STAGES = 10;
-
 // ─── BANK DATA ────────────────────────────────────────────────────────────────
 const BANK_DATA = {
-  "chase": {r:"322271627", display:"Chase Bank"},
-  "bank of america": {r:"026009593", display:"Bank of America"},
-  "wells fargo": {r:"121042882", display:"Wells Fargo"},
-  "citi": {r:"021000089", display:"Citibank"},
-  "citibank": {r:"021000089", display:"Citibank"},
-  "us bank": {r:"091000022", display:"US Bank"},
-  "usbank": {r:"091000022", display:"US Bank"},
-  "capital one": {r:"051405515", display:"Capital One"},
-  "truist": {r:"053101121", display:"Truist"},
-  "td bank": {r:"031101266", display:"TD Bank"},
-  "pnc": {r:"043000096", display:"PNC Bank"},
-  "pnc bank": {r:"043000096", display:"PNC Bank"},
-  "fifth third": {r:"042000314", display:"Fifth Third Bank"},
-  "fifth third bank": {r:"042000314", display:"Fifth Third Bank"},
-  "regions": {r:"062000019", display:"Regions Bank"},
-  "regions bank": {r:"062000019", display:"Regions Bank"},
-  "citizens": {r:"011500010", display:"Citizens Bank"},
-  "citizens bank": {r:"011500010", display:"Citizens Bank"},
-  "ally": {r:"124003116", display:"Ally Bank"},
-  "ally bank": {r:"124003116", display:"Ally Bank"},
-  "usaa": {r:"314074269", display:"USAA"},
-  "navy federal": {r:"256074974", display:"Navy Federal Credit Union"},
-  "navy federal credit union": {r:"256074974", display:"Navy Federal Credit Union"},
-  "chime": {r:"103100195", display:"Chime"},
-  "sofi": {r:"031101279", display:"SoFi"},
-  "discover": {r:"031100649", display:"Discover Bank"},
-  "synchrony": {r:"021213591", display:"Synchrony Bank"},
-  "keybank": {r:"041001039", display:"KeyBank"},
-  "key bank": {r:"041001039", display:"KeyBank"},
-  "huntington": {r:"044000024", display:"Huntington Bank"},
-  "huntington bank": {r:"044000024", display:"Huntington Bank"},
-  "bmo harris": {r:"071000288", display:"BMO Harris"},
-  "bmo": {r:"071000288", display:"BMO Harris"},
-  "santander": {r:"011075150", display:"Santander"},
-  "m&t": {r:"022000046", display:"M&T Bank"},
-  "m&t bank": {r:"022000046", display:"M&T Bank"},
-  "flagstar": {r:"272471548", display:"Flagstar Bank"},
-  "prosperity": {r:"113122655", display:"Prosperity Bank"},
-  "first national": {r:"104000016", display:"First National Bank"},
-  "community bank": {r:"021306281", display:"Community Bank"},
-  "independent bank": {r:"272483905", display:"Independent Bank"},
-  "glacier bank": {r:"092900383", display:"Glacier Bank"},
+  "Chase":{states:{"AZ":"122100024","CA":"322271627","CO":"102001017","CT":"021202337","FL":"267084131","GA":"061092387","HI":"322282001","ID":"123271978","IL":"071000013","IN":"074000010","KY":"083000137","LA":"065400137","MI":"072000326","NV":"322271627","NJ":"021202337","NY":"021000021","OH":"044000037","OK":"103000648","OR":"325070760","TX":"111000614","UT":"124001545","VA":"051900366","WA":"325070760","WI":"075000019","ALL":"021000021"}},
+  "Bank of America":{states:{"AL":"051000017","AZ":"122101706","CA":"121000358","CO":"123103716","CT":"011900254","DC":"054001204","FL":"063100277","GA":"061000052","HI":"121301028","IL":"081904808","IN":"081904808","KY":"083900483","LA":"065005616","MD":"052001633","MA":"011000138","MI":"072000805","MN":"071922467","MO":"081000032","NE":"104000029","NV":"122400724","NJ":"021200339","NM":"107000327","NY":"021000322","NC":"053000196","OH":"071214579","OR":"323070380","PA":"031202084","SC":"053904483","TN":"064000020","TX":"111000025","UT":"124301767","VA":"051000017","WA":"125000024","WI":"075000051","ALL":"026009593"}},
+  "Wells Fargo":{states:{"AL":"062000080","AZ":"122105155","CA":"121042882","CO":"102000076","FL":"063107513","GA":"061000227","IA":"073000228","IL":"071101307","IN":"074900275","MN":"091000019","MO":"081000116","MT":"092900383","NC":"053000219","NE":"104000058","NJ":"021200025","NM":"107002192","NV":"321270742","NY":"026012881","OH":"042101021","OR":"123006800","PA":"031000503","SC":"053207766","SD":"091400046","TX":"111900659","UT":"124002971","VA":"051400549","WI":"075911988","ALL":"121042882"}},
+  "Citi":{states:{"NY":"021000089","CA":"322271724","ALL":"021000089"}},
+  "Citibank":{states:{"NY":"021000089","CA":"322271724","ALL":"021000089"}},
+  "US Bank":{states:{"MN":"091000022","WA":"123103729","CA":"122235821","OH":"042000013","ALL":"091000022"}},
+  "Capital One":{states:{"TX":"111901014","LA":"065000090","MD":"051405515","VA":"051405515","NY":"026013356","ALL":"051405515"}},
+  "Truist":{states:{"NC":"053101121","FL":"063102152","VA":"055003201","GA":"061000104","MD":"055002707","SC":"053201607","ALL":"053101121"}},
+  "TD Bank":{states:{"NJ":"031201360","NY":"026013673","MA":"011103093","CT":"011600033","FL":"067014822","NC":"053902197","PA":"036001808","NH":"011400071","ALL":"031101266"}},
+  "PNC Bank":{states:{"PA":"043000096","OH":"041000124","NJ":"031207607","MD":"054000030","IN":"074000010","KY":"083000108","MI":"072000326","MO":"081000210","NC":"053000219","VA":"054000030","IL":"071921891","ALL":"043000096"}},
+  "Fifth Third Bank":{states:{"OH":"042000314","KY":"083002342","MI":"072400052","IN":"074501864","FL":"063109935","GA":"061000010","ALL":"042000314"}},
+  "Regions Bank":{states:{"AL":"062000019","FL":"063104668","GA":"061101375","TN":"064000017","MS":"065305436","AR":"082000109","LA":"065404219","ALL":"062000019"}},
+  "Citizens Bank":{states:{"RI":"011500010","MA":"011401533","NH":"011401533","CT":"011301798","NY":"021313103","PA":"036076150","ALL":"011500010"}},
+  "KeyBank":{states:{"OH":"041001039","CO":"107003647","NY":"022300173","WA":"125100089","OR":"123002011","AK":"125200879","ALL":"041001039"}},
+  "Huntington Bank":{states:{"OH":"044000024","MI":"072000915","IN":"074000078","KY":"083000137","ALL":"044000024"}},
+  "BMO Harris":{states:{"IL":"071000288","WI":"075000022","IN":"071025661","AZ":"122016066","MN":"096017396","ALL":"071000288"}},
+  "Santander":{states:{"MA":"011075150","NY":"021407912","PA":"231372691","NJ":"021202337","ALL":"011075150"}},
+  "M&T Bank":{states:{"NY":"022000046","MD":"052000113","PA":"031201996","VA":"051005018","ALL":"022000046"}},
+  "Ally Bank":{states:{"ALL":"124003116"}},
+  "USAA":{states:{"ALL":"314074269"}},
+  "Navy Federal":{states:{"ALL":"256074974"}},
+  "Navy Federal Credit Union":{states:{"ALL":"256074974"}},
+  "Chime":{states:{"ALL":"103100195"}},
+  "SoFi":{states:{"ALL":"031101279"}},
+  "Discover Bank":{states:{"ALL":"031100649"}},
+  "Synchrony Bank":{states:{"ALL":"021213591"}},
+  "American Express":{states:{"ALL":"124071889"}},
+  "Goldman Sachs":{states:{"ALL":"124085066"}},
+  "Flagstar Bank":{states:{"ALL":"272471548"}},
+  "Barclays":{states:{"ALL":"031101321"}},
+  "First National Bank":{states:{"ALL":"104000016"}},
+  "Prosperity Bank":{states:{"ALL":"113122655"}},
+  "Independent Bank":{states:{"ALL":"272483905"}},
 };
 
-// ─── PROGRESS BAR ─────────────────────────────────────────────────────────────
-function buildProgress() {
-  const bar = document.getElementById('progressBar');
-  const labels = document.getElementById('stageLabels');
-  bar.innerHTML = ''; labels.innerHTML = '';
-  for (let i = 1; i <= TOTAL_STAGES; i++) {
-    const seg = document.createElement('div');
-    seg.className = 'progress-segment' + (i === state.stage ? ' active' : i < state.stage ? ' completed' : '');
-    seg.onclick = () => jumpStage(i);
-    bar.appendChild(seg);
-    const lbl = document.createElement('div');
-    lbl.className = 'stage-label' + (i === state.stage ? ' active' : i < state.stage ? ' completed' : '');
-    lbl.textContent = STAGES[i].substring(0,6);
-    lbl.onclick = () => jumpStage(i);
-    labels.appendChild(lbl);
+const STATE_MAP = {
+  "Alabama":"AL","Alaska":"AK","Arizona":"AZ","Arkansas":"AR","California":"CA","Colorado":"CO","Connecticut":"CT","Delaware":"DE","Florida":"FL","Georgia":"GA","Hawaii":"HI","Idaho":"ID","Illinois":"IL","Indiana":"IN","Iowa":"IA","Kansas":"KS","Kentucky":"KY","Louisiana":"LA","Maine":"ME","Maryland":"MD","Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS","Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV","New Hampshire":"NH","New Jersey":"NJ","New Mexico":"NM","New York":"NY","North Carolina":"NC","North Dakota":"ND","Ohio":"OH","Oklahoma":"OK","Oregon":"OR","Pennsylvania":"PA","Rhode Island":"RI","South Carolina":"SC","South Dakota":"SD","Tennessee":"TN","Texas":"TX","Utah":"UT","Vermont":"VT","Virginia":"VA","Washington":"WA","West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY"
+};
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+const state = {
+  prospect:'',agent:'',agentLicense:'',beneficiary:'',
+  bc:null,difficulty:null,importance:null,
+  budget:null,quote1:null,quote2:null,quote3:null,
+  coverage1:'',coverage2:'',coverage3:'',selectedOption:null,
+  dob:'',age:'',height:'',weight:'',meds:'',
+  bankName:'',routing:'',account:'',
+  benInitial:'',benPhone:'',benAddress:'',
+  ssn:'',approvalStatus:null,followup:'',
+  selectedState:''
+};
+
+// ─── VIEW SWITCHING ───────────────────────────────────────────────────────────
+function startScript(){
+  document.getElementById('welcomeView').classList.remove('active');
+  document.getElementById('scriptView').classList.add('active');
+  window.scrollTo(0,0);
+}
+function backToSetup(){
+  document.getElementById('scriptView').classList.remove('active');
+  document.getElementById('welcomeView').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ─── JUMP NAV ─────────────────────────────────────────────────────────────────
+function jumpTo(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const topBar=document.querySelector('.top-bar');
+  const offset=topBar?topBar.offsetHeight+8:80;
+  const y=el.getBoundingClientRect().top+window.scrollY-offset;
+  window.scrollTo({top:y,behavior:'smooth'});
+  document.querySelectorAll('.jump-pill').forEach(p=>p.classList.remove('active'));
+}
+
+// ─── SCROLL SPY ──────────────────────────────────────────────────────────────
+const sections=['s-opener','s-discovery','s-bc','s-qualifying','s-affordability','s-health','s-options','s-banking','s-application','s-closing'];
+window.addEventListener('scroll',()=>{
+  if(!document.getElementById('scriptView').classList.contains('active'))return;
+  const topBar=document.querySelector('.top-bar');
+  const offset=(topBar?topBar.offsetHeight:80)+20;
+  let current='';
+  sections.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=offset)current=id;});
+  document.querySelectorAll('.jump-pill').forEach((p,i)=>{p.classList.toggle('active',sections[i]===current);});
+},{passive:true});
+
+// ─── BANK LOOKUP — WELCOME ────────────────────────────────────────────────────
+const bankNames=Object.keys(BANK_DATA);
+const stateNames=Object.keys(STATE_MAP);
+
+function searchState(val){
+  const dd=document.getElementById('wStateDropdown');
+  if(!val){dd.style.display='none';return;}
+  const v=val.toLowerCase();
+  const matches=stateNames.filter(s=>s.toLowerCase().startsWith(v)||STATE_MAP[s].toLowerCase().startsWith(v)).slice(0,8);
+  if(!matches.length){dd.style.display='none';return;}
+  dd.innerHTML=matches.map(s=>`<div class="bank-dropdown-item" onmousedown="selectState('${s}','${STATE_MAP[s]}')">${s} (${STATE_MAP[s]})</div>`).join('');
+  dd.style.display='block';
+}
+function selectState(name,code){
+  document.getElementById('wStateInput').value=name;
+  document.getElementById('wStateVal').value=code;
+  state.selectedState=code;
+  document.getElementById('wStateDropdown').style.display='none';
+}
+function searchBank(val){
+  const dd=document.getElementById('wBankDropdown');
+  if(!val||val.length<2){dd.style.display='none';return;}
+  const v=val.toLowerCase();
+  const matches=bankNames.filter(b=>b.toLowerCase().includes(v)).slice(0,8);
+  if(!matches.length){dd.style.display='none';return;}
+  dd.innerHTML=matches.map(b=>`<div class="bank-dropdown-item" onmousedown="selectBank('${b.replace(/'/g,"&#39;")}')">${b}</div>`).join('');
+  dd.style.display='block';
+}
+function selectBank(name){
+  document.getElementById('wBankInput').value=name;
+  document.getElementById('wBankDropdown').style.display='none';
+  setTimeout(lookupRouting,100);
+}
+function lookupRouting(){
+  const bankInput=document.getElementById('wBankInput').value.trim();
+  const stateCode=document.getElementById('wStateVal').value||state.selectedState;
+  const resultBox=document.getElementById('wRoutingResult');
+  const notFound=document.getElementById('wRoutingNotFound');
+  if(!bankInput){resultBox.style.display='none';notFound.style.display='none';return;}
+  // Find bank
+  let bankKey=null;
+  const v=bankInput.toLowerCase();
+  for(const k of bankNames){if(k.toLowerCase()===v){bankKey=k;break;}}
+  if(!bankKey){for(const k of bankNames){if(k.toLowerCase().includes(v)||v.includes(k.toLowerCase())){bankKey=k;break;}}}
+  if(!bankKey){
+    resultBox.style.display='none';
+    notFound.style.display='block';
+    notFound.textContent=`No routing found for "${bankInput}". Ask client to check their checkbook or banking app.`;
+    return;
   }
+  const bankObj=BANK_DATA[bankKey];
+  const routing=bankObj.states[stateCode]||bankObj.states['ALL'];
+  if(!routing){
+    resultBox.style.display='none';
+    notFound.style.display='block';
+    notFound.textContent=`Found ${bankKey} but no routing for ${stateCode||'this state'}. Try "ALL" or ask client to verify.`;
+    return;
+  }
+  notFound.style.display='none';
+  document.getElementById('wRoutingNum').textContent=routing;
+  document.getElementById('wRoutingBank').textContent=bankKey+(stateCode?' — '+stateCode:'');
+  resultBox.style.display='block';
 }
 
-function jumpStage(n) {
-  showStage(n);
+// ─── BANK LOOKUP — SCRIPT PAGE ────────────────────────────────────────────────
+function scriptBankLookup(name){
+  state.bankName=name;
+  if(!name)return;
+  const v=name.toLowerCase();
+  let bankKey=null;
+  for(const k of bankNames){if(k.toLowerCase()===v){bankKey=k;break;}}
+  if(!bankKey){for(const k of bankNames){if(k.toLowerCase().includes(v)||v.includes(k.toLowerCase())){bankKey=k;break;}}}
+  const resultBox=document.getElementById('scriptRoutingResult');
+  const confirmSpan=document.getElementById('routingConfirmSpan');
+  if(!bankKey){resultBox.style.display='none';return;}
+  const routing=BANK_DATA[bankKey].states[state.selectedState]||BANK_DATA[bankKey].states['ALL'];
+  if(!routing){resultBox.style.display='none';return;}
+  document.getElementById('scriptRoutingNum').textContent=routing;
+  document.getElementById('scriptRoutingBank').textContent=bankKey;
+  resultBox.style.display='block';
+  confirmSpan.textContent=routing;
+  document.getElementById('routingInput').value=routing;
+  state.routing=routing;
 }
 
-function showStage(n) {
-  document.querySelectorAll('.script-section').forEach(s => s.classList.remove('active'));
-  const target = document.querySelector(`[data-stage="${n}"]`);
-  if (target) { target.classList.add('active'); target.scrollIntoView({behavior:'smooth',block:'start'}); }
-  state.stage = n;
-  document.getElementById('stageCounter').textContent = n === 0 ? 'Mindset' : `${n} / ${TOTAL_STAGES}`;
-  document.getElementById('prevBtn').classList.toggle('disabled', n === 0);
-  document.getElementById('nextBtn').classList.toggle('disabled', n === TOTAL_STAGES);
-  buildProgress();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function goStage(dir) {
-  const next = Math.max(0, Math.min(TOTAL_STAGES, state.stage + dir));
-  showStage(next);
-}
-
-// ─── DYNAMIC NAME UPDATES ─────────────────────────────────────────────────────
-function updateProspect(v) {
-  state.prospect = v;
-  const display = v || '_____';
-  document.querySelectorAll('.prospect-name').forEach(el => el.textContent = display);
-}
-function updateAgent(v) {
-  state.agent = v;
-  const display = v || '______';
-  document.querySelectorAll('.agent-name').forEach(el => el.textContent = display);
-}
-function updateBeneficiary(v) {
-  state.beneficiary = v;
-  const display = v || '_____';
-  document.querySelectorAll('.beneficiary-name').forEach(el => el.textContent = display);
-}
-function updateLicense(v) {
-  state.agentLicense = v;
-  const display = v || '______';
-  document.querySelectorAll('.agent-license').forEach(el => el.textContent = display);
-}
+// ─── DYNAMIC NAMES ────────────────────────────────────────────────────────────
+function updateProspect(v){state.prospect=v;const d=v||'_____';document.querySelectorAll('.prospect-name').forEach(el=>el.textContent=d);}
+function updateAgent(v){state.agent=v;const d=v||'______';document.querySelectorAll('.agent-name').forEach(el=>el.textContent=d);}
+function updateBeneficiary(v){state.beneficiary=v;const d=v||'_____';document.querySelectorAll('.beneficiary-name').forEach(el=>el.textContent=d);}
+function updateLicense(v){state.agentLicense=v;const d=v||'______';document.querySelectorAll('.agent-license').forEach(el=>el.textContent=d);}
 
 // ─── BURIAL / CREMATION ───────────────────────────────────────────────────────
-function selectBC(type) {
-  state.bc = type;
-  document.getElementById('bcBurialBtn').className = 'toggle-btn' + (type==='burial'?' active-primary':'');
-  document.getElementById('bcCremBtn').className = 'toggle-btn' + (type==='cremation'?' active-primary':'');
-  const isBurial = type === 'burial';
-  toggleCond('bcBurialInfo', isBurial);
-  toggleCond('bcCremInfo', !isBurial);
-  const inlineShow = (id, show) => {
-    const el = document.getElementById(id);
-    if(el) el.style.display = show ? 'inline' : 'none';
-  };
-  inlineShow('bcBurialAmt', isBurial);
-  inlineShow('bcCremAmt', !isBurial);
-  const label = isBurial ? 'burial' : 'cremation';
-  document.querySelectorAll('.d-bc').forEach(el => el.textContent = label);
+function selectBC(type){
+  state.bc=type;
+  document.getElementById('bcBurialBtn').className='toggle-btn'+(type==='burial'?' active-primary':'');
+  document.getElementById('bcCremBtn').className='toggle-btn'+(type==='cremation'?' active-primary':'');
+  const ib=type==='burial';
+  toggleCond('bcBurialInfo',ib);toggleCond('bcCremInfo',!ib);
+  const inl=(id,show)=>{const el=document.getElementById(id);if(el)el.style.display=show?'inline':'none';};
+  inl('bcBurialAmt',ib);inl('bcCremAmt',!ib);
+  const lbl=ib?'burial':'cremation';
+  document.querySelectorAll('.d-bc').forEach(el=>el.textContent=lbl);
 }
 
-// ─── DIFFICULTY SCALE ─────────────────────────────────────────────────────────
-function selectDifficulty(n) {
-  state.difficulty = n;
-  document.querySelectorAll('#diff-high, #diff-low').forEach(el => toggleCond(el.id, false));
-  document.querySelectorAll('.rating-group button').forEach((btn,i) => {
-    btn.className = 'rating-btn' + ((i+1)===n?' sel':'');
-  });
-  if (n >= 4) { toggleCond('diff-high', true); }
-  else { toggleCond('diff-low', true); document.getElementById('diffValLow').textContent = n; }
+// ─── QUALIFYING ───────────────────────────────────────────────────────────────
+function selectDifficulty(n){
+  state.difficulty=n;
+  document.querySelectorAll('#s-qualifying .card:first-child .rating-group .rating-btn').forEach((b,i)=>b.className='rating-btn'+(i+1===n?' sel':''));
+  toggleCond('diff-high',n>=4);toggleCond('diff-low',n<4);
+  if(n<4)document.getElementById('diffValLow').textContent=n;
+}
+function selectImportance(n){
+  state.importance=n;
+  for(let i=1;i<=5;i++){const b=document.getElementById('imp'+i);if(b)b.className='rating-btn'+(i===n?' sel':'');}
+  toggleCond('imp-high',n>=4);toggleCond('imp-low',n<4);
+  if(n<4)document.getElementById('impValLow').textContent=n;
 }
 
-// ─── IMPORTANCE SCALE ─────────────────────────────────────────────────────────
-function selectImportance(n) {
-  state.importance = n;
-  for(let i=1;i<=5;i++) {
-    const btn = document.getElementById('imp'+i);
-    if(btn) btn.className = 'rating-btn' + (i===n?' sel':'');
-  }
-  document.querySelectorAll('#imp-high, #imp-low').forEach(el => toggleCond(el.id, false));
-  if (n >= 4) { toggleCond('imp-high', true); }
-  else { toggleCond('imp-low', true); document.getElementById('impValLow').textContent = n; }
-}
-
-// ─── QUOTE CALCULATION ───────────────────────────────────────────────────────
-function calcQuotes(v) {
-  const budget = parseInt(v, 10);
-  if (!budget || budget < 1) { document.getElementById('quotesDisplay').style.display='none'; return; }
-  state.budget = budget;
-  const inc = budget >= 150 ? 50 : 25;
-  state.quote3 = budget - inc;
-  state.quote2 = budget;
-  state.quote1 = budget + inc;
-  document.getElementById('q1price').textContent = '$' + state.quote1;
-  document.getElementById('q2price').textContent = '$' + state.quote2;
-  document.getElementById('q3price').textContent = '$' + state.quote3;
-  document.getElementById('quotesDisplay').style.display = 'block';
-  document.getElementById('opt1price').textContent = '$' + state.quote1;
-  document.getElementById('opt3price').textContent = '$' + state.quote3;
-  document.querySelectorAll('.budget-display').forEach(el => el.textContent = '$' + budget);
+// ─── QUOTES ───────────────────────────────────────────────────────────────────
+function calcQuotes(v){
+  const budget=parseInt(v,10);
+  if(!budget||budget<1){document.getElementById('quotesDisplay').style.display='none';return;}
+  state.budget=budget;
+  const inc=budget>=150?50:25;
+  state.quote1=budget+inc;state.quote2=budget;state.quote3=budget-inc;
+  document.getElementById('q1price').textContent='$'+state.quote1;
+  document.getElementById('q2price').textContent='$'+state.quote2;
+  document.getElementById('q3price').textContent='$'+state.quote3;
+  document.getElementById('quotesDisplay').style.display='block';
+  document.getElementById('opt1price').textContent='$'+state.quote1;
+  document.getElementById('opt3price').textContent='$'+state.quote3;
+  document.querySelectorAll('.budget-display').forEach(el=>el.textContent='$'+budget);
 }
 
 // ─── OPTION SELECTION ────────────────────────────────────────────────────────
-function selectOption(n) {
-  state.selectedOption = n;
-  [1,2,3].forEach(i => document.getElementById('optCard'+i).classList.toggle('sel', i===n));
-  document.getElementById('opt1cov').textContent = document.getElementById('cov1').value || '______';
-  document.getElementById('opt2cov').textContent = document.getElementById('cov2').value || '______';
-  document.getElementById('opt3cov').textContent = document.getElementById('cov3').value || '______';
-  toggleCond('afterSelect', true);
+function selectOption(n){
+  state.selectedOption=n;
+  [1,2,3].forEach(i=>document.getElementById('optCard'+i).classList.toggle('sel',i===n));
+  document.getElementById('opt1cov').textContent=document.getElementById('cov1').value||'______';
+  document.getElementById('opt2cov').textContent=document.getElementById('cov2').value||'______';
+  document.getElementById('opt3cov').textContent=document.getElementById('cov3').value||'______';
+  toggleCond('afterSelect',true);
 }
 
-// ─── BANK LOOKUP ─────────────────────────────────────────────────────────────
-function bankLookup(name) {
-  if (!name) return;
-  state.bankName = name;
-  const key = name.toLowerCase().trim();
-  const result = document.getElementById('routingResult');
-  const confirmSpan = document.getElementById('routingConfirmSpan');
-  let found = null;
-  for (const k in BANK_DATA) {
-    if (key.includes(k) || k.includes(key)) { found = BANK_DATA[k]; break; }
-  }
-  if (found) {
-    result.innerHTML = `<strong>${found.display}</strong> — Routing: <strong>${found.r}</strong>`;
-    result.classList.add('show');
-    confirmSpan.textContent = found.r;
-    document.getElementById('routingInput').value = found.r;
-    state.routing = found.r;
-  } else {
-    result.innerHTML = `No match found for "<strong>${name}</strong>". Ask client to read routing from check or app.`;
-    result.classList.add('show');
-  }
-}
-
-// ─── APPROVAL STATUS ─────────────────────────────────────────────────────────
-function setApproval(type) {
-  state.approvalStatus = type;
-  document.getElementById('approvedBtn').className = 'toggle-btn' + (type==='approved'?' active-success':'');
-  document.getElementById('pendingBtn').className = 'toggle-btn' + (type==='pending'?' active-warning':'');
-  toggleCond('closingApproved', type==='approved');
-  toggleCond('closingPending', type==='pending');
+// ─── APPROVAL ────────────────────────────────────────────────────────────────
+function setApproval(type){
+  state.approvalStatus=type;
+  document.getElementById('approvedBtn').className='toggle-btn'+(type==='approved'?' active-success':'');
+  document.getElementById('pendingBtn').className='toggle-btn'+(type==='pending'?' active-warning':'');
+  toggleCond('closingApproved',type==='approved');
+  toggleCond('closingPending',type==='pending');
 }
 
 // ─── CARRIER PORTAL ──────────────────────────────────────────────────────────
-function openCarrierPortal() {
-  state.portalOpened = true;
-  const panel = document.getElementById('policyInfoPanel');
+function openCarrierPortal(){
+  const panel=document.getElementById('policyInfoPanel');
   panel.classList.add('show');
-  renderPolicyInfo();
-}
-
-function renderPolicyInfo() {
-  const cov = state.selectedOption === 1 ? (state.coverage1||'—') : state.selectedOption === 2 ? (state.coverage2||'—') : state.selectedOption === 3 ? (state.coverage3||'—') : '—';
-  const prem = state.selectedOption === 1 ? ('$'+(state.quote1||'—')) : state.selectedOption === 2 ? ('$'+(state.quote2||'—')) : state.selectedOption === 3 ? ('$'+(state.quote3||'—')) : '—';
-  document.getElementById('policyInfoContent').innerHTML = `
+  const cov=state.selectedOption===1?state.coverage1||'—':state.selectedOption===2?state.coverage2||'—':state.selectedOption===3?state.coverage3||'—':'—';
+  const prem=state.selectedOption?'$'+(state['quote'+state.selectedOption]||'—'):'—';
+  document.getElementById('policyInfoContent').innerHTML=`
     <div class="ss-row"><span class="ss-key">Prospect</span><span class="ss-val">${state.prospect||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">DOB</span><span class="ss-val">${state.dob||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Height / Weight</span><span class="ss-val">${state.height||'—'} / ${state.weight||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Beneficiary</span><span class="ss-val">${state.beneficiary||'—'}</span></div>
-    <div class="ss-row"><span class="ss-key">Burial / Cremation</span><span class="ss-val">${state.bc ? state.bc.charAt(0).toUpperCase()+state.bc.slice(1) : '—'}</span></div>
+    <div class="ss-row"><span class="ss-key">Burial/Cremation</span><span class="ss-val">${state.bc?state.bc[0].toUpperCase()+state.bc.slice(1):'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Selected Option</span><span class="ss-val">Option ${state.selectedOption||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Monthly Premium</span><span class="ss-val">${prem}</span></div>
     <div class="ss-row"><span class="ss-key">Coverage Amount</span><span class="ss-val">${cov}</span></div>
-    <div class="ss-row"><span class="ss-key">Medications</span><span class="ss-val" style="text-align:right;">${(state.meds||'—').replace(/\n/g,'<br>')}</span></div>
-  `;
+    <div class="ss-row"><span class="ss-key">Medications</span><span class="ss-val">${(state.meds||'—').replace(/\n/g,'<br>')}</span></div>`;
 }
 
-// ─── CALENDAR ────────────────────────────────────────────────────────────────
-function openCalendar() {
-  const followup = state.followup;
-  if (followup) document.getElementById('followupSpan').textContent = followup;
-  alert('Open your calendar and book: ' + (followup || 'follow-up appointment'));
-}
-
-// ─── END CALL / SALE SUMMARY ─────────────────────────────────────────────────
-function endCall() {
-  const ss = document.getElementById('saleSummary');
+// ─── SALE SUMMARY ────────────────────────────────────────────────────────────
+function endCall(){
+  const ss=document.getElementById('saleSummary');
   ss.classList.add('show');
-  const cov = state.selectedOption === 1 ? (state.coverage1||'—') : state.selectedOption === 2 ? (state.coverage2||'—') : state.selectedOption === 3 ? (state.coverage3||'—') : '—';
-  const prem = state.selectedOption === 1 ? ('$'+(state.quote1||'—')) : state.selectedOption === 2 ? ('$'+(state.quote2||'—')) : state.selectedOption === 3 ? ('$'+(state.quote3||'—')) : '—';
-  const ssnMasked = state.ssn ? '***-**-' + String(state.ssn).slice(-4) : '—';
-  document.getElementById('saleSummaryContent').innerHTML = `
+  const cov=state.selectedOption?state['coverage'+state.selectedOption]||'—':'—';
+  const prem=state.selectedOption?'$'+(state['quote'+state.selectedOption]||'—'):'—';
+  const ssnM=state.ssn?'***-**-'+String(state.ssn).slice(-4):'—';
+  document.getElementById('saleSummaryContent').innerHTML=`
     <div class="ss-section">Client Info</div>
     <div class="ss-row"><span class="ss-key">Prospect</span><span class="ss-val">${state.prospect||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">DOB</span><span class="ss-val">${state.dob||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Age</span><span class="ss-val">${state.age||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Height / Weight</span><span class="ss-val">${state.height||'—'} / ${state.weight||'—'}</span></div>
-    <div class="ss-row"><span class="ss-key">SSN</span><span class="ss-val">${ssnMasked}</span></div>
-    <div class="ss-row"><span class="ss-key">Medications</span><span class="ss-val" style="text-align:right;">${(state.meds||'—').replace(/\n/g,'<br>')}</span></div>
-
+    <div class="ss-row"><span class="ss-key">SSN</span><span class="ss-val">${ssnM}</span></div>
+    <div class="ss-row"><span class="ss-key">Medications</span><span class="ss-val">${(state.meds||'—').replace(/\n/g,'<br>')}</span></div>
     <div class="ss-section">Policy Info</div>
     <div class="ss-row"><span class="ss-key">Agent</span><span class="ss-val">${state.agent||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">License #</span><span class="ss-val">${state.agentLicense||'—'}</span></div>
-    <div class="ss-row"><span class="ss-key">Burial / Cremation</span><span class="ss-val">${state.bc ? state.bc.charAt(0).toUpperCase()+state.bc.slice(1) : '—'}</span></div>
+    <div class="ss-row"><span class="ss-key">Burial/Cremation</span><span class="ss-val">${state.bc?state.bc[0].toUpperCase()+state.bc.slice(1):'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Selected Option</span><span class="ss-val">Option ${state.selectedOption||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Monthly Premium</span><span class="ss-val">${prem}</span></div>
     <div class="ss-row"><span class="ss-key">Coverage Amount</span><span class="ss-val">${cov}</span></div>
-    <div class="ss-row"><span class="ss-key">Approval Status</span><span class="ss-val">${state.approvalStatus ? state.approvalStatus.charAt(0).toUpperCase()+state.approvalStatus.slice(1) : '—'}</span></div>
-
+    <div class="ss-row"><span class="ss-key">Approval Status</span><span class="ss-val">${state.approvalStatus?state.approvalStatus[0].toUpperCase()+state.approvalStatus.slice(1):'—'}</span></div>
     <div class="ss-section">Beneficiary Info</div>
-    <div class="ss-row"><span class="ss-key">Name</span><span class="ss-val">${state.beneficiary||'—'}${state.benInitial ? ' '+state.benInitial+'.' : ''}</span></div>
+    <div class="ss-row"><span class="ss-key">Name</span><span class="ss-val">${state.beneficiary||'—'}${state.benInitial?' '+state.benInitial+'.':''}</span></div>
     <div class="ss-row"><span class="ss-key">Phone</span><span class="ss-val">${state.benPhone||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Address</span><span class="ss-val">${state.benAddress||'—'}</span></div>
-
     <div class="ss-section">Banking Info</div>
     <div class="ss-row"><span class="ss-key">Bank</span><span class="ss-val">${state.bankName||'—'}</span></div>
     <div class="ss-row"><span class="ss-key">Routing #</span><span class="ss-val">${state.routing||'—'}</span></div>
-    <div class="ss-row"><span class="ss-key">Account #</span><span class="ss-val">${state.account ? '****'+String(state.account).slice(-4) : '—'}</span></div>
-
+    <div class="ss-row"><span class="ss-key">Account #</span><span class="ss-val">${state.account?'****'+String(state.account).slice(-4):'—'}</span></div>
     <div class="ss-section">Follow Up</div>
-    <div class="ss-row"><span class="ss-key">Follow-Up Date</span><span class="ss-val">${state.followup||'—'}</span></div>
-  `;
+    <div class="ss-row"><span class="ss-key">Follow-Up Date</span><span class="ss-val">${state.followup||'—'}</span></div>`;
   ss.scrollIntoView({behavior:'smooth'});
 }
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
-function toggleCond(id, show) {
-  const el = document.getElementById(id);
-  if (el) el.classList.toggle('show', show);
+function toggleCond(id,show){const el=document.getElementById(id);if(el)el.classList.toggle('show',show);}
+function toggleAccordion(id){
+  const body=document.getElementById(id+'Body');
+  const head=body&&body.previousElementSibling;
+  const arrow=document.getElementById(id+'Arrow');
+  if(body)body.classList.toggle('open');
+  if(head)head.classList.toggle('open');
+  if(arrow)arrow.style.transform=body&&body.classList.contains('open')?'rotate(180deg)':'';
 }
-
-function toggleAccordion(id) {
-  const body = document.getElementById(id+'Body');
-  const head = body ? body.previousElementSibling : null;
-  const arrow = document.getElementById(id+'Arrow');
-  if (body) body.classList.toggle('open');
-  if (head) head.classList.toggle('open');
-  if (arrow) arrow.style.transform = body && body.classList.contains('open') ? 'rotate(180deg)' : '';
+function toggleLit(which){
+  const body=document.getElementById(which+'-body');
+  const arrow=document.getElementById(which+'-arrow');
+  if(body)body.classList.toggle('open');
+  if(arrow)arrow.textContent=body&&body.classList.contains('open')?'▲':'▼';
 }
-
-function toggleLit(which) {
-  const body = document.getElementById(which+'-body');
-  const arrow = document.getElementById(which+'-arrow');
-  if (body) body.classList.toggle('open');
-  if (arrow) arrow.textContent = body && body.classList.contains('open') ? '▲' : '▼';
+function toggleNotes(){document.getElementById('notesPanel').classList.toggle('show');}
+function toggleTheme(){
+  const html=document.documentElement;
+  const dark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',dark?'light':'dark');
+  const icon=dark?'🌙':'☀️';
+  ['themeBtn','scriptThemeBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.textContent=icon;});
 }
-
-function toggleNotes() {
-  document.getElementById('notesPanel').classList.toggle('show');
-}
-
-function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
-}
-
-function resetAll() {
-  if (!confirm('Reset all data and start over?')) return;
-  location.reload();
-}
+function resetAll(){if(!confirm('Reset all data and start over?'))return;location.reload();}
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-buildProgress();
-showStage(0);
-
-// Hide inline burial/cremation amount spans until selection is made
-document.getElementById('bcBurialAmt').style.display = 'none';
-document.getElementById('bcCremAmt').style.display = 'none';
+document.getElementById('bcBurialAmt').style.display='none';
+document.getElementById('bcCremAmt').style.display='none';
 </script>
 </body>
 </html>
