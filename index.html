@@ -1209,7 +1209,6 @@ function doLogin(){
   const err=document.getElementById('loginError');
   if(user==='Winning'&&pass==='Team'){
     err.style.display='none';
-    sessionStorage.setItem('tb_auth','1');
     document.getElementById('loginView').classList.remove('active');
     document.getElementById('welcomeView').classList.add('active');
     window.scrollTo(0,0);
@@ -1585,11 +1584,6 @@ document.addEventListener('click',function(e){
 });
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-// If already authenticated this session, skip login
-if(sessionStorage.getItem('tb_auth')==='1'){
-  document.getElementById('loginView').classList.remove('active');
-  document.getElementById('welcomeView').classList.add('active');
-}
 document.getElementById('bcBurialAmt').style.display='none';
 document.getElementById('bcCremAmt').style.display='none';
 openCarrierPortal(); // render policy info on load
