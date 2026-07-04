@@ -862,15 +862,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
       <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Banking &amp; Beneficiary Info</div><div class="section-divider-line"></div></div>
 
       <div class="card">
-        <div class="card-header">Banking Information</div>
+        <div class="card-header">🏦 Banking Information</div>
         <p class="script-line">So, next steps. Who do you bank with?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
-        <div style="display:flex;gap:8px;align-items:flex-end;margin:10px 0;">
-          <div style="flex:1;"><label class="field-label">Bank Name</label><input class="text-input" id="bankInput" placeholder="e.g. Chase" oninput="scriptBankLookup(this.value)" autocomplete="off"></div>
-          <button class="action-btn btn-primary" onclick="scriptBankLookup(document.getElementById('bankInput').value)" style="margin:0;padding:11px 14px;">🔍</button>
+
+        <!-- State input with autocomplete -->
+        <div class="bank-input-wrap" style="margin-top:10px;">
+          <input type="text" id="sBankStateInput" placeholder="Type state (e.g. Texas or TX)…"
+            autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"
+            oninput="sBankSearchState(this.value)" onfocus="sBankSearchState(this.value)">
+          <input type="hidden" id="sBankStateVal">
+          <div class="bank-dropdown" id="sBankStateDropdown"></div>
         </div>
-        <div class="routing-result-box" id="scriptRoutingResult"><div class="routing-result-label">Routing Number</div><div class="routing-result-num" id="scriptRoutingNum"></div><div class="routing-result-bank" id="scriptRoutingBank"></div></div>
-        <p class="script-line" style="margin-top:12px;">Before I take any banking information, I want to be clear. This is only used for the insurance application and the monthly premium if the policy is approved and accepted. Does that make sense?</p>
+
+        <!-- Bank name input with autocomplete -->
+        <div class="bank-input-wrap">
+          <input type="text" id="sBankNameInput" placeholder="Type bank name…"
+            autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"
+            oninput="sBankSearchName(this.value)" onfocus="sBankSearchName(this.value)"
+            onblur="setTimeout(sBankLookup,200)"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('sBankNameDropdown').style.display='none';sBankLookup();}">
+          <div class="bank-dropdown" id="sBankNameDropdown"></div>
+        </div>
+
+        <!-- Result -->
+        <div class="routing-result-box" id="sBankRoutingResult">
+          <div class="routing-result-label">Routing Number</div>
+          <div class="routing-result-num" id="sBankRoutingNum"></div>
+          <div class="routing-result-bank" id="sBankRoutingBank"></div>
+        </div>
+        <div class="routing-not-found" id="sBankRoutingNotFound"></div>
+
+        <p class="script-line" style="margin-top:14px;">Before I take any banking information, I want to be clear. This is only used for the insurance application and the monthly premium if the policy is approved and accepted. Does that make sense?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
         <p class="script-line">Can you confirm the routing number is <span class="d-b" id="routingConfirmSpan">______</span>.</p>
         <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL CONFIRMED</span></div>
@@ -1172,24 +1195,71 @@ function lookupRouting(){
   resultBox.style.display='block';
 }
 
-// ─── BANK LOOKUP — SCRIPT PAGE ────────────────────────────────────────────────
-function scriptBankLookup(name){
-  state.bankName=name;
-  if(!name)return;
-  const v=name.toLowerCase();
+// ─── BANK LOOKUP — SCRIPT PAGE (full autocomplete) ────────────────────────────
+function sBankSearchState(val){
+  const dd=document.getElementById('sBankStateDropdown');
+  if(!val){dd.style.display='none';return;}
+  const v=val.toLowerCase();
+  const matches=stateNames.filter(s=>s.toLowerCase().startsWith(v)||STATE_MAP[s].toLowerCase().startsWith(v)).slice(0,8);
+  if(!matches.length){dd.style.display='none';return;}
+  dd.innerHTML=matches.map(s=>`<div class="bank-dropdown-item" onmousedown="sBankSelectState('${s}','${STATE_MAP[s]}')">${s} (${STATE_MAP[s]})</div>`).join('');
+  dd.style.display='block';
+}
+function sBankSelectState(name,code){
+  document.getElementById('sBankStateInput').value=name;
+  document.getElementById('sBankStateVal').value=code;
+  state.selectedState=code;
+  document.getElementById('sBankStateDropdown').style.display='none';
+  // re-run lookup if bank already entered
+  if(document.getElementById('sBankNameInput').value) sBankLookup();
+}
+function sBankSearchName(val){
+  const dd=document.getElementById('sBankNameDropdown');
+  if(!val||val.length<2){dd.style.display='none';return;}
+  const v=val.toLowerCase();
+  const matches=bankNames.filter(b=>b.toLowerCase().includes(v)).slice(0,8);
+  if(!matches.length){dd.style.display='none';return;}
+  dd.innerHTML=matches.map(b=>`<div class="bank-dropdown-item" onmousedown="sBankSelectName('${b.replace(/'/g,"&#39;")}')">${b}</div>`).join('');
+  dd.style.display='block';
+}
+function sBankSelectName(name){
+  document.getElementById('sBankNameInput').value=name;
+  document.getElementById('sBankNameDropdown').style.display='none';
+  setTimeout(sBankLookup,100);
+}
+function sBankLookup(){
+  const bankInput=document.getElementById('sBankNameInput').value.trim();
+  const stateCode=document.getElementById('sBankStateVal').value||state.selectedState;
+  const resultBox=document.getElementById('sBankRoutingResult');
+  const notFound=document.getElementById('sBankRoutingNotFound');
+  if(!bankInput){resultBox.style.display='none';notFound.style.display='none';return;}
   let bankKey=null;
+  const v=bankInput.toLowerCase();
   for(const k of bankNames){if(k.toLowerCase()===v){bankKey=k;break;}}
   if(!bankKey){for(const k of bankNames){if(k.toLowerCase().includes(v)||v.includes(k.toLowerCase())){bankKey=k;break;}}}
-  const resultBox=document.getElementById('scriptRoutingResult');
-  const confirmSpan=document.getElementById('routingConfirmSpan');
-  if(!bankKey){resultBox.style.display='none';return;}
-  const routing=BANK_DATA[bankKey].states[state.selectedState]||BANK_DATA[bankKey].states['ALL'];
-  if(!routing){resultBox.style.display='none';return;}
-  document.getElementById('scriptRoutingNum').textContent=routing;
-  document.getElementById('scriptRoutingBank').textContent=bankKey;
+  if(!bankKey){
+    resultBox.style.display='none';
+    notFound.style.display='block';
+    notFound.textContent=`No routing found for "${bankInput}". Ask client to check their checkbook or banking app.`;
+    return;
+  }
+  state.bankName=bankKey;
+  const routing=BANK_DATA[bankKey].states[stateCode]||BANK_DATA[bankKey].states['ALL'];
+  if(!routing){
+    resultBox.style.display='none';
+    notFound.style.display='block';
+    notFound.textContent=`Found ${bankKey} but no routing for ${stateCode||'this state'}. Ask client to verify in their banking app.`;
+    return;
+  }
+  notFound.style.display='none';
+  document.getElementById('sBankRoutingNum').textContent=routing;
+  document.getElementById('sBankRoutingBank').textContent=bankKey+(stateCode?' — '+stateCode:'');
   resultBox.style.display='block';
-  confirmSpan.textContent=routing;
-  document.getElementById('routingInput').value=routing;
+  // auto-fill confirm span and routing input
+  const confirmSpan=document.getElementById('routingConfirmSpan');
+  if(confirmSpan)confirmSpan.textContent=routing;
+  const routingInput=document.getElementById('routingInput');
+  if(routingInput)routingInput.value=routing;
   state.routing=routing;
 }
 
