@@ -669,19 +669,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
 
       <div class="card">
         <div class="card-header">Budget Input</div>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Enter monthly budget. Three quote targets auto-calculate. Build quotes on carrier for those amounts.</div></div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Enter monthly budget. Three quote targets auto-calculate and will appear in the Build These Quotes card before health questions.</div></div>
         <div class="script-field-group">
           <label class="field-label">Monthly Budget ($)</label>
           <input class="text-input" id="budgetInput" type="number" placeholder="e.g. 100" oninput="calcQuotes(this.value)" min="1">
-        </div>
-        <div id="quotesDisplay" style="display:none;">
-          <div class="agent-instr" style="margin-bottom:8px;"><div class="agent-instr-lbl">Quote Targets — Build on Carrier</div></div>
-          <div class="quote-row">
-            <div class="quote-box" id="q1box"><div class="quote-lbl">Option 1 (High)</div><div class="quote-price" id="q1price">—</div><input class="quote-coverage" id="cov1" placeholder="Coverage $" oninput="state.coverage1=this.value"></div>
-            <div class="quote-box" id="q2box"><div class="quote-lbl">Option 2 (Mid)</div><div class="quote-price" id="q2price">—</div><input class="quote-coverage" id="cov2" placeholder="Coverage $" oninput="state.coverage2=this.value"></div>
-            <div class="quote-box" id="q3box"><div class="quote-lbl">Option 3 (Low)</div><div class="quote-price" id="q3price">—</div><input class="quote-coverage" id="cov3" placeholder="Coverage $" oninput="state.coverage3=this.value"></div>
-          </div>
-          <div class="tip"><span class="tip-lbl">Quote Logic</span>Under $150/mo: $25 increments &nbsp;|&nbsp; $150+/mo: $50 increments</div>
         </div>
         <p class="script-line" style="margin-top:12px;">What matters more to you, keeping the payment as low as possible or making sure the coverage amount is enough so <span class="d-b beneficiary-name">_____</span> has breathing room?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
@@ -697,6 +688,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
           <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
         </div></div>
         <p class="script-line">Okay. Amazing.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════ BUILD THESE QUOTES ═══════════ -->
+    <div class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Build These Quotes</div><div class="section-divider-line"></div></div>
+      <div class="card" style="border-color:var(--primary);border-width:1.5px;">
+        <div class="card-header" style="color:var(--primary);">📊 Build These Quotes — Before Health Questions</div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Enter the budget above in the Affordability section first. Use the premium targets below to build 3 quotes on the FEX quoter while asking health questions. Enter coverage amounts as results come back.</div></div>
+        <div id="quotesDisplay" style="display:none;">
+          <div class="quote-row">
+            <div class="quote-box" id="q1box"><div class="quote-lbl">Option 1 (High)</div><div class="quote-price" id="q1price">—</div><input class="quote-coverage" id="cov1" placeholder="Coverage $" oninput="state.coverage1=this.value;syncCoverage(1,this.value)"></div>
+            <div class="quote-box" id="q2box"><div class="quote-lbl">Option 2 (Mid)</div><div class="quote-price" id="q2price">—</div><input class="quote-coverage" id="cov2" placeholder="Coverage $" oninput="state.coverage2=this.value;syncCoverage(2,this.value)"></div>
+            <div class="quote-box" id="q3box"><div class="quote-lbl">Option 3 (Low)</div><div class="quote-price" id="q3price">—</div><input class="quote-coverage" id="cov3" placeholder="Coverage $" oninput="state.coverage3=this.value;syncCoverage(3,this.value)"></div>
+          </div>
+          <div class="tip"><span class="tip-lbl">Quote Logic</span>Under $150/mo: $25 increments &nbsp;|&nbsp; $150+/mo: $50 increments</div>
+        </div>
+        <div id="quotesEmpty" style="text-align:center;padding:16px 0;color:var(--text-secondary);font-size:14px;font-weight:600;">Enter monthly budget in the Affordability section above to generate quote targets.</div>
       </div>
     </div>
 
@@ -1178,17 +1187,29 @@ function selectImportance(n){
 // ─── QUOTES ───────────────────────────────────────────────────────────────────
 function calcQuotes(v){
   const budget=parseInt(v,10);
-  if(!budget||budget<1){document.getElementById('quotesDisplay').style.display='none';return;}
+  const display=document.getElementById('quotesDisplay');
+  const empty=document.getElementById('quotesEmpty');
+  if(!budget||budget<1){
+    if(display)display.style.display='none';
+    if(empty)empty.style.display='block';
+    return;
+  }
   state.budget=budget;
   const inc=budget>=150?50:25;
   state.quote1=budget+inc;state.quote2=budget;state.quote3=budget-inc;
   document.getElementById('q1price').textContent='$'+state.quote1;
   document.getElementById('q2price').textContent='$'+state.quote2;
   document.getElementById('q3price').textContent='$'+state.quote3;
-  document.getElementById('quotesDisplay').style.display='block';
+  if(display)display.style.display='block';
+  if(empty)empty.style.display='none';
   document.getElementById('opt1price').textContent='$'+state.quote1;
   document.getElementById('opt3price').textContent='$'+state.quote3;
   document.querySelectorAll('.budget-display').forEach(el=>el.textContent='$'+budget);
+}
+function syncCoverage(n,v){
+  // keep options presentation in sync
+  const el=document.getElementById('opt'+n+'cov');
+  if(el&&v)el.textContent=v;
 }
 
 // ─── OPTION SELECTION ────────────────────────────────────────────────────────
