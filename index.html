@@ -36,6 +36,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
 .view.active{display:block;}
 
 /* ── WELCOME ── */
+.login-wrap{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;}
+.login-card{width:100%;max-width:400px;background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-lg);border:1px solid var(--border);margin-top:24px;}
 .welcome-wrap{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:40px 20px 60px;}
 .welcome-logo{width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,var(--primary),#00c7ff);display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff;margin-bottom:18px;box-shadow:0 8px 24px rgba(0,113,227,0.3);}
 .welcome-title{font-size:30px;font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:4px;}
@@ -255,9 +257,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
 <body>
 
 <!-- ══════════════════════════════════════════════════
+     LOGIN VIEW
+══════════════════════════════════════════════════ -->
+<div id="loginView" class="view active">
+  <button class="welcome-theme-btn" onclick="toggleTheme()" id="loginThemeBtn">🌙</button>
+  <div class="login-wrap">
+    <div class="welcome-logo">⚡</div>
+    <div class="welcome-title">The <span>Basics</span></div>
+    <div class="welcome-sub">Final Expense Script Tool</div>
+    <div class="login-card">
+      <div class="field-group">
+        <label class="field-label">Username</label>
+        <input class="text-input" id="loginUser" placeholder="Enter username" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()">
+      </div>
+      <div class="field-group" style="margin-top:10px;">
+        <label class="field-label">Password</label>
+        <input class="text-input" type="password" id="loginPass" placeholder="Enter password"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div id="loginError" style="display:none;margin-top:10px;padding:10px 14px;background:rgba(255,69,58,0.1);border:1.5px solid var(--danger);border-radius:var(--radius-sm);font-size:14px;font-weight:600;color:var(--danger);text-align:center;">
+        Incorrect username or password.
+      </div>
+      <button onclick="doLogin()" style="width:100%;margin-top:16px;padding:15px;border-radius:var(--radius);border:none;background:var(--primary);color:#fff;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.2s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+        Sign In →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
      WELCOME VIEW
 ══════════════════════════════════════════════════ -->
-<div id="welcomeView" class="view active">
+<div id="welcomeView" class="view">
   <button class="welcome-theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
 
   <div class="welcome-wrap">
@@ -1170,6 +1202,24 @@ const state = {
   selectedState:''
 };
 
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
+function doLogin(){
+  const user=document.getElementById('loginUser').value.trim();
+  const pass=document.getElementById('loginPass').value.trim();
+  const err=document.getElementById('loginError');
+  if(user==='Winning'&&pass==='Team'){
+    err.style.display='none';
+    sessionStorage.setItem('tb_auth','1');
+    document.getElementById('loginView').classList.remove('active');
+    document.getElementById('welcomeView').classList.add('active');
+    window.scrollTo(0,0);
+  } else {
+    err.style.display='block';
+    document.getElementById('loginPass').value='';
+    document.getElementById('loginPass').focus();
+  }
+}
+
 // ─── VIEW SWITCHING ───────────────────────────────────────────────────────────
 function startScript(){
   document.getElementById('welcomeView').classList.remove('active');
@@ -1508,7 +1558,7 @@ function toggleTheme(){
   const dark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',dark?'light':'dark');
   const icon=dark?'🌙':'☀️';
-  ['themeBtn','scriptThemeBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.textContent=icon;});
+  ['loginThemeBtn','themeBtn','scriptThemeBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.textContent=icon;});
 }
 function resetAll(){if(!confirm('Reset all data and start over?'))return;location.reload();}
 
@@ -1535,6 +1585,11 @@ document.addEventListener('click',function(e){
 });
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
+// If already authenticated this session, skip login
+if(sessionStorage.getItem('tb_auth')==='1'){
+  document.getElementById('loginView').classList.remove('active');
+  document.getElementById('welcomeView').classList.add('active');
+}
 document.getElementById('bcBurialAmt').style.display='none';
 document.getElementById('bcCremAmt').style.display='none';
 openCarrierPortal(); // render policy info on load
