@@ -373,7 +373,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
         <span>🧠 Agent Mindset — Read Before Every Call</span>
         <span id="mindset-arrow">▼</span>
       </button>
-      <div class="lit-toggle-body open" id="mindset-body">
+      <div class="lit-toggle-body" id="mindset-body">
         <div class="lit-text">You are not calling to sell a policy. You are calling to help the client face a responsibility they already showed interest in handling. The lead already raised their hand. Your job is to calmly help them uncover it, explain it, and take ownership of it.</div>
         <div class="tip" style="margin-top:10px;"><span class="tip-lbl">Client Should Think</span>"This agent is not pushing me. He is helping me think clearly about something I have been avoiding."</div>
         <div class="lit-section-title">Silence Is Not Rejection</div>
@@ -1028,10 +1028,88 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
           <div class="agent-instr"><div class="agent-instr-lbl">Commit This to Memory</div><div class="agent-instr-text">Never rush the emotional parts.<br>Never rush the budget.<br>Never rush the close.<br><br>Ask the question. Pause. Let them answer. Then guide them.</div></div>
         </div>
       </div>
+
+      <!-- GET BETTER BUTTON -->
+      <div style="margin-top:20px;padding-bottom:8px;">
+        <button onclick="openGetBetter()" style="width:100%;padding:18px;border-radius:var(--radius);border:none;background:linear-gradient(135deg,var(--primary),var(--success));color:#fff;font-size:18px;font-weight:800;cursor:pointer;letter-spacing:-0.3px;font-family:inherit;transition:opacity 0.2s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+          💪 Get Better
+        </button>
+      </div>
     </div>
 
   </div><!-- end main-content -->
 </div><!-- end scriptView -->
+
+<!-- ══════════════════════════════════════════════════
+     GET BETTER MODAL
+══════════════════════════════════════════════════ -->
+<div id="getBetterModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow-y:auto;padding:20px 16px 40px;">
+  <div style="max-width:600px;margin:0 auto;">
+    <!-- Modal header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.3px;">💪 Get Better</div>
+      <button onclick="closeGetBetter()" style="width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,0.15);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;">✕</button>
+    </div>
+
+    <!-- Agent Mindset accordion -->
+    <div style="margin-bottom:10px;">
+      <button onclick="toggleModalAccordion('modal-mindset')" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-radius:var(--radius) var(--radius) 0 0;border:1.5px solid var(--agent-border);background:var(--agent-bg);color:var(--primary);font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;">
+        <span>🧠 Agent Mindset — Read Before Every Call</span>
+        <span id="modal-mindset-arrow" style="font-size:18px;transition:transform 0.3s;">▼</span>
+      </button>
+      <div id="modal-mindset-body" style="display:none;background:var(--card);border:1.5px solid var(--agent-border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:20px;">
+        <div class="lit-text">Before you make the call, you need to understand this:</div>
+        <br>
+        <div class="lit-text"><strong>You are not calling to sell a policy.</strong></div>
+        <br>
+        <div class="lit-text">You are calling to help the client face a responsibility they already showed interest in handling. The lead already raised their hand. Your job is to calmly help them uncover it, explain it, and take ownership of it.</div>
+        <div class="tip" style="margin-top:10px;"><span class="tip-lbl">Client Should Think</span>"This agent is not pushing me. He is helping me think clearly about something I have been avoiding."</div>
+        <div class="lit-section-title">Silence Is Not Rejection</div>
+        <div class="lit-text">When you ask a powerful question, stop talking. Do not rescue them from the silence. Do not soften the question. Do not answer for them. Let the client sit with their own answer.</div>
+        <div class="lit-section-title">The Four Connections</div>
+        <div class="tip"><span class="tip-lbl">Connect These</span>1. Who they love. &nbsp;2. What happens with no plan. &nbsp;3. The emotional &amp; financial cost. &nbsp;4. What affordable action they can take today.</div>
+        <div class="lit-section-title">How You Should Sound</div>
+        <div class="lit-text">Calm. Grounded. Warm. Certain. Not hype. Slow. Soft but firm. No rushing. No nervous laughter. No talking over the client.</div>
+        <div class="divider"></div>
+        <div class="lit-section-title">Pause Timing Rules</div>
+        <div class="agent-instr">
+          <div class="agent-instr-lbl">Use Throughout the Script</div>
+          <div class="agent-instr-text">
+            ⏸ <strong>[1–2 SEC]</strong> — After normal questions. Keeps you from sounding rushed.<br><br>
+            ⏸ <strong>[3–5 SEC]</strong> — After emotional or problem-awareness questions.<br><br>
+            ⏸ <strong>[5–7 SEC]</strong> — After heavy questions about burden, death, family, money, grief.<br><br>
+            ⏸ <strong>[8–12 SEC]</strong> — After presenting options. The buying silence. First to speak gives up control.<br><br>
+            ⏸ <strong>[UP TO 20 SEC]</strong> — When client is clearly processing. If still silent after 20 sec, softly say: "Take your time. I know this is something you want to think through correctly." Then stay quiet again.
+          </div>
+        </div>
+        <div class="agent-instr" style="margin-top:10px;">
+          <div class="agent-instr-lbl">Before Each Call, Say</div>
+          <div class="agent-instr-text">"I am calm. I am here to serve. I am not chasing. I am guiding. I will ask good questions. I will let the client think. I will not rescue them from silence."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Literature accordion -->
+    <div style="margin-bottom:10px;">
+      <button onclick="toggleModalAccordion('modal-daily')" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-radius:var(--radius) var(--radius) 0 0;border:none;background:linear-gradient(135deg,var(--primary),var(--success));color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;">
+        <span>📖 Daily Agent Development Literature</span>
+        <span id="modal-daily-arrow" style="font-size:18px;transition:transform 0.3s;">▼</span>
+      </button>
+      <div id="modal-daily-body" style="display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:20px;">
+        <div class="lit-text">You need to develop the mind of a trusted advisor, not just a salesperson.</div>
+        <div class="tip" style="margin-top:10px;"><span class="tip-lbl">The Difference</span>A salesperson thinks: "How do I get them to buy?" A trusted advisor thinks: "How do I help this person make the decision they already know they need to make?"</div>
+        <div class="lit-section-title">Weak vs. Strong</div>
+        <div class="lit-text">A weak agent chases the sale. A strong agent controls the frame.<br>A weak agent over-explains. A strong agent asks better questions.<br>A weak agent fears silence. A strong agent uses silence.<br>A weak agent gets uncomfortable when the client feels emotion. A strong agent understands that emotion is where the truth comes out.</div>
+        <div class="lit-section-title">Remember</div>
+        <div class="tip"><span class="tip-lbl">The Truth</span>One day, the person on the phone will not be here. One day, the beneficiary may be standing in a funeral home, trying to figure out how to pay. One day, the paperwork you helped create may be the difference between panic and peace.</div>
+        <div class="lit-section-title">The Final Rule</div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Commit This to Memory</div><div class="agent-instr-text">Never rush the emotional parts.<br>Never rush the budget.<br>Never rush the close.<br><br>Ask the question. Pause. Let them answer. Then guide them.</div></div>
+      </div>
+    </div>
+
+    <button onclick="closeGetBetter()" style="width:100%;padding:14px;border-radius:var(--radius);border:none;background:rgba(255,255,255,0.15);color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;">Close</button>
+  </div>
+</div>
 
 <script>
 // ─── BANK DATA ────────────────────────────────────────────────────────────────
@@ -1429,6 +1507,28 @@ function toggleTheme(){
   ['themeBtn','scriptThemeBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.textContent=icon;});
 }
 function resetAll(){if(!confirm('Reset all data and start over?'))return;location.reload();}
+
+// ─── GET BETTER MODAL ────────────────────────────────────────────────────────
+function openGetBetter(){
+  document.getElementById('getBetterModal').style.display='block';
+  document.body.style.overflow='hidden';
+}
+function closeGetBetter(){
+  document.getElementById('getBetterModal').style.display='none';
+  document.body.style.overflow='';
+}
+function toggleModalAccordion(id){
+  const body=document.getElementById(id+'-body');
+  const arrow=document.getElementById(id+'-arrow');
+  const open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  if(arrow)arrow.style.transform=open?'':'rotate(180deg)';
+}
+// Close modal on backdrop tap
+document.addEventListener('click',function(e){
+  const modal=document.getElementById('getBetterModal');
+  if(e.target===modal)closeGetBetter();
+});
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 document.getElementById('bcBurialAmt').style.display='none';
