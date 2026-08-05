@@ -299,34 +299,6 @@ document.addEventListener('DOMContentLoaded',function(){
       </div>
     </div>
 
-    <!-- Bank routing lookup -->
-    <div class="welcome-section">
-      <div class="ws-label">🏦 Bank Routing Lookup</div>
-      <div class="bank-lookup-card">
-        <div class="bank-input-wrap">
-          <input type="text" id="wStateInput" placeholder="Type state (e.g. Texas or TX)…"
-            autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"
-            oninput="searchState(this.value)" onfocus="searchState(this.value)">
-          <input type="hidden" id="wStateVal">
-          <div class="bank-dropdown" id="wStateDropdown"></div>
-        </div>
-        <div class="bank-input-wrap">
-          <input type="text" id="wBankInput" placeholder="Type bank name…"
-            autocomplete="nope" autocorrect="off" autocapitalize="off" spellcheck="false"
-            oninput="searchBank(this.value)" onfocus="searchBank(this.value)"
-            onblur="setTimeout(lookupRouting,200)"
-            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('wBankDropdown').style.display='none';lookupRouting();}">
-          <div class="bank-dropdown" id="wBankDropdown"></div>
-        </div>
-        <div class="routing-result-box" id="wRoutingResult">
-          <div class="routing-result-label">Routing Number</div>
-          <div class="routing-result-num" id="wRoutingNum"></div>
-          <div class="routing-result-bank" id="wRoutingBank"></div>
-        </div>
-        <div class="routing-not-found" id="wRoutingNotFound"></div>
-      </div>
-    </div>
-
     <button class="start-btn" onclick="startScript()">Start Script →</button>
   </div>
 </div><!-- end welcomeView -->
@@ -1213,69 +1185,9 @@ window.addEventListener('scroll',()=>{
   document.querySelectorAll('.jump-pill').forEach((p,i)=>{p.classList.toggle('active',sections[i]===current);});
 },{passive:true});
 
-// ─── BANK LOOKUP — WELCOME ────────────────────────────────────────────────────
 const bankNames=Object.keys(BANK_DATA);
 const stateNames=Object.keys(STATE_MAP);
 
-function searchState(val){
-  const dd=document.getElementById('wStateDropdown');
-  if(!val){dd.style.display='none';return;}
-  const v=val.toLowerCase();
-  const matches=stateNames.filter(s=>s.toLowerCase().startsWith(v)||STATE_MAP[s].toLowerCase().startsWith(v)).slice(0,8);
-  if(!matches.length){dd.style.display='none';return;}
-  dd.innerHTML=matches.map(s=>`<div class="bank-dropdown-item" onmousedown="selectState('${s}','${STATE_MAP[s]}')">${s} (${STATE_MAP[s]})</div>`).join('');
-  dd.style.display='block';
-}
-function selectState(name,code){
-  document.getElementById('wStateInput').value=name;
-  document.getElementById('wStateVal').value=code;
-  state.selectedState=code;
-  document.getElementById('wStateDropdown').style.display='none';
-}
-function searchBank(val){
-  const dd=document.getElementById('wBankDropdown');
-  if(!val||val.length<2){dd.style.display='none';return;}
-  const v=val.toLowerCase();
-  const matches=bankNames.filter(b=>b.toLowerCase().includes(v)).slice(0,8);
-  if(!matches.length){dd.style.display='none';return;}
-  dd.innerHTML=matches.map(b=>`<div class="bank-dropdown-item" onmousedown="selectBank('${b.replace(/'/g,"&#39;")}')">${b}</div>`).join('');
-  dd.style.display='block';
-}
-function selectBank(name){
-  document.getElementById('wBankInput').value=name;
-  document.getElementById('wBankDropdown').style.display='none';
-  setTimeout(lookupRouting,100);
-}
-function lookupRouting(){
-  const bankInput=document.getElementById('wBankInput').value.trim();
-  const stateCode=document.getElementById('wStateVal').value||state.selectedState;
-  const resultBox=document.getElementById('wRoutingResult');
-  const notFound=document.getElementById('wRoutingNotFound');
-  if(!bankInput){resultBox.style.display='none';notFound.style.display='none';return;}
-  // Find bank
-  let bankKey=null;
-  const v=bankInput.toLowerCase();
-  for(const k of bankNames){if(k.toLowerCase()===v){bankKey=k;break;}}
-  if(!bankKey){for(const k of bankNames){if(k.toLowerCase().includes(v)||v.includes(k.toLowerCase())){bankKey=k;break;}}}
-  if(!bankKey){
-    resultBox.style.display='none';
-    notFound.style.display='block';
-    notFound.textContent=`No routing found for "${bankInput}". Ask client to check their checkbook or banking app.`;
-    return;
-  }
-  const bankObj=BANK_DATA[bankKey];
-  const routing=bankObj.states[stateCode]||bankObj.states['ALL'];
-  if(!routing){
-    resultBox.style.display='none';
-    notFound.style.display='block';
-    notFound.textContent=`Found ${bankKey} but no routing for ${stateCode||'this state'}. Try "ALL" or ask client to verify.`;
-    return;
-  }
-  notFound.style.display='none';
-  document.getElementById('wRoutingNum').textContent=routing;
-  document.getElementById('wRoutingBank').textContent=bankKey+(stateCode?' — '+stateCode:'');
-  resultBox.style.display='block';
-}
 
 // ─── BANK LOOKUP — SCRIPT PAGE (full autocomplete) ────────────────────────────
 function sBankSearchState(val){
