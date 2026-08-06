@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- The Basics FE Script Tool v2.0 -->
+<!-- $1 Bang Bang Lead Script — forked from The Basics, diverges from here -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>The Basics — FE Script Tool</title>
+<title>$1 Bang Bang — FE Script Tool</title>
 <style>
 :root {
   --bg:#f5f5f7; --card:#fff; --text:#1d1d1f; --text-secondary:#6e6e73;
@@ -163,9 +163,17 @@ body.actions-hidden .actions-toggle-btn{border-color:var(--agent-border);color:v
 .budget-note{font-size:12.5px;font-weight:700;color:var(--warning);margin-top:9px;line-height:1.45;}
 .budget-box.filled .budget-note{color:var(--success);}
 
+.d-ad{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(88,86,214,0.14);border-radius:5px;color:#4b49b8;font-weight:700;font-style:italic;}
+[data-theme="dark"] .d-ad{color:#9d9bff;}
 .d-h{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(0,168,181,0.14);border-radius:5px;color:#00848f;font-weight:700;font-style:italic;}
 [data-theme="dark"] .d-h{color:#3ad3de;}
-.beneficiary-name,.hobby-name,.agent-name,.agent-license{cursor:text;outline:none;transition:background 0.15s,box-shadow 0.15s;}
+.lastname-name.is-empty{border-bottom:1.5px dashed var(--primary);}
+.lastname-name:hover{background:rgba(0,113,227,0.22);}
+.lastname-name:focus{background:rgba(0,113,227,0.22);box-shadow:0 0 0 2px var(--primary);border-bottom-color:transparent;font-style:normal;}
+.address-name.is-empty{border-bottom:1.5px dashed #5856d6;}
+.address-name:hover{background:rgba(88,86,214,0.24);}
+.address-name:focus{background:rgba(88,86,214,0.24);box-shadow:0 0 0 2px #5856d6;border-bottom-color:transparent;font-style:normal;}
+.beneficiary-name,.hobby-name,.agent-name,.agent-license,.lastname-name,.address-name{cursor:text;outline:none;transition:background 0.15s,box-shadow 0.15s;}
 .agent-name.is-empty,.agent-license.is-empty{border-bottom:1.5px dashed var(--warning);}
 .agent-name:hover,.agent-license:hover{background:rgba(255,159,10,0.24);}
 .agent-name:focus,.agent-license:focus{background:rgba(255,159,10,0.24);box-shadow:0 0 0 2px var(--warning);border-bottom-color:transparent;font-style:normal;}
@@ -348,7 +356,7 @@ body.actions-hidden .actions-toggle-btn{border-color:var(--agent-border);color:v
 document.addEventListener('DOMContentLoaded',function(){
   initBeneficiaryEditing();
   initTipControls();
-  showView('welcomeView');
+  showView('scriptView');
 });
 </script>
 
@@ -399,7 +407,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <div class="top-bar-row">
       <div class="top-bar-left">
         <button class="back-btn" onclick="backToSetup()">← Setup</button>
-        <h1>The <span>Basics</span></h1>
+        <h1>Bang <span>Bang</span></h1>
       </div>
       <div class="top-bar-actions">
         <button class="tips-toggle-btn" id="tipsToggleBtn" onclick="toggleTips()" title="Show or hide all coaching tips">Hide Tips</button>
@@ -474,14 +482,14 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="card-header">Opening</div>
         <p class="script-line">Hey <span class="d-p prospect-name">Prospect</span>, it's <span class="d-a agent-name">____</span>! How are you doing today?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
-        <p class="script-line">Yeah, did nobody tell you I'd be calling? I sent you a few texts.</p>
+        <p class="script-line">Yeah, did nobody tell you I'd be calling?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
         <p class="script-line">Okayyy, I see what's going on here <span class="d-p prospect-name">Prospect</span>.</p>
       </div>
 
       <div class="card">
         <div class="card-header">Introduction</div>
-        <p class="script-line">My name is <span class="d-a agent-name">____</span> and I'm calling you because I received a request from you where you'd put your beneficiary's name as <span class="d-b beneficiary-name">Beneficiary</span> and your favorite hobby as <span class="d-h hobby-name">Hobby</span>. Was that just for you, or you and a loved one?</p>
+        <p class="script-line">My name is <span class="d-a agent-name">____</span> and I'm calling you because I received a request from you where you'd put your last name as <span class="d-p lastname-name">Last Name</span> and your address as <span class="d-ad address-name">Address</span>. Was that funeral coverage request just for you, or you and a loved one?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
       </div>
 
@@ -1264,7 +1272,7 @@ const STATE_MAP = {
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 const state = {
-  prospect:'',agent:'',agentLicense:'',beneficiary:'',hobby:'',
+  prospect:'',agent:'',agentLicense:'',beneficiary:'',hobby:'',lastName:'',address:'',
   bc:null,difficulty:null,importance:null,
   budget:null,quote1:null,quote2:null,quote3:null,
   coverage1:'',coverage2:'',coverage3:'',selectedOption:null,
@@ -1296,7 +1304,7 @@ function startScript(){
   if(scriptChoice==='bang'){ window.location.href='bang-bang.html'; return; }
   showView('scriptView');
 }
-function backToSetup(){ showView('welcomeView'); }
+function backToSetup(){ window.location.href='index.html'; }
 
 // ─── JUMP NAV ─────────────────────────────────────────────────────────────────
 function jumpTo(id){
@@ -1418,6 +1426,24 @@ function setBeneficiary(v,srcEl){
   openCarrierPortal();
 }
 
+function setLastName(v,srcEl){
+  state.lastName=(v||'').trim();
+  const d=state.lastName||'Last Name';
+  document.querySelectorAll('.lastname-name').forEach(function(el){
+    if(el!==srcEl)el.textContent=d;
+    el.classList.toggle('is-empty',!state.lastName);
+  });
+}
+
+function setAddress(v,srcEl){
+  state.address=(v||'').trim();
+  const d=state.address||'Address';
+  document.querySelectorAll('.address-name').forEach(function(el){
+    if(el!==srcEl)el.textContent=d;
+    el.classList.toggle('is-empty',!state.address);
+  });
+}
+
 function setHobby(v,srcEl){
   state.hobby=(v||'').trim();
   const empty=!state.hobby;
@@ -1467,6 +1493,10 @@ function initBeneficiaryEditing(){
                      function(){return state.agent;}, setAgent);
   makeEditableTokens('.agent-license','License #','Click to type your license number',
                      function(){return state.agentLicense;}, setLicense);
+  makeEditableTokens('.lastname-name','Last Name','Click to type their last name',
+                     function(){return state.lastName;}, setLastName);
+  makeEditableTokens('.address-name','Address','Click to type their address',
+                     function(){return state.address;}, setAddress);
 }
 function setLicense(v,srcEl){
   state.agentLicense=(v||'').trim();
