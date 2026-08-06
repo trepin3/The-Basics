@@ -110,6 +110,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
 .d-p{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(0,113,227,0.1);border-radius:5px;color:var(--primary);font-weight:700;font-style:italic;}
 .d-a{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(255,159,10,0.12);border-radius:5px;color:var(--warning);font-weight:700;font-style:italic;}
 .d-b{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(48,209,88,0.12);border-radius:5px;color:var(--success);font-weight:700;font-style:italic;}
+/* ── Tip visibility ── */
+body.tips-hidden .tip{display:none;}
+body.tips-hidden #getBetterModal .tip{display:block;}   /* modal tips are its content, not coaching asides */
+.tip{position:relative;}
+.tip-hide-btn{position:absolute;top:6px;right:7px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(0,0,0,0.06);color:var(--coaching-border);font-size:13px;font-weight:800;line-height:1;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;opacity:0.55;transition:opacity 0.15s;}
+.tip-hide-btn:hover{opacity:1;}
+.tip-hide-btn:active{transform:scale(0.9);}
+[data-theme="dark"] .tip-hide-btn{background:rgba(255,255,255,0.12);}
+.tips-toggle-btn{padding:6px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--card);color:var(--text-secondary);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.tips-toggle-btn:active{transform:scale(0.97);}
+body.tips-hidden .tips-toggle-btn{border-color:var(--coaching-border);color:var(--coaching-border);}
+
+/* ── "No budget stated" reveal ── */
+.no-budget-btn{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;padding:12px 16px;border-radius:var(--radius-sm);border:2px dashed var(--objection-border);background:var(--objection-bg);color:var(--objection-border);font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;transition:opacity 0.2s;}
+.no-budget-btn:active{transform:scale(0.98);}
+.no-budget-btn.open{border-style:solid;}
+.no-budget-arrow{font-size:13px;transition:transform 0.3s;}
+.no-budget-btn.open .no-budget-arrow{transform:rotate(180deg);}
+
+/* ── Budget input (emphasised — quotes depend on it) ── */
+.budget-box{border:2.5px solid var(--warning);background:rgba(255,159,10,0.09);border-radius:var(--radius);padding:14px 16px;margin:12px 0;transition:border-color 0.2s,background 0.2s;}
+.budget-box.filled{border-color:var(--success);background:rgba(48,209,88,0.09);}
+.budget-box-label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--warning);margin-bottom:9px;transition:color 0.2s;}
+.budget-box.filled .budget-box-label{color:var(--success);}
+.budget-input-row{display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);padding:6px 14px;transition:border-color 0.2s;}
+.budget-box.filled .budget-input-row{border-color:var(--success);}
+.budget-input-row:focus-within{border-color:var(--primary);}
+.budget-prefix{font-size:26px;font-weight:800;color:var(--text-secondary);line-height:1;}
+.budget-box.filled .budget-prefix{color:var(--success);}
+.budget-input{flex:1;width:100%;border:none;outline:none;background:transparent;color:var(--text);font-family:inherit;font-size:26px;font-weight:800;padding:8px 0;letter-spacing:-0.5px;}
+.budget-input::-webkit-outer-spin-button,.budget-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.budget-input[type=number]{-moz-appearance:textfield;}
+.budget-note{font-size:12.5px;font-weight:700;color:var(--warning);margin-top:9px;line-height:1.45;}
+.budget-box.filled .budget-note{color:var(--success);}
+
+.d-h{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(0,168,181,0.14);border-radius:5px;color:#00848f;font-weight:700;font-style:italic;}
+[data-theme="dark"] .d-h{color:#3ad3de;}
+.beneficiary-name,.hobby-name{cursor:text;outline:none;transition:background 0.15s,box-shadow 0.15s;}
+.beneficiary-name.is-empty{border-bottom:1.5px dashed var(--success);}
+.beneficiary-name:hover{background:rgba(48,209,88,0.22);}
+.beneficiary-name:focus{background:rgba(48,209,88,0.22);box-shadow:0 0 0 2px var(--success);border-bottom-color:transparent;font-style:normal;}
+.hobby-name.is-empty{border-bottom:1.5px dashed #00a8b5;}
+.hobby-name:hover{background:rgba(0,168,181,0.24);}
+.hobby-name:focus{background:rgba(0,168,181,0.24);box-shadow:0 0 0 2px #00a8b5;border-bottom-color:transparent;font-style:normal;}
 .d-bc{display:inline-block;min-width:30px;padding:1px 7px;background:rgba(175,82,222,0.12);border-radius:5px;color:#af52de;font-weight:700;font-style:italic;}
 .d-budget{display:inline-block;padding:1px 7px;background:rgba(255,69,58,0.1);border-radius:5px;color:var(--danger);font-weight:700;}
 
@@ -257,6 +301,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Robot
 <body>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
+  initBeneficiaryEditing();
+  initTipControls();
   showView('welcomeView');
 });
 </script>
@@ -278,18 +324,8 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="welcome-card">
         <div class="field-row">
           <div class="field-group">
-            <label class="field-label">Prospect Name</label>
-            <input class="text-input" id="wProspect" placeholder="Client first name" oninput="updateProspect(this.value)" autocomplete="off">
-          </div>
-          <div class="field-group">
             <label class="field-label">Your Name</label>
             <input class="text-input" id="wAgent" placeholder="Your first name" oninput="updateAgent(this.value)" autocomplete="off">
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field-group">
-            <label class="field-label">Beneficiary Name</label>
-            <input class="text-input" id="wBeneficiary" placeholder="Beneficiary name" oninput="updateBeneficiary(this.value,'wBeneficiary')" autocomplete="off">
           </div>
           <div class="field-group">
             <label class="field-label">Your License #</label>
@@ -317,6 +353,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <h1>The <span>Basics</span></h1>
       </div>
       <div class="top-bar-actions">
+        <button class="tips-toggle-btn" id="tipsToggleBtn" onclick="toggleTips()" title="Show or hide all coaching tips">Hide Tips</button>
         <button class="icon-btn" onclick="toggleNotes()">📝</button>
         <button class="icon-btn" onclick="toggleTheme()" id="scriptThemeBtn">🌙</button>
         <button class="icon-btn" onclick="resetAll()" title="Reset">↺</button>
@@ -385,16 +422,16 @@ document.addEventListener('DOMContentLoaded',function(){
 
       <div class="card">
         <div class="card-header">Opening</div>
-        <p class="script-line">Hey <span class="d-p prospect-name">_____</span>, it's <span class="d-a agent-name">______</span>!</p>
+        <p class="script-line">Hey <span class="d-p prospect-name">Prospect</span>, it's <span class="d-a agent-name">______</span>!</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
         <p class="script-line">Yeah, did nobody tell you I'd be calling?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
-        <p class="script-line">Okayyy, I see what's going on here <span class="d-p prospect-name">_____</span>.</p>
+        <p class="script-line">Okayyy, I see what's going on here <span class="d-p prospect-name">Prospect</span>.</p>
       </div>
 
       <div class="card">
         <div class="card-header">Introduction</div>
-        <p class="script-line">My name is <span class="d-a agent-name">____</span> and I'm calling you because I received a request from you where you'd put your beneficiary's name as <span class="d-b beneficiary-name">______</span> and your favorite hobby as ______. Was that just for you, or you and a loved one?</p>
+        <p class="script-line">My name is <span class="d-a agent-name">____</span> and I'm calling you because I received a request from you where you'd put your beneficiary's name as <span class="d-b beneficiary-name">Beneficiary</span> and your favorite hobby as <span class="d-h hobby-name">Hobby</span>. Was that just for you, or you and a loved one?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
       </div>
 
@@ -412,7 +449,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="accordion" style="margin-bottom:6px;">
           <div class="accordion-head" onclick="toggleAccordion('rb2')"><span>❓ "I'm not interested"</span><span class="accordion-arrow" id="rb2Arrow">▼</span></div>
           <div class="accordion-body" id="rb2Body">
-            <p class="script-line">I completely understand, and I'm not here to sell you anything you don't need. But let me ask you this — if something happened to you tomorrow, does <span class="d-b beneficiary-name">_____</span>'s family have $15,000 sitting in the bank ready to go? Because that's what the average funeral costs right now.</p>
+            <p class="script-line">I completely understand, and I'm not here to sell you anything you don't need. But let me ask you this — if something happened to you tomorrow, does <span class="d-b beneficiary-name">Beneficiary</span>'s family have $15,000 sitting in the bank ready to go? Because that's what the average funeral costs right now.</p>
             <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
             <p class="script-line">I just want to make sure you have the information — what you do with it is totally up to you.</p>
           </div>
@@ -430,7 +467,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="accordion" style="margin-bottom:6px;">
           <div class="accordion-head" onclick="toggleAccordion('rb4')"><span>❓ "Just tell me the price"</span><span class="accordion-arrow" id="rb4Arrow">▼</span></div>
           <div class="accordion-body" id="rb4Body">
-            <p class="script-line">Hey <span class="d-p prospect-name">_____</span>, I knew I liked you — straight to the point. So basically you're saying you don't care what it is you're buying, as long as the price aligns with your budget you're going to go with it, is that right?</p>
+            <p class="script-line">Hey <span class="d-p prospect-name">Prospect</span>, I knew I liked you — straight to the point. So basically you're saying you don't care what it is you're buying, as long as the price aligns with your budget you're going to go with it, is that right?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
             <p class="script-line">Gotcha, so you do actually want to go through the info to make sure it makes sense first?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
@@ -443,9 +480,9 @@ document.addEventListener('DOMContentLoaded',function(){
           <div class="accordion-body" id="rb5Body">
             <p class="script-line">Oh that's great, I love hearing that! Can I ask — do you know offhand how much coverage you have?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
-            <p class="script-line">And do you know if it's enough to cover everything for <span class="d-b beneficiary-name">_____</span> — the funeral, any outstanding bills, and leave something behind?</p>
+            <p class="script-line">And do you know if it's enough to cover everything for <span class="d-b beneficiary-name">Beneficiary</span> — the funeral, any outstanding bills, and leave something behind?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
-            <p class="script-line">You know, a lot of people I talk to have some coverage but not quite enough to cover everything comfortably. I'm not here to replace anything — I just want to make sure there's no gap that gets left behind for <span class="d-b beneficiary-name">_____</span>. Would you be open to just comparing real quick?</p>
+            <p class="script-line">You know, a lot of people I talk to have some coverage but not quite enough to cover everything comfortably. I'm not here to replace anything — I just want to make sure there's no gap that gets left behind for <span class="d-b beneficiary-name">Beneficiary</span>. Would you be open to just comparing real quick?</p>
           </div>
         </div>
 
@@ -472,7 +509,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="accordion" style="margin-bottom:6px;">
           <div class="accordion-head" onclick="toggleAccordion('rb8')"><span>❓ "I can't afford it"</span><span class="accordion-arrow" id="rb8Arrow">▼</span></div>
           <div class="accordion-body" id="rb8Body">
-            <p class="script-line">I hear you, and that's exactly why I asked. I don't want to put you in a hard spot — that's not why I'm here. But let me ask you this — do you think <span class="d-b beneficiary-name">_____</span> could afford to come up with $12,000 to $20,000 if something happened tomorrow?</p>
+            <p class="script-line">I hear you, and that's exactly why I asked. I don't want to put you in a hard spot — that's not why I'm here. But let me ask you this — do you think <span class="d-b beneficiary-name">Beneficiary</span> could afford to come up with $12,000 to $20,000 if something happened tomorrow?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
             <p class="script-line">Here's the thing — something is always better than nothing. We have options that start as low as $20 to $30 a month. I'm not asking you to stretch your budget, I'm asking you what's actually comfortable. What would be a number that you could set and forget every month without even feeling it?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
@@ -484,7 +521,7 @@ document.addEventListener('DOMContentLoaded',function(){
           <div class="accordion-body" id="rb9Body">
             <p class="script-line">I respect that, and honestly it's not about believing in a product. Let me ask you something — when you're gone one day, someone is going to have to handle all of this. The funeral home doesn't do it for free. The question isn't really about insurance — it's about who pays for it.</p>
             <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
-            <p class="script-line">Is it going to be <span class="d-b beneficiary-name">_____</span> scrambling to pull together thousands of dollars while they're grieving? Or is it going to be something you took care of ahead of time so they don't have to worry about it?</p>
+            <p class="script-line">Is it going to be <span class="d-b beneficiary-name">Beneficiary</span> scrambling to pull together thousands of dollars while they're grieving? Or is it going to be something you took care of ahead of time so they don't have to worry about it?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
           </div>
         </div>
@@ -502,7 +539,7 @@ document.addEventListener('DOMContentLoaded',function(){
       </div><!-- end rebuttals card -->
 
       <div class="card">
-        <p class="script-line">Okay, and <span class="d-p prospect-name">_____</span>. I have to ask. What got you thinking about these kinds of things — was there a recent loss in the family, a health scare, or just trying to finally get something handled?</p>
+        <p class="script-line">Okay, and <span class="d-p prospect-name">Prospect</span>. I have to ask. What got you thinking about these kinds of things — was there a recent loss in the family, a health scare, or just trying to finally get something handled?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
         <div class="tip"><span class="tip-lbl">Tip</span>If they answer emotionally, do not rush. Say "Mhm, I see." then pause again.</div>
         <p class="script-line">Mhm, I see.</p>
@@ -518,7 +555,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
       <div class="card">
         <div class="card-header">Beneficiary Discovery</div>
-        <p class="script-line">Now tell me <span class="d-p prospect-name">_____</span>, who's going to be in charge of your final arrangements one day?</p>
+        <p class="script-line">Now tell me <span class="d-p prospect-name">Prospect</span>, who's going to be in charge of your final arrangements one day?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
         <div style="margin:12px 0;">
           <label style="display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;color:var(--primary);margin-bottom:6px;">Beneficiary Name</label>
@@ -533,7 +570,7 @@ document.addEventListener('DOMContentLoaded',function(){
       </div>
 
       <div class="card">
-        <p class="script-line">Do you have any written plans for <span class="d-b beneficiary-name">_____</span> to follow one day in terms of all this?</p>
+        <p class="script-line">Do you have any written plans for <span class="d-b beneficiary-name">Beneficiary</span> to follow one day in terms of all this?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
         <div class="tip"><span class="tip-lbl">Important Silence</span>Do not explain. Do not soften. Let them realize whether there is actually a plan.</div>
         <p class="script-line">And if they had to handle it tomorrow, do you feel like they would know exactly what to do, or would they be trying to figure it out while grieving?</p>
@@ -553,7 +590,7 @@ document.addEventListener('DOMContentLoaded',function(){
           <button class="toggle-btn" id="bcBurialBtn" onclick="selectBC('burial')">⚰️ Burial</button>
           <button class="toggle-btn" id="bcCremBtn" onclick="selectBC('cremation')">🕊️ Cremation</button>
         </div>
-        <p class="script-line">And does <span class="d-b beneficiary-name">_____</span> have a lot of experience planning these kinds of things?</p>
+        <p class="script-line">And does <span class="d-b beneficiary-name">Beneficiary</span> have a lot of experience planning these kinds of things?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
         <p class="script-line">I see… And... do you know how much <span class="d-bc bc-type">cremation/burial</span> goes for as of today?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
@@ -566,9 +603,9 @@ document.addEventListener('DOMContentLoaded',function(){
       </div>
 
       <div class="card">
-        <p class="script-line">Now <span class="d-p prospect-name">____</span>, as of right now, <span class="d-b beneficiary-name">_____</span> is going to be paying for all of these things one day, right?</p>
+        <p class="script-line">Now <span class="d-p prospect-name">Prospect</span>, as of right now, <span class="d-b beneficiary-name">Beneficiary</span> is going to be paying for all of these things one day, right?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
-        <p class="script-line">Does <span class="d-b beneficiary-name">_____</span> currently have the <span class="cond-section" id="bcBurialAmt" style="display:inline;"><strong>$12,000 to $20,000</strong></span><span class="cond-section" id="bcCremAmt" style="display:inline;"><strong>$10,000 to $15,000</strong></span> sitting in the bank ready to handle that comfortably whenever it happens?</p>
+        <p class="script-line">Does <span class="d-b beneficiary-name">Beneficiary</span> currently have the <span class="cond-section" id="bcBurialAmt" style="display:inline;"><strong>$12,000 to $20,000</strong></span><span class="cond-section" id="bcCremAmt" style="display:inline;"><strong>$10,000 to $15,000</strong></span> sitting in the bank ready to handle that comfortably whenever it happens?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
         <div class="tip"><span class="tip-lbl">Tip</span>This pause creates reality. Let them answer.</div>
         <p class="script-line">What do you think it would do to them emotionally or financially if they had to come up with that money unexpectedly?</p>
@@ -578,7 +615,7 @@ document.addEventListener('DOMContentLoaded',function(){
       </div>
 
       <div class="card">
-        <p class="script-line">I see… Okay <span class="d-p prospect-name">____</span>. I'm starting to see why this is important to you.</p>
+        <p class="script-line">I see… Okay <span class="d-p prospect-name">Prospect</span>. I'm starting to see why this is important to you.</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
         <p class="script-line">I just want to say, I really respect the heck out of you for taking the time to have this conversation. I know this is a really tough conversation for people to have, and 90% of people run from it until it's too late. So I really respect the heck out of you for the love and loyalty to your family you are demonstrating, and just how responsible and reasonable I can tell you are.</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
@@ -595,15 +632,15 @@ document.addEventListener('DOMContentLoaded',function(){
 
       <div class="card">
         <div class="card-header">Scale 1 — Difficulty</div>
-        <p class="script-line">Okay, so on a scale of 1 to 5 — one being so easy <span class="d-b beneficiary-name">_____</span> could do it while sleeping, and five being pretty darn difficult — how difficult would this be for <span class="d-b beneficiary-name">_____</span> if we don't put anything in place? Just 1 to 5, how difficult?</p>
+        <p class="script-line">Okay, so on a scale of 1 to 5 — one being so easy <span class="d-b beneficiary-name">Beneficiary</span> could do it while sleeping, and five being pretty darn difficult — how difficult would this be for <span class="d-b beneficiary-name">Beneficiary</span> if we don't put anything in place? Just 1 to 5, how difficult?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
         <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Select What Client Says</div></div>
         <div class="rating-group">
-          <button class="rating-btn" onclick="selectDifficulty(1)">1</button>
-          <button class="rating-btn" onclick="selectDifficulty(2)">2</button>
-          <button class="rating-btn" onclick="selectDifficulty(3)">3</button>
-          <button class="rating-btn" onclick="selectDifficulty(4)">4</button>
-          <button class="rating-btn" onclick="selectDifficulty(5)">5</button>
+          <button class="rating-btn" onclick="selectDifficulty(1)" id="diff1">1</button>
+          <button class="rating-btn" onclick="selectDifficulty(2)" id="diff2">2</button>
+          <button class="rating-btn" onclick="selectDifficulty(3)" id="diff3">3</button>
+          <button class="rating-btn" onclick="selectDifficulty(4)" id="diff4">4</button>
+          <button class="rating-btn" onclick="selectDifficulty(5)" id="diff5">5</button>
         </div>
         <div class="cond-section" id="diff-high">
           <div class="cond-block"><div class="cond-lbl">If 4 or 5</div><div class="cond-text">
@@ -615,11 +652,11 @@ document.addEventListener('DOMContentLoaded',function(){
         </div>
         <div class="cond-section" id="diff-low">
           <div class="cond-block"><div class="cond-lbl">If 1–3</div><div class="cond-text">
-            <p class="script-line">If there aren't dedicated funds set aside and there isn't a written plan for <span class="d-b beneficiary-name">_____</span> to follow, what makes it only a <span id="diffValLow">__</span>?</p>
+            <p class="script-line">If there aren't dedicated funds set aside and there isn't a written plan for <span class="d-b beneficiary-name">Beneficiary</span> to follow, what makes it only a <span id="diffValLow">__</span>?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
             <p class="script-line">Is it because you feel they would figure it out, or is it just uncomfortable to think about?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
-            <p class="script-line">And why not just leave it behind for <span class="d-b beneficiary-name">_____</span> to handle?</p>
+            <p class="script-line">And why not just leave it behind for <span class="d-b beneficiary-name">Beneficiary</span> to handle?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
             <div class="tip"><span class="tip-lbl">Tip</span>Powerful question. Do not rush it.</div>
           </div></div>
@@ -630,7 +667,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="card">
         <div class="card-header">Scale 2 — Importance</div>
         <p class="script-line">Now... my second question here is on a scale of one to five again.</p>
-        <p class="script-line">If we can find something affordable that helps take care of these things for you on behalf of <span class="d-b beneficiary-name">_____</span>, how important is it for you to make sure that burden is not left behind for them?</p>
+        <p class="script-line">If we can find something affordable that helps take care of these things for you on behalf of <span class="d-b beneficiary-name">Beneficiary</span>, how important is it for you to make sure that burden is not left behind for them?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
         <div class="tip"><span class="tip-lbl">Tip</span>If pause goes past 5 seconds say: "Just a number 1–5, 1 being not important."</div>
         <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Select What Client Says</div></div>
@@ -645,7 +682,7 @@ document.addEventListener('DOMContentLoaded',function(){
           <div class="cond-block"><div class="cond-lbl">If 4 or 5</div><div class="cond-text">
             <p class="script-line">Okay, good — so you love them! That's great. You know, I speak to a lot of people, and not everybody loves their families, and it's just unfortunate. So I'm glad that you guys have a wonderful relationship. I really respect the heck out of that. And family is just so important.</p>
             <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
-            <p class="script-line">What would it mean to you emotionally to know <span class="d-b beneficiary-name">_____</span> would not have to scramble or stress over this one day?</p>
+            <p class="script-line">What would it mean to you emotionally to know <span class="d-b beneficiary-name">Beneficiary</span> would not have to scramble or stress over this one day?</p>
             <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
           </div></div>
         </div>
@@ -664,43 +701,94 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Affordability</div><div class="section-divider-line"></div></div>
 
       <div class="card">
-        <p class="script-line">So <span class="d-p prospect-name">____</span>, the most important thing in all of this is affordability.</p>
+        <div class="card-header">Budget Input</div>
+        <p class="script-line">So <span class="d-p prospect-name">Prospect</span>, the most important thing in all of this is affordability.</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
         <p class="script-line">I don't want to be taking food off your table or putting you in a hard spot here. What monthly amount would feel comfortable and sustainable for you, where you could keep it in place long term without it becoming a burden?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
         <div class="tip"><span class="tip-lbl">Tip</span>Do not rush the budget. If quiet, say: "Take your time. I just want to make sure we build this around something that actually works for you." Then pause again.</div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">Budget Input</div>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Enter monthly budget. Three quote targets auto-calculate and will appear in the Build These Quotes card before health questions.</div></div>
-        <div class="script-field-group">
-          <label class="field-label">Monthly Budget ($)</label>
-          <input class="text-input" id="budgetInput" type="number" placeholder="e.g. 100" oninput="calcQuotes(this.value)" min="1">
+        <div class="budget-box" id="budgetBox">
+          <div class="budget-box-label">&#9888;&#65039; Monthly Budget &mdash; Required</div>
+          <div class="budget-input-row">
+            <span class="budget-prefix">$</span>
+            <input class="budget-input" id="budgetInput" type="number" inputmode="numeric" placeholder="100" oninput="setBudget(this.value,'budgetInput')" min="1">
+          </div>
+          <div class="budget-note" id="budgetNote">Enter this now &mdash; your three quote targets won't generate without it.</div>
         </div>
-        <p class="script-line" style="margin-top:12px;">What matters more to you, keeping the payment as low as possible or making sure the coverage amount is enough so <span class="d-b beneficiary-name">_____</span> has breathing room?</p>
-        <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
-      </div>
 
-      <div class="card">
-        <div class="cond-block"><div class="cond-lbl">If No Budget Stated</div><div class="cond-text">
-          <p class="script-line">Okay. So… you just want to see some options. I completely understand.</p>
-          <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
-          <p class="script-line">Now <span class="d-p prospect-name">________</span>, I don't want to give you options that don't work for you, because as of right now there isn't a plan, there are no funds set aside for <span class="d-b beneficiary-name">_____</span>, and if I give you something that's unaffordable, you'll likely end up canceling that policy. Something is better than nothing, right?</p>
-          <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS BEFORE NEXT LINE</span></div>
-          <p class="script-line">So when you first filled out the request, what were you thinking or hoping it would cost monthly?</p>
-          <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
-        </div></div>
+        <button class="no-budget-btn" id="noBudgetBtn" onclick="toggleNoBudget()">
+          <span>&#128172; They Didn't Give a Number?</span>
+          <span class="no-budget-arrow" id="noBudgetArrow">&#9660;</span>
+        </button>
+
+        <div class="cond-section" id="noBudgetBlock">
+          <div class="cond-block" style="margin-top:10px;"><div class="cond-lbl">If No Budget Stated</div><div class="cond-text">
+            <p class="script-line">Okay. So… you just want to see some options. I completely understand.</p>
+            <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
+            <p class="script-line">Now <span class="d-p prospect-name">Prospect</span>, I don't want to give you options that don't work for you, because as of right now there isn't a plan, there are no funds set aside for <span class="d-b beneficiary-name">Beneficiary</span>, and if I give you something that's unaffordable, you'll likely end up canceling that policy. Something is better than nothing, right?</p>
+            <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS BEFORE NEXT LINE</span></div>
+            <p class="script-line">So when you first filled out the request, what were you thinking or hoping it would cost monthly?</p>
+            <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
+            <div class="budget-box" id="budgetBoxAlt" style="margin-bottom:0;">
+              <div class="budget-box-label">&#9888;&#65039; Monthly Budget &mdash; Required</div>
+              <div class="budget-input-row">
+                <span class="budget-prefix">$</span>
+                <input class="budget-input" id="budgetInputAlt" type="number" inputmode="numeric" placeholder="100" oninput="setBudget(this.value,'budgetInputAlt')" min="1">
+              </div>
+              <div class="budget-note" id="budgetNoteAlt">Enter this now &mdash; your three quote targets won't generate without it.</div>
+            </div>
+          </div></div>
+        </div>
+
+        <p class="script-line" style="margin-top:12px;">Perfect, and just to make sure the plans I show you are best aligned with your goals… What is more important to you, keeping the payment as low as possible or making sure the coverage amount is enough to leave <span class="d-b beneficiary-name">Beneficiary</span> extra breathing room?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS</span></div>
         <p class="script-line">Okay. Amazing.</p>
       </div>
     </div>
 
-    <!-- ═══════════ BUILD THESE QUOTES ═══════════ -->
+        <!-- ═══════════ HEALTH QUESTIONS ═══════════ -->
+    <div id="s-health" class="script-section-block">
+      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Pen &amp; Paper / Health</div><div class="section-divider-line"></div></div>
+
+      <div class="card">
+        <p class="script-line">Next steps <span class="d-p prospect-name">Prospect</span>, can you do me a favor and grab a pen and paper for me?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL READY</span></div>
+        <p class="script-line">I'm required by the State Department of Insurance to give you my name and state license number before going any further in the conversation.</p>
+        <p class="script-line">Alrighty, my name's <span class="d-a agent-name">____</span> and my state license number is <span class="d-a agent-license">______</span>.</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <div class="divider"></div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Don't Know Your NPN?</div><div class="agent-instr-text">Look it up now while they're grabbing a pen and paper — you have a natural window here.</div></div>
+        <a class="action-btn btn-primary" href="https://nipr.com/licensing-center/look-up-a-national-producer-number" target="_blank" rel="noopener noreferrer">&#128269; Look Up My NPN</a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Health Questions</div>
+        <p class="script-line">Perfect. So next steps forward, I'm just going to ask you a few quick health questions, so I can figure out what policies you have the best approval odds for.</p>
+        <p class="script-line">And <span class="d-p prospect-name">Prospect</span>, what's your birthday?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <div class="field-row">
+          <div class="field-group"><label class="field-label">Date of Birth</label><input class="text-input" id="dobInput" placeholder="MM/DD/YYYY" inputmode="numeric" oninput="setDob(this.value)" autocomplete="off"></div>
+          <div class="field-group"><label class="field-label">Age</label><input class="text-input" id="ageInput" placeholder="Auto from DOB" inputmode="numeric" oninput="state.age=this.value" autocomplete="off"></div>
+        </div>
+        <p class="script-line">What is a good height and weight for you?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
+        <div class="field-row">
+          <div class="field-group"><label class="field-label">Height</label><input class="text-input" id="heightInput" placeholder='e.g. 5&apos;6"' oninput="state.height=this.value" autocomplete="off"></div>
+          <div class="field-group"><label class="field-label">Weight</label><input class="text-input" id="weightInput" placeholder="e.g. 165 lbs" oninput="state.weight=this.value" autocomplete="off"></div>
+        </div>
+        <p class="script-line">Now, so I can find you coverage that accepts your prescription medications, can you get those ready for me?</p>
+        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL READY</span></div>
+        <div class="silence"><span style="font-size:22px;">🤫</span><div class="silence-text">DO NOT FILL THIS SILENCE.<br>LET THEM GATHER THEIR MEDICATIONS.</div></div>
+        <p class="script-line">Perfect! And if you could spell those out for me.</p>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Go through all medications and ask follow-up questions to get the info the FEX quoter requires.</div></div>
+      </div>
+
+<!-- ═══════════ BUILD THESE QUOTES ═══════════ -->
     <div class="script-section-block">
       <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Build These Quotes</div><div class="section-divider-line"></div></div>
       <div class="card" style="border-color:var(--primary);border-width:1.5px;">
-        <div class="card-header" style="color:var(--primary);">📊 Build These Quotes — Before Health Questions</div>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Enter the budget above in the Affordability section first. Use the premium targets below to build 3 quotes on the FEX quoter while asking health questions. Enter coverage amounts as results come back.</div></div>
+        <div class="card-header" style="color:var(--primary);">📊 Build These Quotes — During Medication Review</div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Enter the budget above in the Affordability section first. Use the premium targets below to build 3 quotes on the FEX quoter while they gather and spell out their medications. Enter coverage amounts as results come back.</div></div>
         <div id="quotesDisplay" style="display:none;">
           <div class="quote-row">
             <div class="quote-box" id="q1box"><div class="quote-lbl">Option 1 (High)</div><div class="quote-price" id="q1price">—</div><input class="quote-coverage" id="cov1" placeholder="Coverage $" oninput="state.coverage1=this.value;syncCoverage(1,this.value)"></div>
@@ -711,44 +799,11 @@ document.addEventListener('DOMContentLoaded',function(){
         </div>
         <div id="quotesEmpty" style="text-align:center;padding:16px 0;color:var(--text-secondary);font-size:14px;font-weight:600;">Enter monthly budget in the Affordability section above to generate quote targets.</div>
         <div class="divider"></div>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Open FEX Quoting Tool</div><div class="agent-instr-text">Click below to open in a new window. Build 3 quotes using the premium targets above while asking health questions. Enter coverage amounts as results come back.</div></div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Open FEX Quoting Tool</div><div class="agent-instr-text">Click below to open in a new window. Build 3 quotes using the premium targets above during medication review. Enter coverage amounts as results come back.</div></div>
         <a class="action-btn btn-primary" href="https://app.insurancetoolkits.com/fex/quoter" target="_blank" rel="noopener noreferrer">🔗 Open FEX Quoting Tool</a>
       </div>
     </div>
 
-    <!-- ═══════════ HEALTH QUESTIONS ═══════════ -->
-    <div id="s-health" class="script-section-block">
-      <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Pen &amp; Paper / Health</div><div class="section-divider-line"></div></div>
-
-      <div class="card">
-        <p class="script-line">Next steps <span class="d-p prospect-name">____</span>, can you do me a favor and grab a pen and paper for me?</p>
-        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL READY</span></div>
-        <p class="script-line">I'm required by the State Department of Insurance to give you my name and state license number before going any further in the conversation.</p>
-        <p class="script-line">Alrighty, my name's <span class="d-a agent-name">____</span> and my state license number is <span class="d-a agent-license">______</span>.</p>
-        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">Health Questions</div>
-        <p class="script-line">Perfect. So next steps forward, I'm just going to ask you a few quick health questions, so I can figure out what policies you have the best approval odds for.</p>
-        <p class="script-line">And <span class="d-p prospect-name">_____</span>, what's your birthday?</p>
-        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
-        <div class="field-row">
-          <div class="field-group"><label class="field-label">Date of Birth</label><input class="text-input" id="dobInput" placeholder="MM/DD/YYYY" oninput="state.dob=this.value" autocomplete="off"></div>
-          <div class="field-group"><label class="field-label">Age</label><input class="text-input" id="ageInput" placeholder="e.g. 64" oninput="state.age=this.value" autocomplete="off"></div>
-        </div>
-        <p class="script-line">What is a good height and weight for you?</p>
-        <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
-        <div class="field-row">
-          <div class="field-group"><label class="field-label">Height</label><input class="text-input" id="heightInput" placeholder='e.g. 5&apos;6"' oninput="state.height=this.value" autocomplete="off"></div>
-          <div class="field-group"><label class="field-label">Weight</label><input class="text-input" id="weightInput" placeholder="e.g. 165 lbs" oninput="state.weight=this.value" autocomplete="off"></div>
-        </div>
-        <p class="script-line">Now, so I can find you coverage that accepts your prescription medications, can you get those ready for me?</p>
-        <div class="pause"><span>⏸</span><span class="pause-label">PAUSE UNTIL READY</span></div>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent — Wait</div><div class="agent-instr-text">Do not fill this silence. Let them gather medications.</div></div>
-        <p class="script-line">Perfect. And if you could spell that out for me.</p>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Go through all medications and ask follow-up questions to get the info the FEX quoter requires.</div></div>
-      </div>
     </div>
 
     <!-- ═══════════ OPTIONS ═══════════ -->
@@ -756,14 +811,14 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Presenting Options</div><div class="section-divider-line"></div></div>
 
       <div class="card">
-        <p class="script-line">Alrighty <span class="d-p prospect-name">____</span>, so tell me. Do you still have that pen and paper ready still?</p>
+        <p class="script-line">Alrighty <span class="d-p prospect-name">Prospect</span>, so tell me. Do you still have that pen and paper ready still?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
         <p class="script-line">Perfect, so I have a few plans for you here. I'm going to start by showing you the highest option and walking you through what each of these subsequently does for you.</p>
       </div>
 
       <div class="card option-card" id="optCard1" onclick="selectOption(1)">
         <div class="option-num">Option 1 — Legacy (Highest)</div>
-        <p class="script-line">Now <span class="d-p prospect-name">____</span>, being that you said <span class="d-budget budget-display">$____</span> per month was affordable to you, I'm going to be working around that to set your expectations.</p>
+        <p class="script-line">Now <span class="d-p prospect-name">Prospect</span>, being that you said <span class="d-budget budget-display">$____</span> per month was affordable to you, I'm going to be working around that to set your expectations.</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
         <p class="script-line">This first option is <strong><span id="opt1price" class="d-budget">$____</span></strong> for <strong><span id="opt1cov" class="d-b">______</span></strong> of coverage. I'm showing you this as more of a legacy option — leaves extra money behind after the <span class="d-bc bc-type">burial/cremation</span> whenever it happens.</p>
         <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS — Let the value land.</span></div>
@@ -784,7 +839,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
       <div class="card">
         <div class="card-header">The Close</div>
-        <p class="script-line">Based on what you told me about <span class="d-b beneficiary-name">_____</span>, your budget, and not wanting to leave this behind for them, which one of these feels like it fits what you were hoping to accomplish?</p>
+        <p class="script-line">Based on what you told me about <span class="d-b beneficiary-name">Beneficiary</span>, your budget, and not wanting to leave this behind for them, which one of these feels like it best fits what you were hoping to accomplish?</p>
         <div class="silence"><span style="font-size:22px;">🤫</span><div class="silence-text">STAY SILENT. DO NOT SAY ANOTHER WORD.<br>FIRST TO SPEAK GIVES UP CONTROL.<br>[PAUSE: 8–12 SECONDS MINIMUM]</div></div>
         <div class="tip"><span class="tip-lbl">Tip</span>Do not explain again. Do not lower the price. Do not nervous-talk. If they hesitate: "Take your time." [PAUSE 3–5 SEC] Then: "Between the three, is it more of a coverage concern or a monthly payment concern?"</div>
         <div style="background:var(--objection-bg);border:2px solid var(--objection-border);border-radius:var(--radius-sm);padding:14px 16px;margin:12px 0;display:flex;align-items:center;gap:12px;">
@@ -831,9 +886,14 @@ document.addEventListener('DOMContentLoaded',function(){
           <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
           <p class="script-line">Which one is it for you?</p>
           <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
-          <div class="cond-block" style="margin-top:12px;"><div class="cond-lbl">If Payment Issue</div><div class="cond-text"><p class="script-line">That makes sense. Would it make more sense to protect <span class="d-b beneficiary-name">_____</span> with something smaller that is comfortable, rather than waiting and risking having nothing in place?</p><div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div></div></div>
-          <div class="cond-block"><div class="cond-lbl">If Coverage Issue</div><div class="cond-text"><p class="script-line">Okay, so it sounds like the idea makes sense, but we may need to adjust the amount. Would you rather lower the payment or increase the protection?</p><div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div></div></div>
-          <div class="cond-block"><div class="cond-lbl">If Need Issue</div><div class="cond-text"><p class="script-line">That's fair. Based on what you told me earlier, if nothing is in place, <span class="d-b beneficiary-name">_____</span> would still be responsible for this one day. What would have to change for this to feel important enough to handle now instead of later?</p><div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div></div></div>
+          <div class="toggle-group" style="margin-top:12px;">
+            <button class="toggle-btn" id="objBtnPayment" onclick="selectObjection('Payment')">&#128181; Payment</button>
+            <button class="toggle-btn" id="objBtnCoverage" onclick="selectObjection('Coverage')">&#128737;&#65039; Coverage</button>
+            <button class="toggle-btn" id="objBtnNeed" onclick="selectObjection('Need')">&#129300; Need</button>
+          </div>
+          <div class="cond-section" id="objPayment"><div class="cond-block"><div class="cond-lbl">If Payment Issue</div><div class="cond-text"><p class="script-line">That makes sense. Would it make more sense to protect <span class="d-b beneficiary-name">Beneficiary</span> with something smaller that is comfortable, rather than waiting and risking having nothing in place?</p><div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div></div></div></div>
+          <div class="cond-section" id="objCoverage"><div class="cond-block"><div class="cond-lbl">If Coverage Issue</div><div class="cond-text"><p class="script-line">Okay, so it sounds like the idea makes sense, but we may need to adjust the amount. Would you rather lower the payment or increase the protection?</p><div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div></div></div></div>
+          <div class="cond-section" id="objNeed"><div class="cond-block"><div class="cond-lbl">If Need Issue</div><div class="cond-text"><p class="script-line">That's fair. Based on what you told me earlier, if nothing is in place, <span class="d-b beneficiary-name">Beneficiary</span> would still be responsible for this one day. What would have to change for this to feel important enough to handle now instead of later?</p><div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div></div></div></div>
         </div>
       </div>
     </div>
@@ -892,10 +952,10 @@ document.addEventListener('DOMContentLoaded',function(){
 
       <div class="card">
         <div class="card-header">Beneficiary Contact Info</div>
-        <p class="script-line">And how do I spell <span class="d-b beneficiary-name">_____</span>'s name?</p>
+        <p class="script-line">And how do I spell <span class="d-b beneficiary-name">Beneficiary</span>'s name?</p>
         <p class="script-line">And do they have a middle initial?</p>
         <div class="script-field-group"><label class="field-label">Middle Initial</label><input class="text-input" id="benInitial" placeholder="e.g. M" maxlength="2" oninput="state.benInitial=this.value" autocomplete="off"></div>
-        <p class="script-line">And what's a good phone number for them so that the carrier knows who's calling when <span class="d-b beneficiary-name">_____</span> needs to file a claim?</p>
+        <p class="script-line">And what's a good phone number for them so that the carrier knows who's calling when <span class="d-b beneficiary-name">Beneficiary</span> needs to file a claim?</p>
         <div class="script-field-group"><label class="field-label">Beneficiary Phone</label><input class="text-input" id="benPhone" placeholder="(555) 555-5555" oninput="state.benPhone=this.value" autocomplete="off"></div>
         <p class="script-line">Okay, and do you happen to have a mailing address for them to make it easier to send them the money one day?</p>
         <div class="script-field-group"><label class="field-label">Beneficiary Address</label><input class="text-input" id="benAddress" placeholder="Address or N/A" oninput="state.benAddress=this.value" autocomplete="off"></div>
@@ -913,7 +973,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
         <div class="script-field-group"><label class="field-label">Social Security Number</label><input class="text-input" id="ssnInput" type="password" placeholder="XXX-XX-XXXX" oninput="state.ssn=this.value" autocomplete="off"></div>
         <p class="script-line">Perfect.</p>
-        <p class="script-line" style="margin-top:8px;">Next steps, I'm going to take this information and prepare the application to submit to the carrier for coverage, for them to review and give us the final approval to take care of those things for <span class="d-b beneficiary-name">_____</span>. Bear with me, it takes a few minutes.</p>
+        <p class="script-line" style="margin-top:8px;">Next steps, I'm going to take this information and prepare the application to submit to the carrier for coverage, for them to review and give us the final approval to take care of those things for <span class="d-b beneficiary-name">Beneficiary</span>. Bear with me, it takes a few minutes.</p>
         <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Open your carrier portal and submit the application. Policy info summary is displayed below.</div></div>
         <div class="policy-info-panel" id="policyInfoPanel"><div class="card-header" style="margin-bottom:10px;">POLICY INFO</div><div id="policyInfoContent"></div></div>
       </div>
@@ -938,12 +998,12 @@ document.addEventListener('DOMContentLoaded',function(){
           <div class="cond-block" style="border-color:var(--success);background:var(--coaching-bg);">
             <div class="cond-lbl" style="color:var(--success);">If Approved</div>
             <div class="cond-text">
-              <p class="script-line">So <span class="d-p prospect-name">_____</span>, do you want the good news or do you want the bad news?</p>
+              <p class="script-line">So <span class="d-p prospect-name">Prospect</span>, do you want the good news or do you want the bad news?</p>
               <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
               <p class="script-line" style="color:var(--text-secondary);font-style:italic;">[Client: Well, I don't know. Um, the good news.]</p>
               <p class="script-line">Alright, so the good news is your policy is approved.</p>
               <div class="pause"><span>⏸</span><span class="pause-label">3–5 SECONDS — Let them feel the relief.</span></div>
-              <p class="script-line">How does it feel knowing this is finally handled for <span class="d-b beneficiary-name">_____</span>?</p>
+              <p class="script-line">How does it feel knowing this is finally handled for <span class="d-b beneficiary-name">Beneficiary</span>?</p>
               <div class="pause"><span>⏸</span><span class="pause-label">5–7 SECONDS</span></div>
               <div class="tip"><span class="tip-lbl">Tip</span>Powerful emotional reinforcement. Let them answer.</div>
             </div>
@@ -969,7 +1029,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <p class="script-line">Yeah, I know, it's crazy right?</p>
         <p class="script-line">So the reason for that is that when people are grieving, they don't want to spend the time making 45-minute to hour-long phone calls trying to collect money and the broker is nowhere to be found. Or a lot of times the beneficiary was never told the policy existed, and they never found the paperwork, or it's just sitting somewhere waiting to be found you know?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">1–2 SECONDS</span></div>
-        <p class="script-line">So what we do is we set up your emergency response system. This system is here to make sure that <span class="d-b beneficiary-name">_____</span> gets the money from the insurance company when they need it, so it doesn't get forgotten. This ensures there are enough people there to assist in getting the insurance company to give <span class="d-b beneficiary-name">_____</span> the payout during their time of need.</p>
+        <p class="script-line">So what we do is we set up your emergency response system. This system is here to make sure that <span class="d-b beneficiary-name">Beneficiary</span> gets the money from the insurance company when they need it, so it doesn't get forgotten. This ensures there are enough people there to assist in getting the insurance company to give <span class="d-b beneficiary-name">Beneficiary</span> the payout during their time of need.</p>
         <p class="script-line">That makes sense, right?</p>
         <div class="pause"><span>⏸</span><span class="pause-label">2–3 SECONDS</span></div>
       </div>
@@ -981,7 +1041,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="tip"><span class="tip-lbl">Tip</span>Do not overtalk the follow-up. Let them answer.</div>
         <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Book Follow-Up</div><div class="agent-instr-text">Open your calendar and book the appointment now.</div></div>
         <div class="divider"></div>
-        <p class="script-line">Perfect <span class="d-p prospect-name">_____</span>, I will be in touch with you <span class="d-b" id="followupSpan">_____</span> to go over the policy status and setup your Emergency Response System.</p>
+        <p class="script-line">Perfect <span class="d-p prospect-name">Prospect</span>, I will be in touch with you <span class="d-b" id="followupSpan">_____</span> to go over the policy status and setup your Emergency Response System.</p>
         <p class="script-line">I hope you have a wonderful rest of your day!</p>
         <div class="pause"><span>⏸</span><span class="pause-label">END CALL</span></div>
         <div style="margin-top:18px;">
@@ -1139,7 +1199,7 @@ const STATE_MAP = {
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 const state = {
-  prospect:'',agent:'',agentLicense:'',beneficiary:'',
+  prospect:'',agent:'',agentLicense:'',beneficiary:'',hobby:'',
   bc:null,difficulty:null,importance:null,
   budget:null,quote1:null,quote2:null,quote3:null,
   coverage1:'',coverage2:'',coverage3:'',selectedOption:null,
@@ -1258,9 +1318,69 @@ function sBankLookup(){
 }
 
 // ─── DYNAMIC NAMES ────────────────────────────────────────────────────────────
-function updateProspect(v){state.prospect=v;const d=v||'_____';document.querySelectorAll('.prospect-name').forEach(el=>el.textContent=d);openCarrierPortal();}
 function updateAgent(v){state.agent=v;const d=v||'______';document.querySelectorAll('.agent-name').forEach(el=>el.textContent=d);}
-function updateBeneficiary(v,srcId){state.beneficiary=v;const d=v||'_____';document.querySelectorAll('.beneficiary-name').forEach(el=>el.textContent=d);['wBeneficiary','discoveryBeneficiary'].forEach(function(id){if(id===srcId)return;var el=document.getElementById(id);if(el)el.value=v;});openCarrierPortal();}
+function updateBeneficiary(v,srcId){setBeneficiary(v,null);}
+
+// Single writer for the beneficiary name — inline tokens and the discovery input both feed this.
+function setBeneficiary(v,srcEl){
+  state.beneficiary=(v||'').trim();
+  const empty=!state.beneficiary;
+  const d=state.beneficiary||'Beneficiary';
+  document.querySelectorAll('.beneficiary-name').forEach(function(el){
+    if(el!==srcEl)el.textContent=d;          // never rewrite the node being typed in — it kills the caret
+    el.classList.toggle('is-empty',empty);
+  });
+  const inp=document.getElementById('discoveryBeneficiary');
+  if(inp&&inp!==document.activeElement)inp.value=state.beneficiary;
+  openCarrierPortal();
+}
+
+function setHobby(v,srcEl){
+  state.hobby=(v||'').trim();
+  const empty=!state.hobby;
+  const d=state.hobby||'Hobby';
+  document.querySelectorAll('.hobby-name').forEach(function(el){
+    if(el!==srcEl)el.textContent=d;
+    el.classList.toggle('is-empty',empty);
+  });
+}
+
+// Turn a set of tokens into click-to-type fields
+function makeEditableTokens(selector,placeholder,hint,getVal,setVal){
+  document.querySelectorAll(selector).forEach(function(el){
+    el.setAttribute('contenteditable','true');
+    el.setAttribute('spellcheck','false');
+    el.setAttribute('title',hint);
+    el.classList.add('is-empty');
+    el.addEventListener('focus',function(){
+      if(!getVal()){
+        setTimeout(function(){                        // select the placeholder so typing replaces it
+          const r=document.createRange();r.selectNodeContents(el);
+          const sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);
+        },0);
+      }
+    });
+    el.addEventListener('input',function(){setVal(el.textContent,el);});
+    el.addEventListener('keydown',function(e){
+      if(e.key==='Enter'){e.preventDefault();el.blur();}
+    });
+    el.addEventListener('blur',function(){
+      if(!el.textContent.trim())setVal('',null);
+    });
+    el.addEventListener('paste',function(e){          // keep pasted text plain
+      e.preventDefault();
+      const t=(e.clipboardData||window.clipboardData).getData('text');
+      document.execCommand('insertText',false,t.replace(/\s+/g,' ').trim());
+    });
+  });
+}
+
+function initBeneficiaryEditing(){
+  makeEditableTokens('.beneficiary-name','Beneficiary','Click to type the beneficiary name',
+                     function(){return state.beneficiary;}, setBeneficiary);
+  makeEditableTokens('.hobby-name','Hobby','Click to type their favorite hobby',
+                     function(){return state.hobby;}, setHobby);
+}
 function updateLicense(v){state.agentLicense=v;const d=v||'______';document.querySelectorAll('.agent-license').forEach(el=>el.textContent=d);}
 
 // ─── BURIAL / CREMATION ───────────────────────────────────────────────────────
@@ -1280,7 +1400,7 @@ function selectBC(type){
 // ─── QUALIFYING ───────────────────────────────────────────────────────────────
 function selectDifficulty(n){
   state.difficulty=n;
-  document.querySelectorAll('#s-qualifying .card:first-child .rating-group .rating-btn').forEach((b,i)=>b.className='rating-btn'+(i+1===n?' sel':''));
+  for(let i=1;i<=5;i++){const b=document.getElementById('diff'+i);if(b)b.className='rating-btn'+(i===n?' sel':'');}
   toggleCond('diff-high',n>=4);toggleCond('diff-low',n<4);
   if(n<4)document.getElementById('diffValLow').textContent=n;
 }
@@ -1292,6 +1412,115 @@ function selectImportance(n){
 }
 
 // ─── QUOTES ───────────────────────────────────────────────────────────────────
+// ─── DOB → AGE ───────────────────────────────────────────────────────────────
+function setDob(v){
+  state.dob=v;
+  const age=ageFromDob(v);
+  const el=document.getElementById('ageInput');
+  if(age!==null){
+    state.age=String(age);
+    if(el&&el!==document.activeElement)el.value=age;
+  }else if(!v.trim()){
+    state.age='';
+    if(el&&el!==document.activeElement)el.value='';
+  }
+}
+
+// Accepts MM/DD/YYYY, M/D/YY, and dash or dot separators. Returns null until a full valid date.
+function ageFromDob(v){
+  const m=(v||'').trim().match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2}|\d{4})$/);
+  if(!m)return null;
+  let mo=+m[1],d=+m[2],y=+m[3];
+  if(m[3].length===2){                       // 2-digit year: assume a living adult, not an infant
+    const cur=new Date().getFullYear()%100;
+    y=y>cur?1900+y:2000+y;
+  }
+  if(mo<1||mo>12||d<1||d>31)return null;
+  const dt=new Date(y,mo-1,d);
+  if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d)return null;  // rejects 02/30 etc.
+  const now=new Date();
+  if(dt>now)return null;
+  let age=now.getFullYear()-y;
+  const before=now.getMonth()<mo-1||(now.getMonth()===mo-1&&now.getDate()<d);
+  if(before)age--;
+  return(age>=0&&age<=120)?age:null;
+}
+
+// ─── TIP VISIBILITY ──────────────────────────────────────────────────────────
+function toggleTips(force){
+  const hidden=(typeof force==='boolean')?force:!document.body.classList.contains('tips-hidden');
+  document.body.classList.toggle('tips-hidden',hidden);
+  const btn=document.getElementById('tipsToggleBtn');
+  if(btn)btn.textContent=hidden?'Show Tips':'Hide Tips';
+}
+
+// Drop a dismiss button into every coaching tip (skip the Get Better modal — tips are its content)
+function initTipControls(){
+  document.querySelectorAll('.tip').forEach(function(t){
+    if(t.closest('#getBetterModal'))return;
+    if(t.querySelector('.tip-hide-btn'))return;
+    const b=document.createElement('button');
+    b.className='tip-hide-btn';
+    b.type='button';
+    b.textContent='×';
+    b.title='Hide all tips';
+    b.setAttribute('aria-label','Hide all tips');
+    b.onclick=function(e){e.stopPropagation();toggleTips(true);};
+    t.appendChild(b);
+  });
+}
+
+// ─── OBJECTION BRANCH SELECT ─────────────────────────────────────────────────
+function selectObjection(key){
+  const keys=['Payment','Coverage','Need'];
+  const already=document.getElementById('obj'+key).classList.contains('show');
+  keys.forEach(function(k){
+    const on=(k===key)&&!already;                 // clicking the active one closes it
+    const blk=document.getElementById('obj'+k);
+    const btn=document.getElementById('objBtn'+k);
+    if(blk)blk.classList.toggle('show',on);
+    if(btn)btn.className='toggle-btn'+(on?' active-warning':'');
+  });
+}
+
+function toggleNoBudget(){
+  const blk=document.getElementById('noBudgetBlock');
+  const btn=document.getElementById('noBudgetBtn');
+  if(!blk)return;
+  const open=blk.classList.toggle('show');
+  if(btn)btn.classList.toggle('open',open);
+  if(open){
+    const alt=document.getElementById('budgetInputAlt');
+    if(alt)setTimeout(function(){
+      const y=window.scrollY;                       // focusing scrolls the field into view — pin the page
+      try{alt.focus({preventScroll:true});}catch(e){alt.focus();}
+      if(window.scrollY!==y)window.scrollTo(0,y);   // fallback for browsers ignoring preventScroll
+    },120);
+  }
+}
+
+// Both budget inputs write here so they can never disagree
+function setBudget(v,srcId){
+  ['budgetInput','budgetInputAlt'].forEach(function(id){
+    if(id===srcId)return;
+    const el=document.getElementById(id);
+    if(el&&el!==document.activeElement)el.value=v;
+  });
+  const n=parseInt(v,10);
+  const ok=!!n&&n>=1;
+  ['budgetBox','budgetBoxAlt'].forEach(function(id){
+    const box=document.getElementById(id);
+    if(box)box.classList.toggle('filled',ok);
+  });
+  ['budgetNote','budgetNoteAlt'].forEach(function(id){
+    const note=document.getElementById(id);
+    if(note)note.innerHTML=ok
+      ? '✓ Quote targets set — $'+(n+(n>=150?50:25))+' / $'+n+' / $'+(n-(n>=150?50:25))
+      : 'Enter this now &mdash; your three quote targets won\'t generate without it.';
+  });
+  calcQuotes(v);
+}
+
 function calcQuotes(v){
   const budget=parseInt(v,10);
   const display=document.getElementById('quotesDisplay');
