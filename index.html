@@ -211,8 +211,14 @@ body.tips-hidden .tips-toggle-btn{border-color:var(--coaching-border);color:var(
 .quote-box.sel{border-color:var(--primary);}
 .quote-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-secondary);margin-bottom:3px;}
 .quote-price{font-size:22px;font-weight:800;color:var(--primary);}
-.quote-coverage{width:100%;padding:5px 8px;border:1.5px dashed var(--border);border-radius:6px;font-size:13px;font-weight:600;background:transparent;color:var(--text);outline:none;text-align:center;margin-top:5px;font-family:inherit;}
-.quote-coverage:focus{border-color:var(--primary);border-style:solid;}
+.quote-cov-lbl{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:0.7px;color:var(--warning);margin-top:8px;margin-bottom:3px;transition:color 0.2s;}
+.quote-box.has-cov .quote-cov-lbl{color:var(--success);}
+.quote-coverage{width:100%;padding:9px 8px;border:2px dashed var(--warning);border-radius:6px;font-size:15px;font-weight:800;background:rgba(255,159,10,0.12);color:var(--text);outline:none;text-align:center;font-family:inherit;transition:all 0.2s;}
+.quote-coverage::placeholder{color:var(--warning);font-weight:800;font-size:13px;opacity:0.85;}
+.quote-coverage:focus{border-color:var(--primary);border-style:solid;background:var(--card);}
+.quote-box.has-cov .quote-coverage{border-style:solid;border-color:var(--success);background:rgba(48,209,88,0.12);}
+.cov-callout{font-size:12px;font-weight:800;color:var(--warning);text-align:center;margin:10px 0 2px;line-height:1.45;}
+.cov-callout.done{color:var(--success);}
 
 /* Option cards */
 .option-card{border:2px solid var(--border);border-radius:var(--radius);padding:15px 17px;margin:9px 0;cursor:pointer;transition:all 0.2s;}
@@ -781,6 +787,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="silence"><span style="font-size:22px;">🤫</span><div class="silence-text">DO NOT FILL THIS SILENCE.<br>LET THEM GATHER THEIR MEDICATIONS.</div></div>
         <p class="script-line">Perfect! And if you could spell those out for me.</p>
         <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Go through all medications and ask follow-up questions to get the info the FEX quoter requires.</div></div>
+        <a class="action-btn btn-primary" href="https://app.insurancetoolkits.com/fex/quoter" target="_blank" rel="noopener noreferrer" style="display:flex;width:100%;justify-content:center;margin:5px 0;">🔗 Open FEX Quoting Tool</a>
       </div>
 
 <!-- ═══════════ BUILD THESE QUOTES ═══════════ -->
@@ -788,19 +795,19 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">Build These Quotes</div><div class="section-divider-line"></div></div>
       <div class="card" style="border-color:var(--primary);border-width:1.5px;">
         <div class="card-header" style="color:var(--primary);">📊 Build These Quotes — During Medication Review</div>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Enter the budget above in the Affordability section first. Use the premium targets below to build 3 quotes on the FEX quoter while they gather and spell out their medications. Enter coverage amounts as results come back.</div></div>
+        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action</div><div class="agent-instr-text">Use the premium targets below to build 3 quotes on the FEX quoter while they gather and spell out their medications.</div></div>
         <div id="quotesDisplay" style="display:none;">
+          <div class="cov-callout" id="covCallout">&#9888;&#65039; Enter the coverage amount each quote comes back with &mdash; 0 of 3 entered</div>
           <div class="quote-row">
-            <div class="quote-box" id="q1box"><div class="quote-lbl">Option 1 (High)</div><div class="quote-price" id="q1price">—</div><input class="quote-coverage" id="cov1" placeholder="Coverage $" oninput="state.coverage1=this.value;syncCoverage(1,this.value)"></div>
-            <div class="quote-box" id="q2box"><div class="quote-lbl">Option 2 (Mid)</div><div class="quote-price" id="q2price">—</div><input class="quote-coverage" id="cov2" placeholder="Coverage $" oninput="state.coverage2=this.value;syncCoverage(2,this.value)"></div>
-            <div class="quote-box" id="q3box"><div class="quote-lbl">Option 3 (Low)</div><div class="quote-price" id="q3price">—</div><input class="quote-coverage" id="cov3" placeholder="Coverage $" oninput="state.coverage3=this.value;syncCoverage(3,this.value)"></div>
+            <div class="quote-box" id="q1box"><div class="quote-lbl">Option 1 (High)</div><div class="quote-price" id="q1price">—</div><div class="quote-cov-lbl">Coverage Amount</div><input class="quote-coverage" id="cov1" placeholder="Enter $" oninput="state.coverage1=this.value;syncCoverage(1,this.value)"></div>
+            <div class="quote-box" id="q2box"><div class="quote-lbl">Option 2 (Mid)</div><div class="quote-price" id="q2price">—</div><div class="quote-cov-lbl">Coverage Amount</div><input class="quote-coverage" id="cov2" placeholder="Enter $" oninput="state.coverage2=this.value;syncCoverage(2,this.value)"></div>
+            <div class="quote-box" id="q3box"><div class="quote-lbl">Option 3 (Low)</div><div class="quote-price" id="q3price">—</div><div class="quote-cov-lbl">Coverage Amount</div><input class="quote-coverage" id="cov3" placeholder="Enter $" oninput="state.coverage3=this.value;syncCoverage(3,this.value)"></div>
           </div>
-          <div class="tip"><span class="tip-lbl">Quote Logic</span>Under $150/mo: $25 increments &nbsp;|&nbsp; $150+/mo: $50 increments</div>
+          <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Open FEX Quoting Tool</div><div class="agent-instr-text">Record the coverage amount each quote returns in the boxes above.</div></div>
         </div>
         <div id="quotesEmpty" style="text-align:center;padding:16px 0;color:var(--text-secondary);font-size:14px;font-weight:600;">Enter monthly budget in the Affordability section above to generate quote targets.</div>
         <div class="divider"></div>
-        <div class="agent-instr"><div class="agent-instr-lbl">Agent Action — Open FEX Quoting Tool</div><div class="agent-instr-text">Click below to open in a new window. Build 3 quotes using the premium targets above during medication review. Enter coverage amounts as results come back.</div></div>
-        <a class="action-btn btn-primary" href="https://app.insurancetoolkits.com/fex/quoter" target="_blank" rel="noopener noreferrer">🔗 Open FEX Quoting Tool</a>
+        <div class="tip"><span class="tip-lbl">Quote Logic</span>Under $150/mo: $25 increments &nbsp;|&nbsp; $150+/mo: $50 increments</div>
       </div>
     </div>
 
@@ -1551,6 +1558,23 @@ function syncCoverage(n,v){
   if(el&&v)el.textContent=v;
   const sb=document.getElementById('selOpt'+n+'Cov');
   if(sb)sb.textContent=v||'—';
+  const box=document.getElementById('q'+n+'box');
+  if(box)box.classList.toggle('has-cov',!!(v&&v.trim()));
+  updateCovCallout();
+}
+
+function updateCovCallout(){
+  let done=0;
+  for(let i=1;i<=3;i++){
+    const f=document.getElementById('cov'+i);
+    if(f&&f.value.trim())done++;
+  }
+  const c=document.getElementById('covCallout');
+  if(!c)return;
+  c.className='cov-callout'+(done===3?' done':'');
+  c.innerHTML=done===3
+    ? '\u2713 All 3 coverage amounts entered'
+    : '\u26a0\ufe0f Enter the coverage amount each quote comes back with \u2014 '+done+' of 3 entered';
 }
 
 // ─── OPTION SELECTION ────────────────────────────────────────────────────────
